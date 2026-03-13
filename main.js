@@ -300,7 +300,7 @@ if (catalogGrid) { loadNeedCards(); }
 
 /*
 -------------------------------------------------------------------------------
-FILRADO
+FILTRADO
 -------------------------------------------------------------------------------
 */
 
@@ -358,17 +358,21 @@ function loadFilters() {
 // carrito de donaciones
 let carrito = [];
 
-function agregarAlCarrito(index) {
-  let item = data[index];
-
-  // evita duplicados
-  for (let i = 0; i < carrito.length; i++) {
-    if (carrito[i].Escuela === item.Escuela && carrito[i].Propuesta === item.Propuesta) {
-      return;
+function agregarAlCarrito(index, seleccionados, cantidad) {
+  const item = data[index];
+  seleccionados.forEach(function(sel) {
+    const yaExiste = carrito.some(function(c) {
+      return c.Escuela === item.Escuela && c.Propuesta === sel;
+    });
+    if (!yaExiste) {
+      carrito.push({
+        Escuela: item.Escuela,
+        Propuesta: sel,
+        Cantidad: cantidad,
+        Unidad: item.Unidad || ''
+      });
     }
-  }
-
-  carrito.push(item);
+  });
   renderCarrito();
   abrirCarrito();
 }
@@ -453,7 +457,7 @@ function renderResults(filtered) {
     card.innerHTML =
       "<div class='card-header'>" +
         "<h3>" + item.Escuela + "</h3>" +
-        "<button class='btn-agregar' onclick='agregarAlCarrito(" + index + ")' title='Agregar a donaciones'>+</button>" +
+        "<button class='btn-agregar' onclick='abrirModalDonar(" + index + ")' title='Donar'>Donar</button>" +
       "</div>" +
       "<p><strong>Municipio:</strong> " + item.Municipio + "</p>" +
       "<p><strong>Categoría:</strong> " + item.Categoría + "</p>" +
@@ -475,4 +479,71 @@ if (document.getElementById("searchForm")) {
   document.getElementById("subcategoriaSelect").addEventListener("change", search);
 
   loadFilters();
+}
+
+
+/*
+-------------------------------------------------------------------------------
+MODAL DONAR (act)
+-------------------------------------------------------------------------------
+*/
+
+function abrirModalDonar(index) {
+  const item = data[index];
+  const modal = document.getElementById('modal-donar');
+  const titulo = document.getElementById('modal-donar-titulo');
+  const lista = document.getElementById('modal-donar-lista');
+
+  titulo.textContent = item.Escuela + ' — ' + item.Propuesta;
+
+  // Busca todas las propuestas de la misma escuela y categoría como opciones
+  const opciones = [];
+  for (let i = 0; i < data.length; i++) {
+    if (
+      data[i].Escuela === item.Escuela &&
+      data[i].Categoría === item.Categoría &&
+      !opciones.includes(data[i].Propuesta)
+    ) {
+      opciones.push(data[i].Propuesta);
+    }
+  }
+
+  lista.innerHTML = '';
+  opciones.forEach(function(op) {
+    lista.innerHTML +=
+      "<label class='modal-opcion'>" +
+        "<input type='checkbox' value='" + op + "'> " + op +
+      "</label>";
+  });
+
+  document.getElementById('modal-donar-cantidad').value = '';
+  modal.dataset.index = index;
+  modal.classList.add('activo');
+}
+
+function cerrarModalDonar() {
+  document.getElementById('modal-donar').classList.remove('activo');
+}
+
+function confirmarModalDonar() {
+  const modal = document.getElementById('modal-donar');
+  const index = parseInt(modal.dataset.index);
+  const cantidad = document.getElementById('modal-donar-cantidad').value;
+  const seleccionados = Array.from(
+    modal.querySelectorAll('input[type=checkbox]:checked')
+  ).map(function(cb) { return cb.value; });
+
+  if (seleccionados.length === 0 || !cantidad) {
+    alert('Selecciona al menos un ítem e ingresa una cantidad.');
+    return;
+  }
+
+  agregarAlCarrito(index, seleccionados, cantidad);
+  cerrarModalDonar();
+}
+
+if (document.getElementById('modal-donar')) {
+  document.getElementById('modal-donar').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModalDonar();
+  });
 }
