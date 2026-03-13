@@ -2188,3 +2188,55 @@ a {
   .contacto-body { padding: 0 1rem; }
   .faq-btn-wrap, .contacto-btn-wrap { padding-bottom: 1.5rem; }
 }
+
+
+/*nomas para ver EL FILTRADO */
+#modal-donar {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+#modal-donar.activo { display: flex; }
+
+.modal-donar-caja {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-opcion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+#modal-donar-cantidad {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.modal-donar-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-confirmar {
+  background: #2bada0; /* tu color teal */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
