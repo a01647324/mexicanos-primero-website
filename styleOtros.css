@@ -1,0 +1,300 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* =====================================================
+   VARIABLES — mismas que style.css
+   ===================================================== */
+:root {
+    --verde:        #009933;
+    --verde-oscuro: #1B6B35;
+    --azul:         #1C3661;
+    --naranja:      #EC671B;
+    --amarillo:     #F4981C;
+    --fondo:        #F0F7F1;
+    --blanco:       #ffffff;
+    --crema:        #F7FAF7;
+    --gris-texto:   #3a4a3e;
+    --gris-claro:   #e8f0ea;
+    --gris-medio:   #6b8575;
+
+    --sombra-m:  0 2px 12px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.06);
+    --sombra-xl: 0 4px 40px rgba(0,0,0,0.07), 0 1px 8px  rgba(0,0,0,0.04);
+    --radio: 16px;
+    --radio-xl: 44px;
+}
+
+/* =====================================================
+   RESET BASE
+   ===================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+
+body {
+    font-family: "Montserrat", sans-serif;
+    background: var(--fondo);
+    color: var(--gris-texto);
+    min-height: 100vh;
+}
+
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+.header-otros {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(135deg, var(--azul) 0%, #1a5c34 100%);
+    border-bottom: 3px solid var(--naranja);
+}
+
+#header-top-otros {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 48px 24px 40px;
+    text-align: center;
+    position: relative;
+}
+
+/* ── BOTÓN INICIO — igual al del catálogo ── */
+.boton-inicio {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background-color: var(--azul);
+    color: white;
+    border-radius: 50px;
+    text-decoration: none;
+    padding: 8px 18px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    transition: all 0.20s ease;
+    box-shadow: 0 4px 14px rgba(28,54,97,0.20);
+}
+.boton-inicio:hover {
+    background-color: #163050;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(28,54,97,0.30);
+}
+
+h1 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: var(--blanco);
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.20);
+}
+
+#header-top-otros p {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.80);
+    text-transform: uppercase;
+    font-style: normal;
+}
+
+/* =====================================================
+   MAIN
+   ===================================================== */
+.main-otros {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px 80px;
+}
+
+/* =====================================================
+   TARJETA CENTRAL
+   ===================================================== */
+.otros-card {
+    background: var(--crema);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra-xl);
+    padding: clamp(32px, 5vw, 56px) clamp(28px, 5vw, 52px);
+    max-width: 560px;
+    width: 100%;
+    border: 1px solid rgba(0,153,51,0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Franja de acento superior */
+.otros-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+    border-radius: var(--radio-xl) var(--radio-xl) 0 0;
+}
+
+.otros-card h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    color: var(--verde-oscuro);
+    line-height: 1.3;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+}
+
+.otros-card p {
+    font-size: 1rem;
+    color: var(--gris-medio);
+    line-height: 1.85;
+    font-weight: 400;
+    margin-bottom: 28px;
+}
+.otros-card p em {
+    font-style: italic;
+    color: var(--gris-texto);
+}
+
+.otros-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 24px;
+    border-top: 1px solid var(--gris-claro);
+}
+
+.otros-logo {
+    width: 64px;
+    height: auto;
+}
+
+.btn-contacto {
+    background: var(--naranja);
+    color: white;
+    border-radius: 50px;
+    padding: 11px 28px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: "Montserrat", sans-serif;
+    border: none;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    box-shadow: 0 6px 20px rgba(236,103,27,0.28);
+    letter-spacing: 0.3px;
+}
+.btn-contacto:hover {
+    background: #d45a15;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(236,103,27,0.40);
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+footer {
+    background: var(--azul);
+    color: rgba(255,255,255,0.80);
+    padding: 40px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    position: relative;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+}
+
+.footer-accion {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* ── BOTÓN ATRÁS — sólido azul oscuro, igual a boton-inicio ── */
+.btn-atras {
+    background: var(--azul);
+    color: white;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 50px;
+    padding: 10px 24px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    margin-bottom: 6px;
+    display: inline-block;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.20);
+    letter-spacing: 0.3px;
+}
+.btn-atras:hover {
+    background: #163050;
+    border-color: rgba(255,255,255,0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.28);
+}
+
+.btn-ayudar {
+    background: var(--naranja);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 11px 24px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    box-shadow: 0 6px 20px rgba(236,103,27,0.28);
+    letter-spacing: 0.3px;
+    width: fit-content;
+}
+.btn-ayudar:hover {
+    background: #d45a15;
+    transform: translateY(-2px);
+}
+
+.derechos {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.40);
+    font-weight: 500;
+    margin: 0;
+}
+
+.footer-contacto {
+    text-align: right;
+    font-size: 13px;
+    line-height: 2;
+    font-weight: 500;
+}
+.footer-contacto a {
+    color: var(--amarillo);
+    font-weight: 700;
+    transition: color 0.2s;
+}
+.footer-contacto a:hover { color: white; }
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media (max-width: 600px) {
+    #header-top-otros { padding: 40px 16px 32px; }
+    .boton-inicio { top: 14px; right: 14px; font-size: 12px; padding: 7px 14px; }
+    .main-otros { padding: 40px 16px 56px; }
+    footer { flex-direction: column; padding: 28px 20px; }
+    .footer-contacto { text-align: left; }
+}

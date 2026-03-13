@@ -1,0 +1,2190 @@
+/* ====================================================================================================================================================================================
+ ============================================================VIDEO===========================================================
+==================================================================================================================================================================================== */
+
+.video-thumb {
+    position: relative;
+    display: block;
+    border-radius: 16px;
+    overflow: hidden;
+}
+.video-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.75);
+    color: white;
+    font-size: 2rem;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.video-thumb:hover .play-btn {
+    background: #009933;
+}
+
+
+/* ====================================================================================================================================================================================
+ ============================================================FILTRADO============================================================
+==================================================================================================================================================================================== */
+
+/* IPO: Indicada por Organizacion */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* ====================================================
+   VARIABLES
+   ==================================================== */
+:root {
+    --verde: #009933;
+    --verde-oscuro: #1B6B35;
+    --azul: #1C3661;
+    --naranja: #EC671B;
+    --amarillo: #F4981C;
+    --fondo: #F0F7F1;
+    --blanco: #ffffff;
+    --crema: #F7FAF7;
+    --gris-texto: #3a4a3e;
+    --gris-claro: #e8f0ea;
+    --gris-medio: #6b8575;
+
+    --sombra-s:     0 1px 4px  rgba(0,0,0,0.04), 0 2px 10px rgba(0,0,0,0.05);
+    --sombra-m:     0 2px 12px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.06);
+    --sombra-hover: 0 8px 28px rgba(0,0,0,0.09), 0 2px 8px  rgba(0,0,0,0.05);
+    --sombra-xl:    0 4px 40px rgba(0,0,0,0.07), 0 1px 8px  rgba(0,0,0,0.04);
+
+    --radio:    16px;
+    --radio-xl: 44px;
+}
+
+/* ====================================================
+   RESET & BASE
+   ==================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html  { scroll-behavior: smooth; overflow-x: hidden; }
+body  {
+    background-color: var(--gris-claro);
+    font-family: "Montserrat", sans-serif;
+    color: var(--gris-texto);
+    min-height: 100vh;
+}
+
+/* ====================================================
+   BOTÓN ATRÁS — páginas derivadas del catálogo
+   (el wrapper se inserta por JS antes de #catalog-grid)
+   ==================================================== */
+.btn-atras-wrap {
+    padding: 8px 40px 0;
+}
+
+.btn-atras {
+    background: transparent;
+    color: var(--naranja);
+    border: 2px solid var(--naranja);
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.btn-atras:hover {
+    background: var(--naranja);
+    color: white;
+    box-shadow: 0 6px 18px rgba(236,103,27,0.26);
+}
+
+@media (max-width: 768px) {
+    .btn-atras-wrap { padding: 8px 18px 0; }
+}
+
+/* ====================================================
+   BUSCADOR
+   ==================================================== */
+#school-finder-wrapper {
+    background: var(--crema);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra-xl);
+    margin: -180px 28px 48px;
+    padding: 52px 40px;
+    position: relative;
+    z-index: 3;
+}
+
+#school-finder-wrapper h2 {
+    text-align: center;
+    margin-bottom: 28px;
+    color: var(--verde-oscuro);
+    font-size: clamp(20px, 3vw, 32px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    animation: fadeInDown 0.8s ease forwards;
+}
+
+#searchForm {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+
+#searchForm select,
+#searchForm button {
+    padding: 12px 18px;
+    font-size: 14px;
+    border: 1.5px solid var(--gris-claro);
+    border-radius: var(--radio);
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+#searchForm select {
+    flex: 1 1 200px;
+    background: var(--blanco);
+    color: var(--gris-texto);
+    cursor: pointer;
+}
+#searchForm select:hover { border-color: var(--verde); box-shadow: var(--sombra-s); }
+
+#searchForm button {
+    background: var(--naranja);
+    color: var(--blanco);
+    font-weight: 700;
+    flex: none;
+    border: none;
+    box-shadow: 0 6px 20px rgba(236,103,27,0.28);
+    cursor: pointer;
+}
+#searchForm button:hover {
+    background: var(--amarillo);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
+}
+
+/* ====================================================
+   RESULTADOS
+   ==================================================== */
+#results { display: grid; gap: 24px; max-width: 1360px; margin: 0 auto; }
+
+.card {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra-m);
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0,153,51,0.07);
+    transition: transform 0.30s ease, box-shadow 0.30s ease, border-color 0.30s ease;
+    animation: cardIn 0.55s ease forwards;
+    opacity: 0;
+    cursor: pointer;
+    will-change: transform;
+    align-self: start;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--verde-oscuro), var(--verde));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.30s ease;
+    border-radius: var(--radio) var(--radio) 0 0;
+}
+
+.card:hover { transform: translateY(-6px) scale(1.02); box-shadow: var(--sombra-hover); border-color: rgba(0,153,51,0.11); z-index: 2; }
+.card:hover::before { transform: scaleX(1); }
+
+.card h3 { margin: 0 0 10px; color: var(--verde-oscuro); font-size: 16px; font-weight: 800; line-height: 1.3; }
+.card p  { margin: 4px 0; color: var(--gris-medio); font-size: 13px; font-weight: 500; line-height: 1.6; }
+
+/* ====================================================
+   HEADER ACCIONES
+   ==================================================== */
+.header-acciones { display: flex; align-items: center; gap: 12px; justify-self: end; }
+
+.btn-carrito {
+    background: var(--verde);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.20s ease;
+    box-shadow: 0 4px 14px rgba(0,153,51,0.25);
+}
+.btn-carrito:hover { background: var(--verde-oscuro); transform: translateY(-2px); }
+.btn-carrito span {
+    background: var(--naranja);
+    border-radius: 50px;
+    padding: 2px 8px;
+    font-size: 11px;
+    margin-left: 4px;
+}
+
+/* ====================================================
+   CARD HEADER + BOTON AGREGAR
+   ==================================================== */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+.card-header h3 { margin: 0; }
+
+.btn-agregar {
+    background: var(--verde);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.20s ease;
+    box-shadow: 0 4px 12px rgba(0,153,51,0.25);
+}
+.btn-agregar:hover { background: var(--verde-oscuro); transform: scale(1.1); }
+
+/* ====================================================
+   ESTADO EN TARJETA
+   ==================================================== */
+.estado {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 50px;
+    margin-top: 6px;
+}
+.estado-cubierto  { background: #e6f4ec; color: var(--verde-oscuro); }
+.estado-pendiente { background: #fef0e6; color: var(--naranja); }
+
+/* ====================================================
+   PANEL CARRITO
+   ==================================================== */
+#carrito-panel {
+    position: fixed;
+    top: 0; right: -420px;
+    width: 380px;
+    height: 100vh;
+    background: var(--blanco);
+    box-shadow: -4px 0 40px rgba(0,0,0,0.12);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.35s ease;
+    border-radius: var(--radio) 0 0 var(--radio);
+}
+#carrito-panel.abierto { right: 0; }
+
+#carrito-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--gris-claro);
+}
+#carrito-header h2 { font-size: 18px; font-weight: 800; color: var(--verde-oscuro); }
+#carrito-cerrar {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--gris-medio);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+#carrito-cerrar:hover { color: var(--gris-texto); }
+
+#carrito-lista {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.carrito-vacio { color: var(--gris-medio); font-size: 13px; text-align: center; margin-top: 24px; }
+
+.carrito-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--fondo);
+    border-radius: var(--radio);
+    padding: 12px 14px;
+    gap: 12px;
+}
+.carrito-item-info { display: flex; flex-direction: column; gap: 4px; }
+.carrito-item-info strong { font-size: 13px; color: var(--verde-oscuro); }
+.carrito-item-info span  { font-size: 12px; color: var(--gris-medio); }
+
+.carrito-quitar {
+    background: none;
+    border: none;
+    color: var(--gris-medio);
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+.carrito-quitar:hover { color: var(--naranja); }
+
+#carrito-footer {
+    padding: 16px 24px 24px;
+    border-top: 1px solid var(--gris-claro);
+}
+#carrito-footer .btn-ayudar { width: 100%; margin-bottom: 0; }
+
+/* ====================================================
+   FOOTER
+   ==================================================== */
+footer {
+    background: var(--azul);
+    color: rgba(255,255,255,0.80);
+    padding: 40px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+}
+
+.btn-ayudar {
+    margin-bottom: 15px;
+    background: var(--naranja);
+    color: white;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    border: none;
+    border-radius: 50px;
+    padding: 13px 26px;
+    cursor: pointer;
+    transition: all 0.20s ease;
+    box-shadow: 0 6px 20px rgba(236,103,27,0.28);
+}
+.btn-ayudar:hover {
+    background: #d45a15;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(236,103,27,0.40);
+}
+
+.footer-contacto { text-align: right; font-size: 13px; line-height: 2; font-weight: 500; }
+.footer-contacto a { color: var(--amarillo); text-decoration: none; font-weight: 700; transition: color 0.2s; }
+.footer-contacto a:hover { color: white; }
+
+/* ====================================================
+   ANIMACIONES
+   ==================================================== */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-28px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(22px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+/* ====================================================
+   LAYOUT FINDER
+   ==================================================== */
+#finder-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+/* ====================================================
+   SIDEBAR
+   ==================================================== */
+#sidebar {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra-m);
+    padding: 36px 28px;    
+    position: sticky;
+    top: 24px;
+}
+
+#sidebar h2 {
+    font-size: 22px;         
+    font-weight: 800;
+    color: var(--verde-oscuro);
+    margin-bottom: 28px;    
+}
+
+.filtro-grupo {
+    margin-bottom: 24px;
+}
+
+.filtro-grupo h3 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gris-medio);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+}
+
+/* dropdowns estilizados */
+/* ── SELECT DROPDOWNS (filtrado) — appearance: base-select (Chrome 130+) ── */
+
+/* Habilita el nuevo modelo de select estilizable */
+#searchForm select,
+#searchForm select::picker(select) {
+    appearance: base-select;
+}
+
+/* Select cerrado */
+#searchForm select {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    color: var(--verde-oscuro);
+    background: var(--blanco);
+    border: 1.5px solid var(--gris-claro);
+    border-radius: var(--radio);
+    cursor: pointer;
+    transition: border-color 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: var(--sombra-s);
+}
+#searchForm select:hover {
+    border-color: var(--verde);
+    background: var(--crema);
+}
+#searchForm select:focus {
+    outline: none;
+    border-color: var(--verde);
+    background: var(--blanco);
+    box-shadow: 0 0 0 3px rgba(0,153,51,0.12), var(--sombra-s);
+}
+
+/* Panel desplegable abierto */
+#searchForm select::picker(select) {
+    background: var(--blanco);
+    border: 1.5px solid var(--verde);
+    border-radius: var(--radio);
+    padding: 4px 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    font-family: "Montserrat", sans-serif;
+}
+
+/* Opciones individuales */
+#searchForm select option {
+    padding: 9px 14px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gris-texto);
+    background: var(--blanco);
+    border-radius: 6px;
+}
+#searchForm select option:hover {
+    background: var(--gris-claro);
+    color: var(--verde-oscuro);
+}
+#searchForm select option:checked {
+    background: var(--fondo);
+    color: var(--verde-oscuro);
+    font-weight: 700;
+}
+
+/* Scrollbar del panel */
+#searchForm select::picker(select)::-webkit-scrollbar { width: 6px; }
+#searchForm select::picker(select)::-webkit-scrollbar-track { background: transparent; }
+#searchForm select::picker(select)::-webkit-scrollbar-thumb {
+    background: var(--gris-claro);
+    border-radius: 3px;
+}
+#searchForm select::picker(select)::-webkit-scrollbar-thumb:hover {
+    background: var(--gris-medio);
+}
+
+
+
+#searchForm button {
+    width: fit-content;
+    margin-top: 8px;
+    padding: 9px 24px;
+    background: var(--naranja);
+    color: var(--blanco);
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    box-shadow: 0 4px 14px rgba(236,103,27,0.22);
+}
+#searchForm button:hover {
+    background: #d45a15;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(236,103,27,0.32);
+}
+
+/* ====================================================
+   RESPONSIVE
+   ==================================================== */
+@media (max-width: 768px) {
+    #header-top { grid-template-columns: auto 1fr; grid-template-rows: auto auto; padding: 14px 20px; gap: 12px; }
+    #header-categorias { grid-column: 1 / -1; gap: 4px; }
+    #header-categorias a { font-size: 11.5px; padding: 6px 11px; }
+    .boton-inicio { grid-row: 1; grid-column: 2; }
+
+    #header-texto { padding: 64px 20px 110px; min-height: 300px; background-attachment: scroll; }
+
+    #school-finder-wrapper { margin: -55px 14px 0; border-radius: 30px 30px 0 0; padding: 36px 20px; }
+    #searchForm { flex-direction: column; }
+    #searchForm select { width: 100%; }
+    #searchForm button { width: 100%; }
+
+    #results { grid-template-columns: 1fr; }
+
+    footer { flex-direction: column; padding: 28px 20px; text-align: center; }
+    .footer-contacto { text-align: center; }
+    .btn-ayudar { align-self: center; }
+    #finder-layout { grid-template-columns: 1fr; }
+    #sidebar { position: static; }
+    #carrito-panel { width: 100%; right: -100%; border-radius: 0; }
+}
+
+@media (max-width: 480px) {
+    h1 { font-size: 24px; letter-spacing: -0.4px; }
+    #header-categorias { display: none; }
+    #header-top { grid-template-columns: 1fr auto; }
+    #school-finder-wrapper { margin: -44px 8px 0; border-radius: 22px 22px 0 0; padding: 28px 14px; }
+    .card { padding: 20px 16px; }
+}
+
+
+
+
+
+/* ====================================================================================================================================================================================
+   CATÁLOGO DE NECESIDADES
+   ==================================================================================================================================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* ── VARIABLES GLOBALES ── */
+:root {
+    --verde:        #009933;
+    --verde-oscuro: #1B6B35;
+    --azul:         #1C3661;
+    --naranja:      #EC671B;
+    --amarillo:     #F4981C;
+    --fondo:        #F0F7F1;
+    --blanco:       #ffffff;
+    --crema:        #F7FAF7;
+    --gris-texto:   #3a4a3e;
+    --gris-claro:   #e8f0ea;
+    --gris-medio:   #6b8575;
+
+    --sombra-s:     0 1px 4px rgba(0,0,0,0.04),  0 2px 10px rgba(0,0,0,0.05);
+    --sombra-m:     0 2px 12px rgba(0,0,0,0.05),  0 4px 20px rgba(0,0,0,0.06);
+    --sombra-hover: 0 8px 28px rgba(0,0,0,0.09),  0 2px 8px  rgba(0,0,0,0.05);
+    --sombra-xl:    0 4px 40px rgba(0,0,0,0.07),  0 1px 8px  rgba(0,0,0,0.04);
+
+    --radio:    16px;
+    --radio-xl: 44px;
+}
+
+/* ── RESET ── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    background-color: var(--fondo);
+    font-family: "Montserrat", sans-serif;
+    color: var(--gris-texto);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ── NAVBAR ── */
+.catalogo-header {
+    position: relative;
+    z-index: 10;
+    background: var(--blanco);
+    border-bottom: 1px solid rgba(0,153,51,0.10);
+    box-shadow: 0 2px 16px rgba(0,153,51,0.05);
+}
+
+#header-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 24px;
+    padding: 14px 48px;
+}
+
+.header-logo { width: 52px; height: auto; transition: transform 0.3s ease; }
+.header-logo:hover { transform: scale(1.06); }
+
+#header-categorias { display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; }
+#header-categorias a {
+    text-decoration: none;
+    color: var(--gris-medio);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    padding: 7px 16px;
+    border-radius: 50px;
+    transition: all 0.20s ease;
+    border: 1.5px solid transparent;
+}
+#header-categorias a:hover {
+    color: var(--verde-oscuro);
+    background-color: var(--gris-claro);
+    border-color: var(--gris-claro);
+}
+
+.boton-inicio {
+    justify-self: end;
+    background-color: var(--azul);
+    color: white;
+    border-radius: 50px;
+    text-decoration: none;
+    padding: 10px 22px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    transition: all 0.20s ease;
+    box-shadow: 0 4px 14px rgba(28,54,97,0.20);
+}
+.boton-inicio:hover {
+    background-color: #163050;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(28,54,97,0.30);
+}
+
+/* ── HERO ── */
+#header-texto {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 90px 48px 130px;
+    position: relative;
+    overflow: hidden;
+    background-image: url('images/header.png');
+    background-size: 420%;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+#header-texto h1,
+#header-texto p { position: relative; z-index: 2; }
+
+#header-texto h1 {
+    font-weight: 900;
+    font-size: clamp(26px, 4.5vw, 58px);
+    color: var(--blanco);
+    margin: 0 0 14px;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    animation: fadeInDown 0.8s ease forwards;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.18);
+}
+
+#header-texto p {
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.68);
+    text-transform: uppercase;
+    animation: fadeInUp 1s ease forwards;
+}
+
+/* ── CONTENEDOR CATÁLOGO ── */
+#catalog-wrapper {
+    background: var(--crema);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra-xl);
+    margin: -180px 28px 48px;
+    position: relative;
+    z-index: 3;
+    padding: 52px 40px;
+}
+
+/* ── GRID DE TARJETAS ── */
+#catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* subir de 220px a 280px */
+    gap: 24px;
+    padding: 52px 40px 20px;
+    max-width: 1360px;
+    margin: 0 auto;
+    margin-top: -20px;
+}
+
+/* ── TARJETA ── */
+.need-card {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra-m);
+    transition: transform 0.30s ease, box-shadow 0.30s ease, border-color 0.30s ease;
+    text-align: center;
+    padding: 32px 20px 26px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: cardIn 0.55s ease forwards;
+    border: 1px solid rgba(0,153,51,0.07);
+    cursor: pointer;
+    will-change: transform;
+}
+
+/* Entrada escalonada de tarjetas */
+.need-card:nth-child(1)  { animation-delay: 0.05s; }
+.need-card:nth-child(2)  { animation-delay: 0.10s; }
+.need-card:nth-child(3)  { animation-delay: 0.15s; }
+.need-card:nth-child(4)  { animation-delay: 0.20s; }
+.need-card:nth-child(5)  { animation-delay: 0.25s; }
+.need-card:nth-child(6)  { animation-delay: 0.30s; }
+.need-card:nth-child(7)  { animation-delay: 0.35s; }
+.need-card:nth-child(8)  { animation-delay: 0.40s; }
+.need-card:nth-child(9)  { animation-delay: 0.45s; }
+.need-card:nth-child(10) { animation-delay: 0.50s; }
+.need-card:nth-child(11) { animation-delay: 0.55s; }
+.need-card:nth-child(12) { animation-delay: 0.60s; }
+.need-card:nth-child(13) { animation-delay: 0.65s; }
+
+/* Franja superior en hover */
+.need-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--verde-oscuro), var(--verde));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.30s ease;
+    border-radius: var(--radio) var(--radio) 0 0;
+}
+
+.need-card:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: var(--sombra-hover);
+    border-color: rgba(0,153,51,0.11);
+    z-index: 2;
+}
+.need-card:hover::before { transform: scaleX(1); }
+
+/* ── IMAGEN / ÍCONO ── */
+.need-card-imagen {
+    width: 120px; height: 120px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    transition: transform 0.30s ease;
+}
+.need-card:hover .need-card-imagen { transform: translateY(-4px); }
+
+.need-card-imagen img {
+    width: 200px; height: 200px;
+    object-fit: contain;
+    transition: transform 0.30s ease, filter 0.28s ease;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.10))
+            drop-shadow(0 1px  3px rgba(0,0,0,0.06));
+}
+.need-card:hover .need-card-imagen img {
+    transform: scale(1.06);
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.13))
+            drop-shadow(0 2px  6px rgba(0,0,0,0.07));
+}
+
+/* ── TEXTO DE TARJETA ── */
+.need-card-cuerpo { margin-top: 2px; }
+
+.need-card-titulo {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--verde-oscuro);
+    margin: 0 0 16px;
+    line-height: 1.35;
+    letter-spacing: -0.1px;
+}
+
+/* ── BOTÓN VER ── */
+.need-card-cta { display: flex; justify-content: center; margin-top: 8px; }
+
+.btn-ver {
+    background: transparent;
+    color: var(--naranja);
+    font-family: "Montserrat", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    border: 2px solid var(--naranja);
+    border-radius: 50px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.btn-ver:hover {
+    background: var(--naranja);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(236,103,27,0.26);
+}
+
+/* ── ANIMACIONES ── */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-28px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(22px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+/* ── RESPONSIVE 768px ── */
+@media (max-width: 768px) {
+    #header-top {
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        padding: 14px 20px;
+        gap: 12px;
+    }
+    #header-categorias { grid-column: 1 / -1; gap: 4px; }
+    #header-categorias a { font-size: 11.5px; padding: 6px 11px; }
+    .boton-inicio { grid-row: 1; grid-column: 2; }
+    #header-texto { padding: 64px 20px 110px; min-height: 300px; background-attachment: scroll; }
+    #catalog-wrapper { margin: -55px 14px 0; border-radius: 30px 30px 0 0; }
+    #catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 36px 18px 20px; }
+    .need-card { padding: 24px 14px 20px; }
+    .need-card-imagen { width: 90px; height: 90px; }
+    .need-card-imagen img { width: 110px; height: 110px; }
+}
+
+/* ── RESPONSIVE 600px ── */
+@media (max-width: 600px) {
+    #header-texto h1 { font-size: 24px; letter-spacing: -0.4px; }
+    #header-categorias { display: none; }
+    #header-top { grid-template-columns: 1fr auto; }
+    #catalog-wrapper { margin: -44px 8px 0; border-radius: 22px 22px 0 0; }
+    #catalog-grid { grid-template-columns: 1fr; gap: 12px; padding: 28px 14px; }
+    .need-card-imagen { width: 120px; height: 120px; }
+    .need-card-imagen img { width: 140px; height: 140px; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================================================
+   INDEX + PÁGINAS SECUNDARIAS — style.css
+   Mexicanos Primero Jalisco · Mi Escuela Primero
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* ── VARIABLES GLOBALES ── */
+:root {
+  --verde:        #009933;
+  --verde-oscuro: #007526;
+  --verde-claro:  #00bb3f;
+  --verde-suave:  #d4f5df;
+  --blanco:       #FAFDF8;
+  --gris-claro:   #F2F7F2;
+  --texto:        #1A2E1A;
+  --texto-suave:  #4A644A;
+  --sombra:       0 4px 24px rgba(0, 153, 51, 0.10);
+}
+
+/* ── RESET ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; }
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  background: var(--blanco);
+  color: var(--texto);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ── BOTONES GENERALES (compartidos en todo el sitio) ── */
+.btn {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.7rem 1.6rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  text-align: center;
+}
+
+.btn-verde {
+  background: var(--verde);
+  color: white;
+}
+.btn-verde:hover {
+  background: var(--verde-oscuro);
+  transform: translateY(-2px);
+}
+
+.btn-borde {
+  background: transparent;
+  border: 2px solid var(--verde);
+  color: var(--verde);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.7rem 1.6rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  display: inline-block;
+}
+.btn-borde:hover {
+  background: var(--verde);
+  color: white;
+}
+
+/* ── NAVBAR (index.html) ── */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: 64px;
+  background: var(--blanco);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  box-shadow: 0 2px 16px rgba(0,153,51,0.07);
+  border-bottom: 1px solid rgba(0,153,51,0.10);
+}
+
+.navbar-logo { display: flex; align-items: center; }
+.logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Íconos redes sociales */
+.navbar-iconos { display: flex; gap: 1rem; align-items: center; }
+.navbar-iconos a { color: white; display: flex; align-items: center; }
+.navbar-iconos svg { width: 22px; height: 22px; transition: opacity 0.2s; }
+.navbar-iconos a:hover svg { opacity: 0.75; }
+
+/* Íconos como imágenes */
+.whatsappIcon,
+.facebookIcon,
+.instagramIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  transition: opacity 0.2s, transform 0.2s;
+  filter: brightness(0) saturate(100%) invert(22%) sepia(83%) saturate(500%) hue-rotate(103deg) brightness(85%);
+}
+.whatsappIcon:hover,
+.facebookIcon:hover,
+.instagramIcon:hover { opacity: 0.7; transform: scale(1.1); }
+
+/* Botón hamburguesa */
+.lineas {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+}
+.lineas span {
+  display: block;
+  width: 26px;
+  height: 2px;
+  background: var(--verde-oscuro);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Animación a X cuando el menú está abierto */
+.lineas.abierto span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.lineas.abierto span:nth-child(2) { opacity: 0; }
+.lineas.abierto span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* ── MENÚ DESPLEGABLE (index.html) ── */
+.menu-desplegable {
+  position: fixed;
+  top: 64px;
+  left: 0; right: 0;
+  z-index: 999;
+  background: var(--azul);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.menu-desplegable.abierto { max-height: 320px; }
+
+.menu-desplegable ul { list-style: none; padding: 0.5rem 0 1rem; }
+.menu-desplegable ul li a {
+  display: block;
+  padding: 0.9rem 2rem;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.2s, padding-left 0.2s;
+  cursor: pointer;
+}
+.menu-desplegable ul li a:hover {
+  background: rgba(255,255,255,0.1);
+  padding-left: 2.5rem;
+}
+
+/* ── PORTADA / HERO (index.html) ── */
+.portada {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(27, 107, 53, 0.82) 0%,
+      rgba(0, 80, 26, 0.65) 55%,
+      rgba(0, 0, 0, 0.55) 100%
+    ),
+    url('img/hero.jpg') center / cover no-repeat;
+  min-height: 100vh;
+  padding: 110px 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  z-index: 0;
+}
+
+/* Degradado de transición al final del hero */
+.portada::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 100px;
+  background: linear-gradient(to bottom, transparent, var(--fondo));
+  pointer-events: none;
+}
+
+.portada-banner {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.45);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 0.4rem 1.4rem;
+  border-radius: 50px;
+  margin-bottom: 1.4rem;
+  animation: subirFadeIn 0.6s ease both;
+  backdrop-filter: blur(8px);
+}
+
+.portada-titulo {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  color: white;
+  line-height: 1.0;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 4px 32px rgba(0,0,0,0.25);
+  animation: subirFadeIn 0.7s 0.1s ease both;
+  letter-spacing: -1px;
+}
+
+.portada-sub {
+  font-weight: 300;
+  font-style: normal;
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.88);
+  margin-bottom: 2.5rem;
+  animation: subirFadeIn 0.7s 0.2s ease both;
+  letter-spacing: 0.5px;
+}
+
+/* Botón principal de portada */
+.btn-catalogo {
+  background: rgba(255,255,255,0.10);
+  border: 1.5px solid rgba(255,255,255,0.50);
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+  transition: all 0.22s ease;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+}
+.btn-catalogo:hover {
+  background: white;
+  color: var(--verde-oscuro);
+  transform: translateY(-2px);
+  border-color: white;
+}
+
+/* Botones secundarios de portada */
+.portada-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  animation: subirFadeIn 0.7s 0.4s ease both;
+  position: relative;
+  z-index: 2;
+}
+
+.btn-donacion {
+  background: rgba(255,255,255,0.10);
+  border: 1.5px solid rgba(255,255,255,0.50);
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+  transition: all 0.22s ease;
+  display: inline-block;
+  text-decoration: none;
+}
+.btn-donacion:hover {
+  background: white;
+  color: var(--verde-oscuro);
+  transform: translateY(-2px);
+  border-color: white;
+}
+
+/* ── VIDEO THUMBNAIL (index.html) ── */
+.video-thumb {
+  position: relative;
+  display: block;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.video-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.play-btn {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.75);
+  color: white;
+  font-size: 2rem;
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.video-thumb:hover .play-btn { background: var(--verde); }
+
+/* ── ESTRUCTURA GENERAL DE SECCIONES (index + páginas secundarias) ── */
+.seccion {
+  padding: 4.5rem 1.5rem;
+  background: var(--blanco);
+}
+.seccion:nth-child(even) {
+  background: var(--fondo);
+}
+
+.contenedor {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.seccion-titulo {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  color: var(--verde-oscuro);
+  margin-bottom: 0.5rem;
+}
+
+.linea-verde {
+  width: 50px;
+  height: 4px;
+  background: var(--verde);
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.seccion-sub {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin-bottom: 1rem;
+}
+
+/* ── QUIÉNES SOMOS — sección en index y página dedicada ── */
+.quienes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+@media (max-width: 700px) {
+  .quienes-grid { grid-template-columns: 1fr; }
+}
+
+.quienes-texto p {
+  color: var(--texto-suave);
+  line-height: 1.75;
+  margin-bottom: 1rem;
+  font-size: 0.93rem;
+  font-weight: 300;
+}
+
+/* Contenedor de video */
+.video-contenedor {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--sombra);
+  aspect-ratio: 16 / 9;
+  background: #000;
+  min-height: 350px;
+  display: flex;
+  align-items: center; 
+}
+.video-contenedor iframe { width: 100%; height: 100%; border: none; }
+
+/* ── QUIÉNES SOMOS — página dedicada (quienesSomos.html) ── */
+.texto-cuerpo {
+  color: var(--texto-suave);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  font-weight: 300;
+  font-size: 0.95rem;
+}
+
+.qs-bloque { margin-bottom: 1rem; }
+.qs-bloque p {
+  color: var(--texto-suave);
+  line-height: 1.8;
+  font-weight: 300;
+  margin-bottom: 0.9rem;
+  font-size: 0.95rem;
+}
+
+.qs-separador {
+  border: none;
+  border-top: 1px solid #e0ece0;
+  margin: 2.5rem 0;
+}
+
+/* Grid de valores */
+.qs-valores {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+  margin-top: 2.5rem;
+}
+@media (max-width: 600px) { .qs-valores { grid-template-columns: 1fr; } }
+
+.valor-card {
+  background: var(--gris-claro);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border-left: 4px solid var(--verde);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.valor-card:hover { transform: translateY(-3px); box-shadow: var(--sombra); }
+.valor-icono { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.valor-card h3 { font-weight: 700; font-size: 1rem; color: var(--verde-oscuro); margin-bottom: 0.4rem; }
+.valor-card p { font-size: 0.85rem; color: var(--texto-suave); font-weight: 300; line-height: 1.6; }
+
+/* Tarjetas de equipo */
+.equipo-card {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  background: var(--gris-claro);
+  border-radius: 14px;
+  padding: 1.2rem 1.5rem;
+}
+.equipo-avatar {
+  width: 52px; height: 52px;
+  background: var(--verde);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1rem;
+  flex-shrink: 0;
+}
+.equipo-card strong { display: block; font-size: 1rem; color: var(--texto); }
+.equipo-card p { font-size: 0.85rem; color: var(--texto-suave); font-weight: 300; margin-top: 0.2rem; }
+.equipo-card a { color: var(--verde); }
+
+/* ── NECESIDADES CUBIERTAS (index.html) ── */
+.necesidades-bg {
+  background: var(--crema);
+  padding: 4.5rem 1.5rem;
+  border-top: 1px solid var(--gris-claro);
+  border-bottom: 1px solid var(--gris-claro);
+}
+
+.barra-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.barra-pista {
+  background: #d0e8d4;
+  border-radius: 50px;
+  height: 20px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+/* La barra empieza en 0 y JS la anima al hacer scroll */
+.barra-relleno {
+  height: 100%;
+  border-radius: 50px;
+  background: linear-gradient(90deg, var(--verde), var(--verde-claro));
+  width: 0%;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mini-graficas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+@media (max-width: 600px) { .mini-graficas { grid-template-columns: 1fr; } }
+
+.mini-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.4rem;
+  box-shadow: var(--sombra-m);
+  border: 1px solid rgba(0,153,51,0.07);
+}
+.mini-card h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  margin-bottom: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.barra-fila { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+.barra-etiqueta { font-size: 0.72rem; width: 75px; color: var(--texto-suave); flex-shrink: 0; font-weight: 500; }
+
+/* Wrapper que ocupa el espacio disponible */
+.barra-mini-pista {
+  flex: 1;
+  background: var(--gris-claro);
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+}
+
+/* La barra mini empieza en 0 y JS anima width */
+.barra-mini {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--verde), #4dc878);
+  width: 0%;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+}
+.barra-pct { font-size: 0.72rem; color: var(--texto-suave); width: 30px; text-align: right; flex-shrink: 0; }
+
+/* ── PASOS PARA DONAR (index.html) ── */
+.pasos-seccion {
+  background: var(--fondo);
+  padding: 4.5rem 1.5rem;
+  border-top: 1px solid var(--gris-claro);
+}
+
+.pasos-lista {
+  padding: 1rem 0.5rem 1rem;
+  gap: 0.5rem;   
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.paso { display: flex; flex-direction: column; align-items: center; min-width: 110px; text-align: center; }
+
+.paso-circulo {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: white;
+  border: 2.5px solid var(--verde);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 0.7rem;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  box-shadow: var(--sombra-s);
+}
+.paso:hover .paso-circulo {
+  transform: scale(1.12);
+  background: var(--verde);
+  box-shadow: 0 6px 20px rgba(0,153,51,0.25);
+}
+
+.paso-num { font-size: 0.65rem; font-weight: 700; color: var(--verde-oscuro); margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.paso-desc { font-size: 0.68rem; color: var(--texto-suave); line-height: 1.4; padding: 0 0.3rem; font-weight: 300; }
+.paso-flecha { font-size: 1.3rem; color: var(--verde); align-self: center; padding: 0 0.2rem; margin-bottom: 2rem; flex-shrink: 0; }
+
+.footer-accion {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.btn-login {
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  transition: all 0.22s ease;
+  display: inline-block;
+}
+.btn-login:hover { background: white; color: var(--texto); }
+
+.derechos { font-size: 0.72rem; color: rgba(255,255,255,0.42); font-weight: 500; }
+
+.footer-contacto { text-align: right; font-size: 0.82rem; line-height: 2; font-weight: 500; }
+.footer-contacto strong { color: white; }
+.footer-contacto a { color: var(--verde-claro); font-weight: 700; transition: color 0.2s; }
+.footer-contacto a:hover { color: white; }
+
+/* ── PÁGINAS: donacionEconomica, voluntariado, talleres, vinculaciones ── */
+
+/* Header — degradado azul marino → verde, más suave y armonioso */
+.header-donacion {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(135deg, var(--azul) 0%, #1a5c34 100%);
+    border-bottom: 3px solid var(--naranja);
+}
+
+/* Header interno */
+.header-top-donacion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 52px 24px 44px;
+    position: relative;
+    gap: 6px;
+}
+
+#economica-nav .header-logo,
+#voluntariado-nav .header-logo { display: none; }
+
+/* Título hero */
+.economicaTitulo,
+.voluntariadoTitulo {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: var(--blanco);
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.20);
+}
+
+/* Subtítulo hero */
+.economicaSub,
+.voluntariadoSub {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.80);
+    text-transform: uppercase;
+    font-style: normal;
+    margin: 0;
+}
+
+/* Botón Inicio — igual al del catálogo, esquina superior derecha */
+.header-top-donacion .boton-inicio {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+}
+
+/* Fondo del área de contenido */
+.container-donacion {
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--fondo);
+    padding: 64px 24px 80px;
+}
+
+/* Tarjeta central con franja de acento */
+.donacion-card {
+    background: var(--crema);
+    border-radius: 44px;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.07), 0 1px 8px rgba(0,0,0,0.04);
+    padding: clamp(32px, 5vw, 52px) clamp(28px, 5vw, 48px);
+    max-width: 560px;
+    width: 100%;
+    border: 1px solid rgba(0,153,51,0.08);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.donacion-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+    border-radius: 44px 44px 0 0;
+}
+
+/* Título dentro de la tarjeta */
+#titulo-donacion {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    color: var(--verde-oscuro);
+    line-height: 1.3;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+}
+
+/* Texto descriptivo */
+#descripción-donacion {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: var(--gris-medio);
+    line-height: 1.85;
+    font-weight: 400;
+    margin-bottom: 32px;
+}
+
+/* Botón Contáctanos — naranja, sin verde */
+.container-donacion .btn-verde {
+    background: var(--naranja);
+    color: white;
+    font-size: 13.5px;
+    padding: 12px 30px;
+    border-radius: 50px;
+    box-shadow: 0 6px 20px rgba(236,103,27,0.28);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    transition: all 0.22s ease;
+    display: inline-block;
+}
+.container-donacion .btn-verde:hover {
+    background: #d45a15;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(236,103,27,0.40);
+}
+
+/* Botón Atrás en footer de estas páginas — igual al de otros.html */
+.footer-accion .btn.btn-atras {
+    background: transparent;
+    color: rgba(255,255,255,0.85);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 50px;
+    box-shadow: none;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 9px 22px;
+    transition: all 0.22s ease;
+    cursor: pointer;
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+}
+.footer-accion .btn.btn-atras:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.6);
+    transform: none;
+    box-shadow: none;
+}
+
+.subpagina-header {
+  background: linear-gradient(135deg, var(--azul) 0%, #1a5c34 100%);
+  border-bottom: 3px solid var(--naranja);
+  padding: 90px 1.5rem 2.5rem;
+  text-align: center;
+  position: relative;
+}
+.subpagina-header h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  color: white;
+}
+.subpagina-header p { color: rgba(255,255,255,0.80); font-weight: 300; font-style: italic; margin-top: 0.4rem; }
+
+/* Botón de casa en subpáginas */
+.btn-home {
+  position: absolute;
+  top: 16px; right: 1.5rem;
+  background: rgba(255,255,255,0.18);
+  border: 1.5px solid rgba(255,255,255,0.45);
+  color: white;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+.btn-home:hover { background: rgba(255,255,255,0.32); }
+
+/* ── TARJETAS GENERALES (donacion, voluntariado, talleres, vinculaciones) ── */
+.tarjeta {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: var(--sombra);
+  max-width: 580px;
+  margin: 2rem auto;
+  text-align: center;
+}
+.tarjeta h2 { font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--verde-oscuro); font-size: 1.65rem; margin-bottom: 1rem; }
+.tarjeta p { color: var(--texto-suave); line-height: 1.75; font-weight: 300; font-size: 0.95rem; }
+.tarjeta-icono { font-size: 3rem; margin-bottom: 0.8rem; }
+
+/* Grid de categorías de donación */
+.especie-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+@media (max-width: 600px) { .especie-grid { grid-template-columns: 1fr; } }
+
+.especie-card {
+  background: var(--gris-claro);
+  border-radius: 14px;
+  padding: 1.3rem;
+  text-align: center;
+  border-top: 4px solid var(--verde);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.especie-card:hover { transform: translateY(-4px); box-shadow: var(--sombra); }
+.especie-icono { font-size: 2rem; display: block; margin-bottom: 0.6rem; }
+.especie-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--verde-oscuro); margin-bottom: 0.4rem; }
+.especie-card p { font-size: 0.83rem; color: var(--texto-suave); font-weight: 300; line-height: 1.6; }
+
+/* ── FORMULARIO DE CONTACTO (contacto.html) ── */
+.form-grupo { margin-bottom: 1.2rem; text-align: left; }
+.form-grupo label {
+  display: block;
+  font-size: 0.83rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.form-grupo input,
+.form-grupo textarea,
+.form-grupo select {
+  width: 100%;
+  padding: 0.78rem 1rem;
+  border: 1.5px solid #ccd9cc;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 400;
+  background: var(--blanco);
+  color: var(--texto);
+  transition: border-color 0.2s;
+}
+.form-grupo input:focus,
+.form-grupo textarea:focus,
+.form-grupo select:focus { outline: none; border-color: var(--verde); }
+.form-grupo textarea { resize: vertical; min-height: 100px; }
+
+/* ── CONTACTO (contacto.html) ── */
+.contacto-cita {
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--verde-oscuro);
+  border-left: 4px solid var(--verde);
+  padding: 0.8rem 1.2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+  background: var(--verde-suave);
+  border-radius: 0 10px 10px 0;
+}
+.contacto-icono { font-size: 2.5rem; margin-bottom: 0.8rem; }
+.contacto-frase {
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--verde-oscuro);
+  font-weight: 400;
+  max-width: 500px;
+  margin: 0 auto;
+  border-left: 4px solid var(--verde);
+  padding-left: 1rem;
+  text-align: left;
+}
+.contacto-datos {
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--texto-suave);
+  line-height: 2;
+  border-top: 1px solid var(--verde-suave);
+  padding-top: 1.2rem;
+}
+.contacto-datos strong { color: var(--texto); font-size: 1rem; font-weight: 700; display: block; }
+.contacto-datos a { color: var(--verde); }
+
+/* ── FAQ (faq.html) ── */
+.faq-seccion { background: var(--verde-oscuro); padding: 3rem 1.5rem; }
+.faq-contenedor { display: flex; flex-direction: column; gap: 0.8rem; }
+
+.faq-item {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+.faq-item:hover { background: rgba(255,255,255,0.11); }
+
+.faq-pregunta {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.93rem;
+  font-weight: 700;
+  text-align: left;
+  gap: 1rem;
+}
+
+/* El ícono rota a × cuando el item está abierto */
+.faq-icono { font-size: 1.3rem; flex-shrink: 0; transition: transform 0.3s; color: rgba(255,255,255,0.7); }
+.faq-item.abierto .faq-icono { transform: rotate(45deg); color: #69F0AE; }
+
+.faq-respuesta { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; }
+.faq-respuesta.abierto { max-height: 300px; padding: 0 1.4rem 1.2rem; }
+.faq-respuesta p { color: rgba(255,255,255,0.78); font-size: 0.88rem; line-height: 1.75; font-weight: 300; }
+.faq-link { color: #69F0AE; font-weight: 700; text-decoration: underline; }
+
+/* Botón atrás sobre fondo oscuro */
+.faq-seccion .btn-atras {
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border: 1.5px solid rgba(255,255,255,0.3);
+}
+.faq-seccion .btn-atras:hover { background: white; color: var(--verde-oscuro); }
+
+/* ── MODALES — Términos y Formulario (donacion, voluntariado, talleres) ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-overlay.activo { display: flex; }
+
+.modal-caja {
+  background: white;
+  border-radius: 20px;
+  max-width: 520px;
+  width: 90%;
+  padding: 2rem;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  animation: subirFadeIn 0.3s ease both;
+}
+.modal-caja h2 { font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--verde-oscuro); margin-bottom: 1rem; font-size: 1.35rem; }
+.modal-intro { color: var(--texto-suave); font-size: 0.87rem; margin-bottom: 1rem; font-weight: 300; }
+
+/* Botón expandir T&C */
+.btn-ver-mas {
+  background: none;
+  border: none;
+  color: var(--verde);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.4rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.btn-ver-mas:hover { color: var(--verde-oscuro); }
+
+/* Texto colapsable de T&C */
+.terminos-cuerpo {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  font-size: 0.82rem;
+  color: var(--texto-suave);
+  line-height: 1.75;
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+}
+.terminos-cuerpo.expandido { max-height: 600px; }
+.terminos-cuerpo p { margin-bottom: 0.7rem; }
+.terminos-cuerpo strong { color: var(--texto); font-weight: 700; }
+
+/* Checkbox aceptar T&C */
+.terminos-check { display: flex; align-items: flex-start; gap: 0.75rem; margin: 1.2rem 0; cursor: pointer; }
+.terminos-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--verde); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+.terminos-check span { font-size: 0.87rem; color: var(--texto); line-height: 1.5; }
+
+/* Botón confirmar modal */
+.btn-aceptar {
+  width: 100%;
+  padding: 0.9rem;
+  background: var(--verde);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: background 0.2s, opacity 0.2s;
+  margin-bottom: 0.6rem;
+}
+.btn-aceptar:disabled { opacity: 0.38; cursor: not-allowed; }
+.btn-aceptar:not(:disabled):hover { background: var(--verde-oscuro); }
+
+/* Botón cancelar modal */
+.btn-cancelar-modal {
+  width: 100%;
+  padding: 0.7rem;
+  background: none;
+  border: none;
+  color: var(--texto-suave);
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  transition: color 0.2s;
+}
+.btn-cancelar-modal:hover { color: var(--texto); }
+
+/* ── ANIMACIONES ── */
+@keyframes subirFadeIn {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animar { animation: subirFadeIn 0.55s ease both; }
+
+
+/* ============================================================
+   PÁGINAS INFORMATIVAS — Quiénes Somos · FAQ · Contacto
+   Estilo minimalista, coherente con el resto del proyecto.
+   Header simple: verde sólido (igual que .subpagina-header base).
+   Fondo del cuerpo: mismo blanco/crema del resto del sitio.
+   ============================================================ */
+
+/* ── HEADER COMPARTIDO — las tres páginas ─────────────────── */
+/* Usamos el mismo .subpagina-header que ya existía pero con
+   pequeñas variaciones por página si se necesitan.            */
+
+/* Badge decorativa pequeña encima del h1 */
+.info-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.38);
+  color: rgba(255,255,255,0.92);
+  font-size: 0.70rem;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  padding: 0.3rem 1.1rem;
+  border-radius: 50px;
+  margin-bottom: 0.9rem;
+}
+
+/* ── QUIÉNES SOMOS — body ─────────────────────────────────── */
+/* El fondo del cuerpo debe ser el mismo que el resto */
+.qs-body .seccion        { background: var(--blanco); }
+.qs-body .seccion:nth-child(even) { background: var(--gris-claro); }
+
+/* Tarjetas de valores: más limpias, sin gradiente de borde */
+.qs-body .valor-card {
+  background: white;
+  border-left: 4px solid var(--verde);
+  border-radius: 16px;
+  padding: 1.6rem 1.4rem;
+  box-shadow: 0 2px 12px rgba(0,100,40,0.06);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.qs-body .valor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,100,40,0.11);
+}
+
+/* Botón regresar de quiénes somos — mismo estilo btn-borde */
+.qs-btn-wrap {
+  text-align: center;
+  padding: 0 0 2.5rem;
+}
+
+/* ── FAQ — area de preguntas ─────────────────────────────── */
+.faq-area {
+  background: var(--blanco);
+  padding: 3.5rem 1.5rem 3rem;
+}
+.faq-area .contenedor-faq {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Cards blancas sobre fondo blanco: solo borde sutil */
+.faq-area .faq-item {
+  background: var(--gris-claro);
+  border: 1px solid #d6e8d8;
+  border-radius: 14px;
+  box-shadow: none;
+  overflow: hidden;
+  transition: border-color 0.22s ease;
+}
+.faq-area .faq-item:hover {
+  border-color: rgba(0,153,51,0.35);
+}
+.faq-area .faq-item.abierto {
+  border-color: var(--verde);
+  background: white;
+}
+
+/* Pregunta: texto oscuro */
+.faq-area .faq-pregunta {
+  color: var(--verde-oscuro);
+  font-size: 0.91rem;
+  font-weight: 700;
+  padding: 1.1rem 1.4rem;
+}
+
+/* Ícono + → × en verde */
+.faq-area .faq-icono {
+  color: var(--verde);
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  transition: transform 0.3s, color 0.25s;
+}
+.faq-area .faq-item.abierto .faq-icono {
+  transform: rotate(45deg);
+  color: var(--verde-oscuro);
+}
+
+/* Respuesta */
+.faq-area .faq-respuesta { background: transparent; }
+.faq-area .faq-respuesta p {
+  color: var(--texto-suave);
+  font-size: 0.88rem;
+  line-height: 1.78;
+  font-weight: 400;
+}
+.faq-area .faq-link {
+  color: var(--verde-oscuro);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Botón regresar de FAQ — igual al de quiénes somos */
+.faq-btn-wrap {
+  text-align: center;
+  padding: 0 0 2.5rem;
+  background: var(--blanco);
+}
+
+/* ── CONTACTO — body ─────────────────────────────────────── */
+.contacto-body {
+  background: var(--blanco);
+  padding: 0 1.5rem 0;
+}
+
+/* Tarjeta de contacto: misma que el resto del sitio */
+.contacto-body .tarjeta {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: var(--sombra);
+  max-width: 540px;
+  margin: 2rem auto;
+  border: 1px solid rgba(0,153,51,0.09);
+  position: relative;
+  overflow: hidden;
+}
+.contacto-body .tarjeta::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+  border-radius: 20px 20px 0 0;
+}
+
+/* Frase de contacto: mismo estilo que ya tenía */
+.contacto-body .contacto-frase {
+  border-left: 4px solid var(--verde);
+  color: var(--verde-oscuro);
+  background: var(--verde-suave);
+  font-size: 1rem;
+}
+
+/* Botón formulario */
+.contacto-body .btn-verde {
+  background: var(--verde);
+  color: white;
+}
+.contacto-body .btn-verde:hover {
+  background: var(--verde-oscuro);
+}
+
+/* Botón regresar de contacto */
+.contacto-btn-wrap {
+  text-align: center;
+  padding: 0.5rem 0 2rem;
+  background: var(--blanco);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .faq-area { padding: 2.5rem 1rem 2rem; }
+  .contacto-body { padding: 0 1rem; }
+  .faq-btn-wrap, .contacto-btn-wrap { padding-bottom: 1.5rem; }
+}

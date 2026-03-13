@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto</title>
+    <link rel="icon" type="image/png" href="img/logo.png"/>
+    <link rel="stylesheet" href="style.css">
+ 
+    
+</head>
+<body>
+ 
+    <div class="subpagina-header">
+        <div style="display:flex; align-items:center; justify-content:center; gap:0.8rem; margin-bottom:0.9rem;">
+            <span class="info-badge" style="margin-bottom:0;">☎ Contáctanos</span>
+            <a href="index.html" class="btn-home" style="position:static; width:32px; height:32px; font-size:0.85rem;">🏠︎</a>
+        </div>
+        <h1>Información de Contacto</h1>
+        <p>Con cada gesto, podemos transformar la educación.</p>
+    </div>
+ 
+    <!-- FRASE -->
+    <div class="contacto-body">
+    <div style="text-align:center; padding: 2rem 1.5rem 0;">
+        <p class="contacto-frase">"La oportunidad de transformar vidas está a un mensaje de distancia."</p>
+    </div>
+ 
+    <!-- TARJETA DE CONTACTO -->
+    <section class="seccion" style="padding-top: 1.5rem; background: transparent;">
+        <div class="contenedor">
+        <div class="tarjeta">
+ 
+            <!-- Logo dentro de la tarjeta -->
+            <div style="text-align:center; margin-bottom: 1.2rem;">
+            <div style="font-size: 2rem; margin-bottom: 0.3rem;">🤍</div>
+            <img src="img/logo.png" alt="Mi Escuela Primero" style="height: 40px; object-fit: contain;"/>
+            </div>
+ 
+            <p style="text-align:center; margin-bottom: 1.5rem;">
+            Para conocer más sobre ti y ponernos en contacto más rápido, llena este formulario.
+            </p>
+ 
+            <div style="text-align:center; margin-bottom: 2rem;">
+            <button class="btn btn-verde" onclick="abrirTerminos()">📋 Formulario</button>
+            </div>
+ 
+            <!-- DATOS DE CONTACTO -->
+            <div class="contacto-datos">
+            <p><strong>Rosalba Gascón</strong></p>
+            <p>Coordinadora de Mi Escuela Primero</p>
+            <p><a href="/cdn-cgi/l/email-protection#bbc9dcdac8d8d4d5fbd6cbd195d4c9dc95d6c3"><span class="__cf_email__" data-cfemail="d5a7b2b4a6b6babb95b8a5bffbbaa7b2fbb8ad">[email&#160;protected]</span></a></p>
+            <p>33 1177 8783</p>
+            </div>
+        </div>
+ 
+        <div style="text-align:center; padding-bottom: 1rem;">
+        </div>
+        </div>
+    </section>
+ 
+    </div><!-- /contacto-body -->
+ 
+    <div class="contacto-btn-wrap">
+        <a href="index.html" class="btn btn-borde">← Regresar al Inicio</a>
+    </div>
+ 
+    <div class="modal-overlay" id="modal-terminos">
+        <div class="modal-caja">
+        <h2>Antes de continuar</h2>
+        <p style="color: var(--texto-suave); font-size: 0.88rem; margin-bottom: 1rem;">
+            Para llenar el formulario de contacto es necesario que aceptes nuestros términos y condiciones de privacidad.
+        </p>
+ 
+ 
+        <a class="btn-ver-mas" href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de Privacidad completo → </a>
+ 
+        
+ 
+        <label class="terminos-check">
+            <input type="checkbox" id="check-terminos"/>
+            <span>He leído y acepto los términos y condiciones de privacidad.</span>
+        </label>
+ 
+        <button class="btn-aceptar" id="btn-aceptar-terminos" disabled>
+            Aceptar y continuar al formulario
+        </button>
+        <button class="btn-cancelar-modal" onclick="cerrarTerminos()">Cancelar</button>
+        </div>
+    </div>
+ 
+    
+    <div class="modal-overlay" id="modal-formulario">
+        <div class="modal-caja">
+        <h2>✉️ Formulario de Contacto</h2>
+        <p style="color: var(--texto-suave); font-size: 0.85rem; margin-bottom: 1.2rem;">
+            Completa tus datos y nuestro equipo se pondrá en contacto contigo a la brevedad.
+        </p>
+ 
+        <form id="contacto-donor">
+            <div class="form-grupo">
+                <label for="nombre">Nombre completo: </label>
+                <input type="text" placeholder="Tu nombre completo" required/>
+            </div>
+            <div class="form-group">
+                    <label for="instancia">Tipo de instancia desde la que nos contactas:</label>
+                    <select
+                    id="instancia" 
+                    name="instancia"> 
+                    <option value="">Selecciona</option>
+                    <option value="Empresa">Empresa</option>
+                    <option value="Organizacion">Organización de la sociedad civil</option>
+                    <option value="Institucion">Institución educativa</option>
+                    <option value="Gobierno">Gobierno municipal</option>
+                    <option value="noAplica">No represento una instancia</option>
+                    <option value="Otro:">Otro:</option>
+                    </select>
+                </div>
+ 
+                <div class="form-grupo">
+                    <label for="nombreInstancia">Nombre de la instancia de la que nos contactas (si aplica):</label>
+                    <input type="text" placeholder="Nombre de la instancia"/>
+                </div>
+                <div class="form-grupo">
+                    <label>Correo electrónico: </label>
+                    <input type="email" placeholder="tucorreo@ejemplo.com" required/>
+                </div>
+ 
+                <div class="form-grupo">
+                    <label>Teléfono</label>
+                    <input type="tel" placeholder="33 1234 5678" required/>
+                </div>
+ 
+                <div class="form-grupo">
+                    <label>Tipo de donación</label>
+                    <select>
+                    <option value="">Selecciona una opción</option>
+                    <option>Donación económica</option>
+                    <option>Donación en especie</option>
+                    <option>Voluntariado</option>
+                    <option>Brindar talleres</option>
+                    <option>Otro</option>
+                    </select>
+                </div>
+                <div class="form-grupo">
+                    <label>Mensaje adicional</label>
+                    <textarea placeholder="Cuéntanos cómo deseas apoyar..."></textarea>
+                </div>
+        </form>
+ 
+        <button class="btn-aceptar" onclick="enviarFormulario()">Enviar mensaje →</button>
+        <button class="btn-cancelar-modal" onclick="cerrarFormulario()">Cancelar</button>
+        </div>
+    </div>
+        
+ 
+ 
+    <!-- ── FOOTER ── -->
+    <footer>
+        <div class="footer-accion">
+            <p class="derechos">© 2026 Mexicanos Primero Jalisco A.C. Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-contacto">
+            <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
+            <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
+            <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
+            <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad </a></p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+
+</body>
+
+</html>

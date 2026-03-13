@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="img/logo.png"/>
+  <title>Panel Administrador</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #F0F7F1;
+      padding: 30px 15px;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.07), 0 1px 8px rgba(0,0,0,0.04);
+      padding: 30px;
+    }
+
+    h1 {
+      color: #1B6B35;
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #4A644A;
+      margin-bottom: 30px;
+      font-weight: 400;
+    }
+
+    .actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .action-btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      color: white;
+      font-size: 0.88rem;
+      transition: all 0.22s ease;
+    }
+
+    .add-btn {
+      background: #009933;
+      box-shadow: 0 4px 14px rgba(0,153,51,0.22);
+    }
+    .add-btn:hover {
+      background: #1B6B35;
+      transform: translateY(-2px);
+    }
+
+    .remove-btn {
+      background: #EC671B;
+      box-shadow: 0 4px 14px rgba(236,103,27,0.22);
+    }
+    .remove-btn:hover {
+      background: #c9520e;
+      transform: translateY(-2px);
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #1A2E1A;
+      font-size: 0.83rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    select, input, textarea {
+      padding: 11px 14px;
+      border: 1.5px solid #ccd9cc;
+      border-radius: 10px;
+      font-size: 0.93rem;
+      font-family: 'Montserrat', sans-serif;
+      color: #1A2E1A;
+      transition: border-color 0.2s;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: #009933;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .submit-btn {
+      grid-column: 1 / -1;
+      padding: 13px;
+      background: #009933;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      box-shadow: 0 4px 14px rgba(0,153,51,0.22);
+    }
+
+    .submit-btn:hover {
+      background: #1B6B35;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,153,51,0.28);
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 20px;
+      color: #009933;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+    .back:hover { color: #1B6B35; }
+
+    .selected-action {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 700;
+      color: #4A644A;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 700px) {
+      form {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Panel de Administrador</h1>
+    <p class="subtitle">Gestiona las necesidades de las escuelas.</p>
+
+    <div class="actions">
+      <button class="action-btn add-btn" type="button" onclick="seleccionarAccion('Aumentar')">Aumentar necesidad</button>
+      <button class="action-btn remove-btn" type="button" onclick="seleccionarAccion('Quitar')">Quitar necesidad</button>
+    </div>
+
+    <div class="selected-action" id="accionSeleccionada">Acción seleccionada: Ninguna</div>
+
+    <form id="needsForm">
+      <div class="form-group">
+        <label for="seccion">Sección</label>
+        <select id="seccion" required>
+          <option value="">Selecciona una sección</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="necesidad">Necesidad</label>
+        <select id="necesidad" required>
+          <option value="">Selecciona una necesidad</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="escuela">Escuela</label>
+        <select id="escuela" required>
+          <option value="">Selecciona una escuela</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="municipio">Municipio</label>
+        <input type="text" id="municipio" readonly placeholder="Se llenará automáticamente" />
+      </div>
+
+      <div class="form-group">
+        <label for="cantidad">Cantidad</label>
+        <input type="number" id="cantidad" min="1" placeholder="Ej. 5" required />
+      </div>
+
+      <div class="form-group">
+        <label for="unidad">Unidad</label>
+        <input type="text" id="unidad" placeholder="Ej. piezas, cajas, litros..." />
+      </div>
+
+      <div class="form-group full-width">
+        <label for="comentarios">Comentarios</label>
+        <textarea id="comentarios" placeholder="Agrega detalles adicionales..."></textarea>
+      </div>
+
+      <button class="submit-btn" type="submit">Guardar cambio</button>
+    </form>
+
+    <a class="back" href="index.html">Volver al inicio</a>
+  </div>
+
+  <script>
+    let accionActual = "";
+
+    function seleccionarAccion(accion) {
+      accionActual = accion;
+      document.getElementById("accionSeleccionada").textContent = "Acción seleccionada: " + accion;
+    }
+
+    const seccionesYNecesidades = {
+      "Material de Papelería": [
+        "Hojas blancas y de colores",
+        "Cartulinas y papelotes",
+        "Sacapuntas, borradores y tijeras",
+        "Plumas, crayolas y lápices",
+        "Marcadores y cinta",
+        "Cuadernos",
+        "Plastilina, pintura dáctil, pinceles",
+        "Juegos de geometría",
+        "Grapas y engrapadoras",
+        "Tinta para impresoras"
+      ],
+      "Material Literario": [
+        "Libros infantiles",
+        "Libros informativos",
+        "Libros en náhuatl",
+        "Diccionarios",
+        "Enciclopedias"
+      ],
+      "Material Didáctico": [
+        "Fichas con fracciones y operaciones",
+        "Regletas",
+        "Memoramas educativos",
+        "Rompecabezas",
+        "Juegos de mesa",
+        "Arenas mágicas",
+        "Tapetes de foamy",
+        "Letras y números de plástico",
+        "Bloques geométricos"
+      ],
+      "Material Deportivo": [
+        "Balones",
+        "Pelotas pequeñas",
+        "Cuerdas",
+        "Conos",
+        "Aros grandes",
+        "Porterías",
+        "Sogas y cuerdas"
+      ],
+      "Material Tecnológico": [
+        "Computadoras para maestros",
+        "Computadoras para estudiantes",
+        "Impresoras / copiadoras",
+        "Proyectores / pantallas",
+        "Repetidores de señal de internet",
+        "Tóner",
+        "Extensiones",
+        "Cables HDMI",
+        "Bases para televisiones",
+        "Programas de Office"
+      ],
+      "Mobiliario": [
+        "Pizarrones",
+        "Sillas y mesas / Mesabancos",
+        "Escritorios y sillas para maestros",
+        "Bancas para exterior",
+        "Botes de basura",
+        "Comedores",
+        "Lockers o anaqueles",
+        "Bodega montable",
+        "Toldos"
+      ],
+      "Infraestructura": [
+        "Pintura",
+        "Impermeabilizante",
+        "Grava",
+        "Cemento",
+        "Ladrillo",
+        "Malla sombra para domo",
+        "Bodegas montables",
+        "Barrera de contención",
+        "Ventanas",
+        "Puertas",
+        "Ventiladores",
+        "Lámparas",
+        "Persianas",
+        "Cableado",
+        "Árboles",
+        "Biodigestor",
+        "Cisterna",
+        "Junteador"
+      ],
+      "Formación a Docentes": [
+        "Valores, convivencia escolar, cultura de paz y resolución de conflictos",
+        "Atención a estudiantes con discapacidad",
+        "Manejo de emociones",
+        "Disciplina positiva",
+        "Primeros auxilios",
+        "Patrulla escolar",
+        "Proyecto de vida",
+        "Autocuidado",
+        "Prevención de violencia y suicidio"
+      ],
+      "Formación a Estudiantes": [
+        "Convivencia escolar y valores",
+        "Manejo de emociones",
+        "Prevención de uso de drogas",
+        "Sexualidad, prevención de embarazo y planeación familiar",
+        "Abuso sexual infantil",
+        "Proyecto de vida",
+        "Hábitos de higiene",
+        "Lectoescritura",
+        "Operaciones básicas"
+      ],
+      "Formación a Familias": [
+        "Derechos y obligaciones educativas",
+        "Crianza positiva",
+        "Convivencia y valores",
+        "Manejo de emociones",
+        "Proyecto de vida de hijos/as",
+        "Nutrición infantil",
+        "Hábitos de higiene",
+        "Prevención de suicidio",
+        "Primeros auxilios"
+      ],
+      "Acceso": [
+        "Bicicletas",
+        "Patines",
+        "Portabicicletas",
+        "Bombas para bicicletas",
+        "Parches para bicicletas",
+        "Grava",
+        "Tierra"
+      ],
+      "Salud": [
+        "Filtros de agua",
+        "Psicólogos",
+        "Psicopedagogos",
+        "Neurólogos",
+        "Oftalmólogos",
+        "Médicos generales",
+        "Nutriólogos",
+        "Botiquines",
+        "Material de limpieza"
+      ],
+      "Gestión": [
+        "Zapopan: CFE y Transporte",
+        "San Juan de los Lagos: CFE",
+        "Arandas: Obras Públicas y Transporte",
+        "Tlaquepaque: Obras Públicas"
+      ],
+      "Otros": [
+        "Voluntarios en general",
+        "Fletes",
+        "Podadores",
+        "Fumigación",
+        "Topógrafos, ingenieros y arquitectos",
+        "Educadores",
+        "Ingenieros en software",
+        "Transporte para visitas escolares",
+        "Extintores"
+      ]
+    };
+
+    const escuelas = [
+      { nombre: "Francisco Rojas González", municipio: "Arandas" },
+      { nombre: "Los Aguirre", municipio: "San Juan de los Lagos" },
+      { nombre: "Miguel Hidalgo y Costilla", municipio: "San Juan de los Lagos" },
+      { nombre: "Antonio de Caso Peralta", municipio: "San Pedro Tlaquepaque" },
+      { nombre: "Lázaro Cárdenas", municipio: "San Pedro Tlaquepaque" },
+      { nombre: "Emiliano Zapata", municipio: "San Pedro Tlaquepaque" },
+      { nombre: "Francisco I. Madero", municipio: "Zapopan" },
+      { nombre: "Benito Juárez", municipio: "Zapopan" },
+      { nombre: "Niños Héroes", municipio: "Zapopan" },
+      { nombre: "José Vasconcelos", municipio: "Zapopan" },
+      { nombre: "La Reserva (Pre)", municipio: "Zapopan" },
+      { nombre: "La Reserva (Pri)", municipio: "Zapopan" },
+      { nombre: "Manuel M Cerna", municipio: "Zapopan" },
+      { nombre: "Margarita Maza de Juarez", municipio: "Zapopan" }
+    ];
+
+    const seccionSelect = document.getElementById("seccion");
+    const necesidadSelect = document.getElementById("necesidad");
+    const escuelaSelect = document.getElementById("escuela");
+    const municipioInput = document.getElementById("municipio");
+    const needsForm = document.getElementById("needsForm");
+
+    for (const seccion in seccionesYNecesidades) {
+      const option = document.createElement("option");
+      option.value = seccion;
+      option.textContent = seccion;
+      seccionSelect.appendChild(option);
+    }
+
+    escuelas.forEach((escuela) => {
+      const option = document.createElement("option");
+      option.value = escuela.nombre;
+      option.textContent = escuela.nombre;
+      option.dataset.municipio = escuela.municipio;
+      escuelaSelect.appendChild(option);
+    });
+
+    seccionSelect.addEventListener("change", function() {
+      const seccionElegida = this.value;
+      necesidadSelect.innerHTML = '<option value="">Selecciona una necesidad</option>';
+
+      if (seccionElegida && seccionesYNecesidades[seccionElegida]) {
+        seccionesYNecesidades[seccionElegida].forEach((necesidad) => {
+          const option = document.createElement("option");
+          option.value = necesidad;
+          option.textContent = necesidad;
+          necesidadSelect.appendChild(option);
+        });
+      }
+    });
+
+    escuelaSelect.addEventListener("change", function() {
+      const selectedOption = this.options[this.selectedIndex];
+      municipioInput.value = selectedOption.dataset.municipio || "";
+    });
+
+    needsForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      if (!accionActual) {
+        alert("Primero selecciona si vas a aumentar o quitar una necesidad.");
+        return;
+      }
+
+      const datos = {
+        accion: accionActual,
+        seccion: seccionSelect.value,
+        necesidad: necesidadSelect.value,
+        escuela: escuelaSelect.value,
+        municipio: municipioInput.value,
+        cantidad: document.getElementById("cantidad").value,
+        unidad: document.getElementById("unidad").value,
+        comentarios: document.getElementById("comentarios").value
+      };
+
+      console.log("Datos guardados:", datos);
+
+      alert("Cambio guardado correctamente.");
+      needsForm.reset();
+      municipioInput.value = "";
+      document.getElementById("accionSeleccionada").textContent = "Acción seleccionada: Ninguna";
+      accionActual = "";
+      necesidadSelect.innerHTML = '<option value="">Selecciona una necesidad</option>';
+    });
+  </script>
+</body>
+</html>

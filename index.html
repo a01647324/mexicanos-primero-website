@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mexicanos Primero Jalisco</title>
+    <link rel="icon" type="image/png" href="img/logo.png"/>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ── NAVBAR ── -->
+    <nav class="navbar">
+        <button class="lineas" id="lineas" aria-label="menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="navbar-iconos">
+            <a href="https://wa.me/3339548892" target="_blank" aria-label="WhatsApp">
+                <img src="img/whatsapp.png" class="whatsappIcon"/>
+            </a>
+            <a href="https://www.facebook.com/MexPrimJal/" target="_blank" aria-label="Facebook">
+                <img src="img/facebook.png" class="facebookIcon"/>
+            </a>
+            <a href="https://www.instagram.com/mexicanosprimjal/?hl=es-la" target="_blank" aria-label="Instagram">
+                <img src="img/instagram.png" class="instagramIcon"/>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ── MENÚ DESPLEGABLE ── -->
+    <div class="menu-desplegable" id="menuDesplegable">
+        <ul>
+            <li><a href="index.html">🏠︎ Inicio</a></li>
+            <li><a href="quienesSomos.html">❤︎ ¿Quiénes somos?</a></li>
+            <li><a href="faq.html">? Preguntas frecuentes</a></li>
+            <li><a href="contacto.html">☎ Contacto</a></li>
+        </ul>
+    </div>
+
+    <!-- ── PORTADA ── -->
+    <section class="portada">
+        <span class="portada-banner">Mexicanos Primero Jalisco</span>
+        <h1 class="portada-titulo">Mi Escuela Primero</h1>
+        <p class="portada-sub">Construyendo Futuros</p>
+        <div class="portada-btns">
+            <a class="btn btn-catalogo" href="catalogo.html">Catálogo</a>
+            <a class="btn btn-donacion" href="donacionEconomica.html">Donación Económica</a>
+            <a class="btn btn-donacion" href="voluntariado.html">Voluntariado</a>
+            <a class="btn btn-donacion" href="talleres.html">Brindar Talleres</a>
+            <a class="btn btn-donacion" href="vinculaciones.html">Vinculaciones</a>
+        </div>
+    </section>
+
+    <!-- ── QUIÉNES SOMOS ── -->
+    <section class="seccion">
+        <div class="contenedor">
+            <h2 class="seccion-titulo">¿Quiénes Somos?</h2>
+            <div class="linea-verde"></div>
+            <div class="quienes-grid">
+                <div class="quienes-texto">
+                    <p>Mi Escuela Primero es una iniciativa que surgió en 2019 y comenzó a implementarse en el ciclo escolar 2020-2024, con el fin de contribuir a la mejora de la educación en México.</p>
+                    <p>El proyecto ha tenido el deseo de la calidad educativa y el desarrollo de sus estudiantes mediante la formación de docentes, familias, niños y niñas, junto con la provisión de materiales y equipamiento de calidad.</p>
+                    <a class="btn btn-verde" href="quienesSomos.html">Más información →</a>
+                </div>
+                <div class="video-contenedor">
+                    <a href="https://www.youtube.com/watch?v=3TQR-aQXiTk" target="_blank" class="video-thumb">
+                        <img
+                            src="https://img.youtube.com/vi/3TQR-aQXiTk/maxresdefault.jpg"
+                            alt="Ver video Mi Escuela Primero"
+                        />
+                        <div class="play-btn">▶</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── NECESIDADES CUBIERTAS ── -->
+    <section class="necesidades-bg">
+        <div class="contenedor">
+            <h2 class="seccion-titulo">Necesidades cubiertas</h2>
+            <div class="linea-verde"></div>
+            <p class="seccion-sub">Avance general del ciclo escolar 2024</p>
+            <div class="barra-label">
+                <span>Progreso general</span>
+                <span id="pct-label">0%</span>
+            </div>
+            <div class="barra-pista">
+                <div class="barra-relleno" id="barra-principal" data-objetivo="68"></div>
+            </div>
+            <div class="mini-graficas">
+                <div class="mini-card">
+                    <h4>Por categoría</h4>
+                    <div class="barra-fila">
+                        <span class="barra-etiqueta">Mobiliario</span>
+                        <div class="barra-mini-pista">
+                            <div class="barra-mini" data-w="75"></div>
+                        </div>
+                        <span class="barra-pct">75%</span>
+                    </div>
+                    <div class="barra-fila">
+                        <span class="barra-etiqueta">Material Papelería</span>
+                        <div class="barra-mini-pista">
+                            <div class="barra-mini" data-w="58"></div>
+                        </div>
+                        <span class="barra-pct">58%</span>
+                    </div>
+                    <div class="barra-fila">
+                        <span class="barra-etiqueta">Acceso</span>
+                        <div class="barra-mini-pista">
+                            <div class="barra-mini" data-w="42"></div>
+                        </div>
+                        <span class="barra-pct">42%</span>
+                    </div>
+                    <div class="barra-fila">
+                        <span class="barra-etiqueta">Salus</span>
+                        <div class="barra-mini-pista">
+                            <div class="barra-mini" data-w="90"></div>
+                        </div>
+                        <span class="barra-pct">90%</span>
+                    </div>
+                </div>
+                <div class="mini-card">
+                    <h4>Por Municipio</h4>
+                    <div class="barra-fila">
+                        <span class="barra-etiqueta">Arandas</span>
+                        <div class="barra-mini-pista">
+                            <div class="barra-mini" data-w="85"></div>
+                        </div>
+                        <span class="barra-pct">85%</span>
+                    </div>
+                    <div class="barra-fila">
+                        <span class="barra-etiqueta">Zapopan</span>
+                        <div class="barra-mini-pista">
+                            <div class="barra-mini" data-w="60"></div>
+                        </div>
+                        <span class="barra-pct">60%</span>
+                    </div>
+                    <div class="barra-fila">
+                        <span class="barra-etiqueta">San Juan D.L.A.</span>
+                        <div class="barra-mini-pista">
+                            <div class="barra-mini" data-w="35"></div>
+                        </div>
+                        <span class="barra-pct">35%</span>
+                    </div>
+                    <div class="barra-fila">
+                        <span class="barra-etiqueta">San Pedro T.U.</span>
+                        <div class="barra-mini-pista">
+                            <div class="barra-mini" data-w="50"></div>
+                        </div>
+                        <span class="barra-pct">50%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── PASOS PARA DONAR ── -->
+    <section class="pasos-seccion">
+        <div class="contenedor">
+            <h2 class="seccion-titulo">Pasos para Donar</h2>
+            <div class="linea-verde"></div>
+            <div class="pasos-lista">
+                <div class="paso">
+                    <div class="paso-circulo">🏫</div>
+                    <p class="paso-num">Paso 1</p>
+                    <p class="paso-desc">Explora el catálogo</p>
+                </div>
+                <span class="paso-flecha">→</span>
+                <div class="paso">
+                    <div class="paso-circulo">🔍</div>
+                    <p class="paso-num">Paso 2</p>
+                    <p class="paso-desc">Elige tu tipo de donación</p>
+                </div>
+                <span class="paso-flecha">→</span>
+                <div class="paso">
+                    <div class="paso-circulo">📋</div>
+                    <p class="paso-num">Paso 3</p>
+                    <p class="paso-desc">Filtra según intereses</p>
+                </div>
+                <span class="paso-flecha">→</span>
+                <div class="paso">
+                    <div class="paso-circulo">✅</div>
+                    <p class="paso-num">Paso 4</p>
+                    <p class="paso-desc">Confirma tu elección</p>
+                </div>
+                <span class="paso-flecha">→</span>
+                <div class="paso">
+                    <div class="paso-circulo">📨</div>
+                    <p class="paso-num">Paso 5</p>
+                    <p class="paso-desc">Llena el formulario</p>
+                </div>
+                <span class="paso-flecha">→</span>
+                <div class="paso">
+                    <div class="paso-circulo">🎉</div>
+                    <p class="paso-num">Paso 6</p>
+                    <p class="paso-desc">¡Te contactamos!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        <div class="footer-accion">
+            <a href="admin-login.html" class="btn btn-login">⚙ Admin</a>
+            <p class="derechos">© 2026 Mexicanos Primero Jalisco A.C. Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-contacto">
+            <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
+            <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
+            <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
+            <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad</a></p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+
+</body>
+
+</html>
