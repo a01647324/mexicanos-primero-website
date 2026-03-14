@@ -2194,49 +2194,109 @@ a {
 #modal-donar {
   display: none;
   position: fixed; inset: 0;
-  background: rgba(0,0,0,.4);
-  z-index: 1000;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
   justify-content: center;
   align-items: center;
+  padding: 1rem;
 }
 #modal-donar.activo { display: flex; }
 
 .modal-donar-caja {
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px;
-  min-width: 280px;
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 440px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.20);
+  animation: subirFadeIn 0.28s ease both;
+  position: relative;
+  overflow: hidden;
 }
 
-.modal-opcion {
+/* Franja superior verde */
+.modal-donar-caja::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+  border-radius: 20px 20px 0 0;
+}
+
+.modal-donar-h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--verde-oscuro);
+  margin: 0;
+}
+
+.modal-info-linea {
+  font-size: 0.88rem;
+  color: var(--texto-suave);
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.7;
+}
+.modal-info-linea strong {
+  color: var(--texto);
+  font-weight: 700;
+}
+
+.modal-cantidad-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 #modal-donar-cantidad {
   width: 100%;
-  padding: 6px;
-  margin-top: 4px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #ccd9cc;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  color: var(--texto);
+  transition: border-color 0.2s;
+}
+#modal-donar-cantidad:focus {
+  outline: none;
+  border-color: var(--verde);
 }
 
 .modal-donar-acciones {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 0.6rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--verde-suave);
 }
 
 .btn-confirmar {
-  background: #2bada0; /* tu color teal */
-  color: #fff;
+  background: var(--verde);
+  color: white;
   border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
+  border-radius: 50px;
+  padding: 9px 24px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 4px 14px rgba(0,153,51,0.22);
+}
+.btn-confirmar:hover {
+  background: var(--verde-oscuro);
+  transform: translateY(-2px);
 }

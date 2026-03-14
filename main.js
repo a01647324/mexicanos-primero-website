@@ -358,21 +358,19 @@ function loadFilters() {
 // carrito de donaciones
 let carrito = [];
 
-function agregarAlCarrito(index, seleccionados, cantidad) {
+function agregarAlCarrito(index, cantidad) {
   const item = data[index];
-  seleccionados.forEach(function(sel) {
-    const yaExiste = carrito.some(function(c) {
-      return c.Escuela === item.Escuela && c.Propuesta === sel;
-    });
-    if (!yaExiste) {
-      carrito.push({
-        Escuela: item.Escuela,
-        Propuesta: sel,
-        Cantidad: cantidad,
-        Unidad: item.Unidad || ''
-      });
-    }
+  const yaExiste = carrito.some(function(c) {
+    return c.Escuela === item.Escuela && c.Propuesta === item.Propuesta;
   });
+  if (!yaExiste) {
+    carrito.push({
+      Escuela: item.Escuela,
+      Propuesta: item.Propuesta,
+      Cantidad: cantidad,
+      Unidad: item.Unidad || ''
+    });
+  }
   renderCarrito();
   abrirCarrito();
 }
@@ -457,7 +455,7 @@ function renderResults(filtered) {
     card.innerHTML =
       "<div class='card-header'>" +
         "<h3>" + item.Escuela + "</h3>" +
-        "<button class='btn-agregar' onclick='abrirModalDonar(" + index + ")' title='Donar'>Donar</button>" +
+        "<button class='btn-ver' onclick='abrirModalDonar(" + index + ")'>♡ Donar</button>" +
       "</div>" +
       "<p><strong>Municipio:</strong> " + item.Municipio + "</p>" +
       "<p><strong>Categoría:</strong> " + item.Categoría + "</p>" +
@@ -491,33 +489,16 @@ MODAL DONAR (act)
 function abrirModalDonar(index) {
   const item = data[index];
   const modal = document.getElementById('modal-donar');
-  const titulo = document.getElementById('modal-donar-titulo');
-  const lista = document.getElementById('modal-donar-lista');
 
-  titulo.textContent = item.Escuela + ' — ' + item.Propuesta;
-
-  // Busca todas las propuestas de la misma escuela y categoría como opciones
-  const opciones = [];
-  for (let i = 0; i < data.length; i++) {
-    if (
-      data[i].Escuela === item.Escuela &&
-      data[i].Categoría === item.Categoría &&
-      !opciones.includes(data[i].Propuesta)
-    ) {
-      opciones.push(data[i].Propuesta);
-    }
-  }
-
-  lista.innerHTML = '';
-  opciones.forEach(function(op) {
-    lista.innerHTML +=
-      "<label class='modal-opcion'>" +
-        "<input type='checkbox' value='" + op + "'> " + op +
-      "</label>";
-  });
+  document.getElementById('modal-donar-titulo').textContent = item.Escuela;
+  document.getElementById('modal-donar-lista').innerHTML =
+    "<p class='modal-info-linea'><strong>Material:</strong> " + item.Propuesta + "</p>" +
+    "<p class='modal-info-linea'><strong>Categoría:</strong> " + item.Categoría + "</p>" +
+    "<p class='modal-info-linea'><strong>Cantidad requerida:</strong> " + item.Cantidad + " " + item.Unidad + "</p>";
 
   document.getElementById('modal-donar-cantidad').value = '';
   modal.dataset.index = index;
+  document.getElementById('modal-donar-cantidad').max = item.Cantidad;
   modal.classList.add('activo');
 }
 
@@ -528,17 +509,19 @@ function cerrarModalDonar() {
 function confirmarModalDonar() {
   const modal = document.getElementById('modal-donar');
   const index = parseInt(modal.dataset.index);
-  const cantidad = document.getElementById('modal-donar-cantidad').value;
-  const seleccionados = Array.from(
-    modal.querySelectorAll('input[type=checkbox]:checked')
-  ).map(function(cb) { return cb.value; });
+  const cantidad = parseInt(document.getElementById('modal-donar-cantidad').value);
+  const max = parseInt(data[index].Cantidad);
 
-  if (seleccionados.length === 0 || !cantidad) {
-    alert('Selecciona al menos un ítem e ingresa una cantidad.');
+  if (!cantidad || cantidad < 1) {
+    alert('Ingresa una cantidad válida.');
+    return;
+  }
+  if (cantidad > max) {
+    alert('La cantidad máxima disponible es ' + max + ' ' + data[index].Unidad + '.');
     return;
   }
 
-  agregarAlCarrito(index, seleccionados, cantidad);
+  agregarAlCarrito(index, cantidad);
   cerrarModalDonar();
 }
 

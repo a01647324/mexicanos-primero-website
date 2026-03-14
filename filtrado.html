@@ -73,13 +73,14 @@
   <!-- DONAR (ACTUALIZACION)-->
 <div id="modal-donar">
   <div class="modal-donar-caja">
-    <p id="modal-donar-titulo"></p>
+    <h3 id="modal-donar-titulo" class="modal-donar-h3"></h3>
     <div id="modal-donar-lista"></div>
-    <label>Cantidad:
-      <input id="modal-donar-cantidad" type="number" min="1" placeholder="Ingresa cantidad">
+    <label class="modal-cantidad-label">
+      ¿Cuántas unidades deseas donar?
+      <input id="modal-donar-cantidad" type="number" min="1" placeholder="Ej. 2">
     </label>
     <div class="modal-donar-acciones">
-      <button onclick="cerrarModalDonar()">Cancelar</button>
+      <button class="btn-cancelar-modal" onclick="cerrarModalDonar()">Cancelar</button>
       <button class="btn-confirmar" onclick="confirmarModalDonar()">Donar</button>
     </div>
   </div>
