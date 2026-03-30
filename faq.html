@@ -123,7 +123,30 @@
         </div>
     </footer>
 
-    <script src="main.js"></script>
+    <script>
+        const preguntasFaq = document.querySelectorAll('.faq-pregunta');
+
+        if (preguntasFaq.length > 0) {
+
+        preguntasFaq.forEach(function(botonPregunta) {
+
+            botonPregunta.addEventListener('click', function() {
+            const itemActual = botonPregunta.parentElement;
+            const yaEstabaAbierto = itemActual.classList.contains('abierto');
+
+            document.querySelectorAll('.faq-item').forEach(function(item) {
+                item.classList.remove('abierto');
+                item.querySelector('.faq-respuesta').classList.remove('abierto');
+            });
+
+            if (!yaEstabaAbierto) {
+                itemActual.classList.add('abierto');
+                itemActual.querySelector('.faq-respuesta').classList.add('abierto');
+            }
+            });
+        });
+        }
+    </script>
 
 </body>
 

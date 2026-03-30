@@ -169,8 +169,58 @@
         </div>
     </footer>
 
-    <script src="main.js"></script>
+    <script>
+        /* TERMINOS Y CONDICIONES FORMULARIO */
+        const modalTerminos   = document.getElementById('modal-terminos');
+        const checkTerminos   = document.getElementById('check-terminos');
+        const btnAceptar      = document.getElementById('btn-aceptar-terminos');
+        const modalFormulario = document.getElementById('modal-formulario');
 
+        window.abrirTerminos = function() {
+        if (!modalTerminos) return;
+        modalTerminos.classList.add('activo');
+        if (checkTerminos) checkTerminos.checked = false;
+        if (btnAceptar)    btnAceptar.disabled = true;
+        };
+
+        window.cerrarTerminos = function() {
+        if (modalTerminos) modalTerminos.classList.remove('activo');
+        };
+
+        if (checkTerminos) {
+        checkTerminos.addEventListener('change', function() {
+            btnAceptar.disabled = !checkTerminos.checked;
+        });
+        }
+
+        if (btnAceptar) {
+        btnAceptar.addEventListener('click', function() {
+            cerrarTerminos();
+            if (modalFormulario) modalFormulario.classList.add('activo');
+        });
+        }
+
+        if (modalTerminos) {
+        modalTerminos.addEventListener('click', function(e) {
+            if (e.target === modalTerminos) cerrarTerminos();
+        });
+        }
+
+
+        window.cerrarFormulario = function() {
+        if (modalFormulario) modalFormulario.classList.remove('activo');
+        };
+
+        if (modalFormulario) {
+        modalFormulario.addEventListener('click', function(e) {
+            if (e.target === modalFormulario) cerrarFormulario();
+        });
+        }
+
+        window.enviarFormulario = function() {
+        alert('¡Gracias! Tu mensaje fue enviado. Nos pondremos en contacto contigo pronto 💚');
+        cerrarFormulario();
+        };
+    </script>
 </body>
-
 </html>

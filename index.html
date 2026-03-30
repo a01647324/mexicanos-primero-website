@@ -218,8 +218,76 @@
         </div>
     </footer>
 
-    <script src="main.js"></script>
+    <script>
+        /* ── MENÚ HAMBURGUESA ── */
+        const btnLineas = document.getElementById('lineas');
+        const menuDesplegable = document.getElementById('menuDesplegable');
 
+        if (btnLineas && menuDesplegable) {
+            btnLineas.addEventListener('click', function() {
+                btnLineas.classList.toggle('abierto');
+                menuDesplegable.classList.toggle('abierto');
+            });
+
+            document.addEventListener('click', function(e) {
+                const clickFueraDelBoton = !btnLineas.contains(e.target);
+                const clickFueraDelMenu  = !menuDesplegable.contains(e.target);
+
+                if (clickFueraDelBoton && clickFueraDelMenu) {
+                    btnLineas.classList.remove('abierto');
+                    menuDesplegable.classList.remove('abierto');
+                }
+            });
+        }
+
+        /* ── BARRA DE PROGRESO PRINCIPAL ── */
+        const barraPrincipal = document.getElementById('barra-principal');
+        const etiquetaPct    = document.getElementById('pct-label');
+
+        if (barraPrincipal) {
+            const observadorBarra = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        const objetivo = Math.min(parseInt(barraPrincipal.dataset.objetivo) || 68, 100);
+                        let actual = 0;
+                        const intervalo = setInterval(function() {
+                            actual += 1;
+                            barraPrincipal.style.width = actual + '%';
+                            if (etiquetaPct) etiquetaPct.textContent = actual + '%';
+                            if (actual >= objetivo) clearInterval(intervalo);
+                        }, 20);
+                        observadorBarra.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+            observadorBarra.observe(barraPrincipal);
+        }
+
+        /* ── MINI BARRAS DE PROGRESO ── */
+        const miniBarras = document.querySelectorAll('.barra-mini');
+
+        if (miniBarras.length > 0) {
+            miniBarras.forEach(function(barra) {
+                barra.style.width = '0%';
+            });
+
+            const observadorMini = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        const barra = entry.target;
+                        const anchoObjetivo = Math.min(parseInt(barra.dataset.w) || 50, 100);
+                        setTimeout(function() {
+                            barra.style.width = anchoObjetivo + '%';
+                        }, 200);
+                        observadorMini.unobserve(barra);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            miniBarras.forEach(function(barra) {
+                observadorMini.observe(barra);
+            });
+        }
+    </script>
 </body>
-
 </html>

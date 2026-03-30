@@ -5,6 +5,7 @@
   <title>Mi Escuela Primero</title>
   <link rel="icon" type="image/png" href="img/logo.png"/>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="catalogo.css">
 </head>
 <body>
 
@@ -115,7 +116,221 @@
   </footer>
 
   <script src="data.js"></script>
-  <script src="main.js"></script>
+  <script>
+    /* ── FILTRADO ── */
+    function loadFilters() {
+      const municipioSelect = document.getElementById("municipioSelect");
+      const categoriaSelect = document.getElementById("categoriaSelect");
+      const subcategoriaSelect = document.getElementById("subcategoriaSelect");
+      const escuelaSelect = document.getElementById("escuelaSelect");
+
+      let municipiosUnicos = [];
+      for (let i = 0; i < data.length; i++) {
+        let m = data[i].Municipio;
+        if (!municipiosUnicos.includes(m)) {
+          municipiosUnicos.push(m);
+          let option = document.createElement("option");
+          option.value = m; option.textContent = m;
+          municipioSelect.appendChild(option);
+        }
+      }
+
+      let categoriasUnicas = [];
+      for (let i = 0; i < data.length; i++) {
+        let c = data[i].Categoría;
+        if (!categoriasUnicas.includes(c)) {
+          categoriasUnicas.push(c);
+          let option = document.createElement("option");
+          option.value = c; option.textContent = c;
+          categoriaSelect.appendChild(option);
+        }
+      }
+
+      for (let i = 0; i < subcategorias.data.length; i++) {
+        let s = subcategorias.data[i];
+        let option = document.createElement("option");
+        option.value = s; option.textContent = s;
+        subcategoriaSelect.appendChild(option);
+      }
+
+      let escuelasUnicas = [];
+      for (let i = 0; i < data.length; i++) {
+        let e = data[i].Escuela;
+        if (!escuelasUnicas.includes(e)) {
+          escuelasUnicas.push(e);
+          let option = document.createElement("option");
+          option.value = e; option.textContent = e;
+          escuelaSelect.appendChild(option);
+        }
+      }
+
+      search(null);
+    }
+
+    /* ── CARRITO ── */
+    let carrito = [];
+
+    function agregarAlCarrito(index, cantidad) {
+      const item = data[index];
+      const yaExiste = carrito.some(function(c) {
+        return c.Escuela === item.Escuela && c.Propuesta === item.Propuesta;
+      });
+      if (!yaExiste) {
+        carrito.push({
+          Escuela: item.Escuela,
+          Propuesta: item.Propuesta,
+          Cantidad: cantidad,
+          Unidad: item.Unidad || ''
+        });
+      }
+      renderCarrito();
+      abrirCarrito();
+    }
+
+    function quitarDelCarrito(index) {
+      carrito.splice(index, 1);
+      renderCarrito();
+    }
+
+    function renderCarrito() {
+      const lista = document.getElementById("carrito-lista");
+      lista.innerHTML = "";
+      document.getElementById("carrito-count").textContent = carrito.length;
+
+      if (carrito.length === 0) {
+        lista.innerHTML = "<p class='carrito-vacio'>Aún no has seleccionado ninguna donación.</p>";
+        return;
+      }
+
+      for (let i = 0; i < carrito.length; i++) {
+        let item = carrito[i];
+        let el = document.createElement("div");
+        el.className = "carrito-item";
+        el.innerHTML =
+          "<div class='carrito-item-info'>" +
+            "<strong>" + item.Escuela + "</strong>" +
+            "<span>" + item.Propuesta + " — " + item.Cantidad + " " + item.Unidad + "</span>" +
+          "</div>" +
+          "<button class='carrito-quitar' onclick='quitarDelCarrito(" + i + ")'>✕</button>";
+        lista.appendChild(el);
+      }
+    }
+
+    function abrirCarrito() {
+      document.getElementById("carrito-panel").classList.add("abierto");
+    }
+
+    function cerrarCarrito() {
+      document.getElementById("carrito-panel").classList.remove("abierto");
+    }
+
+    /* ── BÚSQUEDA ── */
+    function search(event) {
+      if (event) event.preventDefault();
+
+      const escuela = document.getElementById("escuelaSelect").value;
+      const municipio = document.getElementById("municipioSelect").value;
+      const categoria = document.getElementById("categoriaSelect").value;
+      const subcategoria = document.getElementById("subcategoriaSelect").value;
+
+      let filtered = [];
+      for (let i = 0; i < data.length; i++) {
+        let item = data[i];
+        let ok =
+          (!escuela    || item.Escuela    === escuela)    &&
+          (!municipio  || item.Municipio  === municipio)  &&
+          (!categoria  || item.Categoría  === categoria)  &&
+          (!subcategoria || item.Subcategoría === subcategoria);
+        if (ok) filtered.push({ item: item, index: i });
+      }
+
+      renderResults(filtered);
+    }
+
+    function renderResults(filtered) {
+      const results = document.getElementById("results");
+      results.innerHTML = "";
+
+      if (filtered.length === 0) {
+        results.innerHTML = "<p class='sin-resultados'>No se encontraron resultados.</p>";
+        return;
+      }
+
+      for (let i = 0; i < filtered.length; i++) {
+        let item = filtered[i].item;
+        let index = filtered[i].index;
+
+        let estadoClase = item.Estado === "Cubierto" ? "estado-cubierto" : "estado-pendiente";
+
+        let card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML =
+          "<div class='card-header'>" +
+            "<h3>" + item.Escuela + "</h3>" +
+            "<button class='btn-ver' onclick='abrirModalDonar(" + index + ")'>♡ Donar</button>" +
+          "</div>" +
+          "<p><strong>Municipio:</strong> " + item.Municipio + "</p>" +
+          "<p><strong>Categoría:</strong> " + item.Categoría + "</p>" +
+          "<p><strong>Subcategoría:</strong> " + item.Subcategoría + "</p>" +
+          "<p><strong>Propuesta:</strong> " + item.Propuesta + "</p>" +
+          "<p><strong>Cantidad:</strong> " + item.Cantidad + " " + item.Unidad + "</p>" +
+          "<p><span class='estado " + estadoClase + "'>" + item.Estado + "</span></p>";
+
+        results.appendChild(card);
+      }
+    }
+
+    document.getElementById("searchForm").addEventListener("submit", search);
+    document.getElementById("escuelaSelect").addEventListener("change", search);
+    document.getElementById("municipioSelect").addEventListener("change", search);
+    document.getElementById("categoriaSelect").addEventListener("change", search);
+    document.getElementById("subcategoriaSelect").addEventListener("change", search);
+    loadFilters();
+
+    /* ── MODAL DONAR ── */
+    function abrirModalDonar(index) {
+      const item = data[index];
+      const modal = document.getElementById('modal-donar');
+
+      document.getElementById('modal-donar-titulo').textContent = item.Escuela;
+      document.getElementById('modal-donar-lista').innerHTML =
+        "<p class='modal-info-linea'><strong>Material:</strong> " + item.Propuesta + "</p>" +
+        "<p class='modal-info-linea'><strong>Categoría:</strong> " + item.Categoría + "</p>" +
+        "<p class='modal-info-linea'><strong>Cantidad requerida:</strong> " + item.Cantidad + " " + item.Unidad + "</p>";
+
+      document.getElementById('modal-donar-cantidad').value = '';
+      modal.dataset.index = index;
+      document.getElementById('modal-donar-cantidad').max = item.Cantidad;
+      modal.classList.add('activo');
+    }
+
+    function cerrarModalDonar() {
+      document.getElementById('modal-donar').classList.remove('activo');
+    }
+
+    function confirmarModalDonar() {
+      const modal = document.getElementById('modal-donar');
+      const index = parseInt(modal.dataset.index);
+      const cantidad = parseInt(document.getElementById('modal-donar-cantidad').value);
+      const max = parseInt(data[index].Cantidad);
+
+      if (!cantidad || cantidad < 1) {
+        alert('Ingresa una cantidad válida.');
+        return;
+      }
+      if (cantidad > max) {
+        alert('La cantidad máxima disponible es ' + max + ' ' + data[index].Unidad + '.');
+        return;
+      }
+
+      agregarAlCarrito(index, cantidad);
+      cerrarModalDonar();
+    }
+
+    document.getElementById('modal-donar').addEventListener('click', function(e) {
+      if (e.target === this) cerrarModalDonar();
+    });
+    </script>
 </body>
 </html>
 

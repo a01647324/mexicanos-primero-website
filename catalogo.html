@@ -55,7 +55,104 @@
         </div>
     </footer>
 
-    <script src="data.js"></script>
-    <script src="main.js"></script>
+    <script>
+        let catalogGrid = document.getElementById('catalog-grid');
+
+        const needcategory = {
+            "Otros": {
+                categories: [],
+                image: "images/otros.png",
+                link: "otros.html"
+            },
+            "Material de papelería": {
+                categories: ["Material de papelería"],
+                image: "images/cuadernos.png",
+                link: "papeleria.html"
+            },
+            "Material literario": {
+                categories: ["Material literario"],
+                image: "images/material literario.png",
+                link: "literario.html"
+            },
+            "Material deportivo": {
+                categories: ["Material de educación física"],
+                image: "images/material deportivo.png",
+                link: "deportivo.html"
+            },
+            "Material didáctico": {
+                categories: ["Material didáctico"],
+                image: "images/materialDidactico.png",
+                link: "didactico.html"
+            },
+            "Material tecnológico": {
+                categories: ["Material tecnológico", "Servicio tecnológico"],
+                image: "images/materialTecnologico.png",
+                link: "tecnologico.html"
+            },
+            "Mobiliario": {
+                categories: ["Mobiliario", "Pizarrones / pintarrones", "Material de aseo"],
+                image: "images/Mobiliario.png",
+                link: "mobiliario.html"
+            },
+            "Infraestructura": {
+                categories: [
+                    "Construcción materiales",
+                    "Material - construcción",
+                    "Servicio de mantenimiento",
+                    "Construcción servicio"
+                ],
+                image: "images/Infraestructura.png",
+                link: "infraestructura.html"
+            },
+            "Formación a docentes": {
+                categories: ["Formación para docentes"],
+                image: "images/FormacionADocentes.png",
+                link: "docentes.html"
+            },
+            "Formación a estudiantes": {
+                categories: ["Formación para estudiantes", "Visita extraescolar educativa"],
+                image: "images/formacionAEstudiantes.png",
+                link: "estudiantes.html"
+            },
+            "Formación a familias": {
+                categories: ["Formación para familias"],
+                image: "images/FormacionAFamilias.png",
+                link: "familias.html"
+            },
+            "Acceso": {
+                categories: ["Transporte"],
+                image: "images/acceso.png",
+                link: "acceso.html"
+            },
+            "Salud": {
+                categories: ["Salud física", "Salud psicológica", "Salud material"],
+                image: "images/Salud.png",
+                link: "salud.html"
+            }
+        };
+
+        let loadNeedCards = () => {
+            for (let category in needcategory) {
+                let catData = needcategory[category];
+                catalogGrid.innerHTML += `
+                    <article class="need-card">
+                        <div class="need-card-imagen">
+                            <img src="${catData.image}" alt="${category}">
+                        </div>
+                        <div class="need-card-cuerpo">
+                            <h2 class="need-card-titulo">${category}</h2>
+                            <div class="need-card-cta">
+                                <button class="btn-ver" onclick="location.href='${catData.link}'">
+                                    Ver necesidades →
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }
+        };
+
+        loadNeedCards();
+    </script>
 </body>
 </html>
