@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formación a Docentes – Mi Escuela Primero</title>
     <link rel="icon" type="image/png" href="img/logo.png"/>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="catalogo.css">
 </head>
 <body>
 
@@ -40,11 +40,47 @@
         <div class="footer-contacto">
             <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
             <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
-            <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
+            <p>Tel: 332-106-8253 · <a href="/cdn-cgi/l/email-protection#d8bbb7b6acb9bbacb798b5a8b2f6b7aabff6b5a0"><span class="__cf_email__" data-cfemail="e1828e8f958082958ea18c918bcf8e9386cf8c99">[email&#160;protected]</span></a></p>
             <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad</a></p>
         </div>
     </footer>
 
-    <script src="docentes.js"></script>
+    <script>
+        let catalogGrid = document.getElementById('catalog-grid');
+
+        const items = {
+            "Talleres pedagógicos": { subcategorias: ["Didáctica", "Evaluación", "Planeación"], image: "images/NecesidadesDocentes.png" },
+            "Cursos de actualización": { subcategorias: ["Matemáticas", "Lectura", "Ciencias"], image: "images/NecesidadesDocentes.png" },
+            "Formación en tecnología": { subcategorias: ["Herramientas digitales", "Plataformas educativas"], image: "images/NecesidadesDocentes.png" },
+            "Materiales de apoyo docente": { subcategorias: ["Guías didácticas", "Libros de metodología"], image: "images/NecesidadesDocentes.png" }
+        };
+
+        let loadNeedCards = () => {
+            // Insertar botón Atrás antes del grid, dentro del catalog-wrapper
+            const wrapper = document.getElementById('catalog-wrapper');
+            const btnAtras = document.createElement('div');
+            btnAtras.className = 'btn-atras-wrap';
+            btnAtras.innerHTML = '<a href="catalogo.html" class="btn-atras">← Atrás</a>';
+            wrapper.insertBefore(btnAtras, catalogGrid);
+
+            catalogGrid.innerHTML = '';
+
+            for (let item in items) {
+                let data = items[item];
+                catalogGrid.innerHTML += `
+                    <article class="need-card">
+                        <div class="need-card-imagen">
+                            <img src="${data.image}" alt="${item}">
+                        </div>
+                        <div class="need-card-cuerpo">
+                            <h2 class="need-card-titulo">${item}</h2>
+                        </div>
+                    </article>
+                `;
+            }
+        };
+
+        loadNeedCards();
+    </script>
 </body>
 </html>
