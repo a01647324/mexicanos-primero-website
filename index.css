@@ -1,0 +1,455 @@
+/* ============================================================
+   INDEX — index.css
+   Estilos exclusivos de la página de inicio.
+   Carga junto con style.css (base global).
+   ============================================================ */
+
+/* ── NAVBAR ── */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: 64px;
+  background: var(--blanco);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  box-shadow: 0 2px 16px rgba(0,153,51,0.07);
+  border-bottom: 1px solid rgba(0,153,51,0.10);
+}
+
+.navbar-logo { display: flex; align-items: center; }
+.logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Íconos redes sociales */
+.navbar-iconos { display: flex; gap: 1rem; align-items: center; }
+.navbar-iconos a { color: white; display: flex; align-items: center; }
+.navbar-iconos svg { width: 22px; height: 22px; transition: opacity 0.2s; }
+.navbar-iconos a:hover svg { opacity: 0.75; }
+
+/* Íconos como imágenes */
+.whatsappIcon,
+.facebookIcon,
+.instagramIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  transition: opacity 0.2s, transform 0.2s;
+  filter: brightness(0) saturate(100%) invert(22%) sepia(83%) saturate(500%) hue-rotate(103deg) brightness(85%);
+}
+.whatsappIcon:hover,
+.facebookIcon:hover,
+.instagramIcon:hover { opacity: 0.7; transform: scale(1.1); }
+
+/* Botón hamburguesa */
+.lineas {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+}
+.lineas span {
+  display: block;
+  width: 26px;
+  height: 2px;
+  background: var(--verde-oscuro);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.lineas.abierto span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.lineas.abierto span:nth-child(2) { opacity: 0; }
+.lineas.abierto span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* ── MENÚ DESPLEGABLE ── */
+.menu-desplegable {
+  position: fixed;
+  top: 64px;
+  left: 0; right: 0;
+  z-index: 999;
+  background: var(--azul);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.menu-desplegable.abierto { max-height: 320px; }
+
+.menu-desplegable ul { list-style: none; padding: 0.5rem 0 1rem; }
+.menu-desplegable ul li a {
+  display: block;
+  padding: 0.9rem 2rem;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.2s, padding-left 0.2s;
+  cursor: pointer;
+}
+.menu-desplegable ul li a:hover {
+  background: rgba(255,255,255,0.1);
+  padding-left: 2.5rem;
+}
+
+/* ── PORTADA / HERO ── */
+.portada {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(27, 107, 53, 0.82) 0%,
+      rgba(0, 80, 26, 0.65) 55%,
+      rgba(0, 0, 0, 0.55) 100%
+    ),
+    url('img/hero.jpg') center / cover no-repeat;
+  min-height: 100vh;
+  padding: 110px 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  z-index: 0;
+}
+
+.portada::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 100px;
+  background: linear-gradient(to bottom, transparent, var(--fondo));
+  pointer-events: none;
+}
+
+.portada-banner {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.45);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 0.4rem 1.4rem;
+  border-radius: 50px;
+  margin-bottom: 1.4rem;
+  animation: subirFadeIn 0.6s ease both;
+  backdrop-filter: blur(8px);
+}
+
+.portada-titulo {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  color: white;
+  line-height: 1.0;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 4px 32px rgba(0,0,0,0.25);
+  animation: subirFadeIn 0.7s 0.1s ease both;
+  letter-spacing: -1px;
+}
+
+.portada-sub {
+  font-weight: 300;
+  font-style: normal;
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.88);
+  margin-bottom: 2.5rem;
+  animation: subirFadeIn 0.7s 0.2s ease both;
+  letter-spacing: 0.5px;
+}
+
+.btn-catalogo {
+  background: rgba(255,255,255,0.10);
+  border: 1.5px solid rgba(255,255,255,0.50);
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+  transition: all 0.22s ease;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+}
+.btn-catalogo:hover {
+  background: white;
+  color: var(--verde-oscuro);
+  transform: translateY(-2px);
+  border-color: white;
+}
+
+.portada-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  animation: subirFadeIn 0.7s 0.4s ease both;
+  position: relative;
+  z-index: 2;
+}
+
+.btn-donacion {
+  background: rgba(255,255,255,0.10);
+  border: 1.5px solid rgba(255,255,255,0.50);
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+  transition: all 0.22s ease;
+  display: inline-block;
+  text-decoration: none;
+}
+.btn-donacion:hover {
+  background: white;
+  color: var(--verde-oscuro);
+  transform: translateY(-2px);
+  border-color: white;
+}
+
+/* ── VIDEO THUMBNAIL ── */
+.video-thumb {
+  position: relative;
+  display: block;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.video-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.play-btn {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.75);
+  color: white;
+  font-size: 2rem;
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.video-thumb:hover .play-btn { background: var(--verde); }
+
+/* ── SECCIONES ── */
+.seccion {
+  padding: 4.5rem 1.5rem;
+  background: var(--blanco);
+}
+.seccion:nth-child(even) {
+  background: var(--fondo);
+}
+
+.contenedor {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.seccion-titulo {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  color: var(--verde-oscuro);
+  margin-bottom: 0.5rem;
+}
+
+.linea-verde {
+  width: 50px;
+  height: 4px;
+  background: var(--verde);
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.seccion-sub {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin-bottom: 1rem;
+}
+
+/* ── QUIÉNES SOMOS (sección en index) ── */
+.quienes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.quienes-texto p {
+  color: var(--texto-suave);
+  line-height: 1.75;
+  margin-bottom: 1rem;
+  font-size: 0.93rem;
+  font-weight: 300;
+}
+
+.video-contenedor {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--sombra);
+  aspect-ratio: 16 / 9;
+  background: #000;
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+}
+.video-contenedor iframe { width: 100%; height: 100%; border: none; }
+
+/* ── NECESIDADES CUBIERTAS ── */
+.necesidades-bg {
+  background: var(--crema);
+  padding: 4.5rem 1.5rem;
+  border-top: 1px solid var(--gris-claro);
+  border-bottom: 1px solid var(--gris-claro);
+}
+
+.barra-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.barra-pista {
+  background: #d0e8d4;
+  border-radius: 50px;
+  height: 20px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.barra-relleno {
+  height: 100%;
+  border-radius: 50px;
+  background: linear-gradient(90deg, var(--verde), var(--verde-claro));
+  width: 0%;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mini-graficas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.mini-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.4rem;
+  box-shadow: var(--sombra-m);
+  border: 1px solid rgba(0,153,51,0.07);
+}
+.mini-card h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  margin-bottom: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.barra-fila { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+.barra-etiqueta { font-size: 0.72rem; width: 75px; color: var(--texto-suave); flex-shrink: 0; font-weight: 500; }
+
+.barra-mini-pista {
+  flex: 1;
+  background: var(--gris-claro);
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.barra-mini {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--verde), #4dc878);
+  width: 0%;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+}
+.barra-pct { font-size: 0.72rem; color: var(--texto-suave); width: 30px; text-align: right; flex-shrink: 0; }
+
+/* ── PASOS PARA DONAR ── */
+.pasos-seccion {
+  background: var(--fondo);
+  padding: 4.5rem 1.5rem;
+  border-top: 1px solid var(--gris-claro);
+}
+
+.pasos-lista {
+  padding: 1rem 0.5rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.paso { display: flex; flex-direction: column; align-items: center; min-width: 110px; text-align: center; }
+
+.paso-circulo {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: white;
+  border: 2.5px solid var(--verde);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 0.7rem;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  box-shadow: var(--sombra-s);
+}
+.paso:hover .paso-circulo {
+  transform: scale(1.12);
+  background: var(--verde);
+  box-shadow: 0 6px 20px rgba(0,153,51,0.25);
+}
+
+.paso-num { font-size: 0.65rem; font-weight: 700; color: var(--verde-oscuro); margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.paso-desc { font-size: 0.68rem; color: var(--texto-suave); line-height: 1.4; padding: 0 0.3rem; font-weight: 300; }
+.paso-flecha { font-size: 1.3rem; color: var(--verde); align-self: center; padding: 0 0.2rem; margin-bottom: 2rem; flex-shrink: 0; }
+
+/* ── BOTÓN ADMIN ── */
+.btn-login {
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  transition: all 0.22s ease;
+  display: inline-block;
+}
+.btn-login:hover { background: white; color: var(--texto); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .quienes-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .mini-graficas { grid-template-columns: 1fr; }
+}

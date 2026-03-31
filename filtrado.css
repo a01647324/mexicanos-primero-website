@@ -1,0 +1,509 @@
+/* ============================================================
+   FILTRADO — filtrado.css
+   Estilos exclusivos de la página de búsqueda y filtrado.
+   Carga junto con style.css (base) + catalogo.css (header/hero).
+   ============================================================ */
+
+/* ── BUSCADOR ── */
+#school-finder-wrapper {
+    background: var(--crema);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra-xl);
+    margin: -180px 28px 48px;
+    padding: 52px 40px;
+    position: relative;
+    z-index: 3;
+}
+
+#school-finder-wrapper h2 {
+    text-align: center;
+    margin-bottom: 28px;
+    color: var(--verde-oscuro);
+    font-size: clamp(20px, 3vw, 32px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    animation: fadeInDown 0.8s ease forwards;
+}
+
+#searchForm {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+
+#searchForm select,
+#searchForm button {
+    padding: 12px 18px;
+    font-size: 14px;
+    border: 1.5px solid var(--gris-claro);
+    border-radius: var(--radio);
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+#searchForm select {
+    flex: 1 1 200px;
+    background: var(--blanco);
+    color: var(--gris-texto);
+    cursor: pointer;
+}
+#searchForm select:hover { border-color: var(--verde); box-shadow: var(--sombra-s); }
+
+#searchForm button {
+    background: var(--naranja);
+    color: var(--blanco);
+    font-weight: 700;
+    flex: none;
+    border: none;
+    box-shadow: 0 6px 20px rgba(236,103,27,0.28);
+    cursor: pointer;
+}
+#searchForm button:hover {
+    background: var(--amarillo);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
+}
+
+/* ── RESULTADOS ── */
+#results { display: grid; gap: 24px; max-width: 1360px; margin: 0 auto; }
+
+/* ── TARJETA DE RESULTADO (.card) ── */
+.card {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra-m);
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0,153,51,0.07);
+    transition: transform 0.30s ease, box-shadow 0.30s ease, border-color 0.30s ease;
+    animation: cardIn 0.55s ease forwards;
+    opacity: 0;
+    cursor: pointer;
+    will-change: transform;
+    align-self: start;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--verde-oscuro), var(--verde));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.30s ease;
+    border-radius: var(--radio) var(--radio) 0 0;
+}
+
+.card:hover { transform: translateY(-6px) scale(1.02); box-shadow: var(--sombra-hover); border-color: rgba(0,153,51,0.11); z-index: 2; }
+.card:hover::before { transform: scaleX(1); }
+
+.card h3 { margin: 0 0 10px; color: var(--verde-oscuro); font-size: 16px; font-weight: 800; line-height: 1.3; }
+.card p  { margin: 4px 0; color: var(--gris-medio); font-size: 13px; font-weight: 500; line-height: 1.6; }
+
+/* ── HEADER ACCIONES ── */
+.header-acciones { display: flex; align-items: center; gap: 12px; justify-self: end; }
+
+.btn-carrito {
+    background: var(--verde);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.20s ease;
+    box-shadow: 0 4px 14px rgba(0,153,51,0.25);
+}
+.btn-carrito:hover { background: var(--verde-oscuro); transform: translateY(-2px); }
+.btn-carrito span {
+    background: var(--naranja);
+    border-radius: 50px;
+    padding: 2px 8px;
+    font-size: 11px;
+    margin-left: 4px;
+}
+
+/* ── CARD HEADER + BOTON AGREGAR ── */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+.card-header h3 { margin: 0; }
+
+.btn-agregar {
+    background: var(--verde);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.20s ease;
+    box-shadow: 0 4px 12px rgba(0,153,51,0.25);
+}
+.btn-agregar:hover { background: var(--verde-oscuro); transform: scale(1.1); }
+
+/* ── ESTADO EN TARJETA ── */
+.estado {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 50px;
+    margin-top: 6px;
+}
+.estado-cubierto  { background: #e6f4ec; color: var(--verde-oscuro); }
+.estado-pendiente { background: #fef0e6; color: var(--naranja); }
+
+/* ── PANEL CARRITO ── */
+#carrito-panel {
+    position: fixed;
+    top: 0; right: -420px;
+    width: 380px;
+    height: 100vh;
+    background: var(--blanco);
+    box-shadow: -4px 0 40px rgba(0,0,0,0.12);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.35s ease;
+    border-radius: var(--radio) 0 0 var(--radio);
+}
+#carrito-panel.abierto { right: 0; }
+
+#carrito-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--gris-claro);
+}
+#carrito-header h2 { font-size: 18px; font-weight: 800; color: var(--verde-oscuro); }
+#carrito-cerrar {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--gris-medio);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+#carrito-cerrar:hover { color: var(--gris-texto); }
+
+#carrito-lista {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.carrito-vacio { color: var(--gris-medio); font-size: 13px; text-align: center; margin-top: 24px; }
+
+.carrito-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--fondo);
+    border-radius: var(--radio);
+    padding: 12px 14px;
+    gap: 12px;
+}
+.carrito-item-info { display: flex; flex-direction: column; gap: 4px; }
+.carrito-item-info strong { font-size: 13px; color: var(--verde-oscuro); }
+.carrito-item-info span  { font-size: 12px; color: var(--gris-medio); }
+
+.carrito-quitar {
+    background: none;
+    border: none;
+    color: var(--gris-medio);
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+.carrito-quitar:hover { color: var(--naranja); }
+
+#carrito-footer {
+    padding: 16px 24px 24px;
+    border-top: 1px solid var(--gris-claro);
+}
+#carrito-footer .btn-ayudar { width: 100%; margin-bottom: 0; }
+
+/* ── LAYOUT FINDER ── */
+#finder-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+/* ── SIDEBAR ── */
+#sidebar {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra-m);
+    padding: 36px 28px;
+    position: sticky;
+    top: 24px;
+}
+
+#sidebar h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--verde-oscuro);
+    margin-bottom: 28px;
+}
+
+.filtro-grupo { margin-bottom: 24px; }
+
+.filtro-grupo h3 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gris-medio);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+}
+
+/* ── SELECT DROPDOWNS — appearance: base-select (Chrome 130+) ── */
+#searchForm select,
+#searchForm select::picker(select) {
+    appearance: base-select;
+}
+
+#searchForm select {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    color: var(--verde-oscuro);
+    background: var(--blanco);
+    border: 1.5px solid var(--gris-claro);
+    border-radius: var(--radio);
+    cursor: pointer;
+    transition: border-color 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: var(--sombra-s);
+}
+#searchForm select:hover {
+    border-color: var(--verde);
+    background: var(--crema);
+}
+#searchForm select:focus {
+    outline: none;
+    border-color: var(--verde);
+    background: var(--blanco);
+    box-shadow: 0 0 0 3px rgba(0,153,51,0.12), var(--sombra-s);
+}
+
+#searchForm select::picker(select) {
+    background: var(--blanco);
+    border: 1.5px solid var(--verde);
+    border-radius: var(--radio);
+    padding: 4px 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    font-family: "Montserrat", sans-serif;
+}
+
+#searchForm select option {
+    padding: 9px 14px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gris-texto);
+    background: var(--blanco);
+    border-radius: 6px;
+}
+#searchForm select option:hover {
+    background: var(--gris-claro);
+    color: var(--verde-oscuro);
+}
+#searchForm select option:checked {
+    background: var(--fondo);
+    color: var(--verde-oscuro);
+    font-weight: 700;
+}
+
+#searchForm select::picker(select)::-webkit-scrollbar { width: 6px; }
+#searchForm select::picker(select)::-webkit-scrollbar-track { background: transparent; }
+#searchForm select::picker(select)::-webkit-scrollbar-thumb {
+    background: var(--gris-claro);
+    border-radius: 3px;
+}
+#searchForm select::picker(select)::-webkit-scrollbar-thumb:hover {
+    background: var(--gris-medio);
+}
+
+#searchForm button {
+    width: fit-content;
+    margin-top: 8px;
+    padding: 9px 24px;
+    background: var(--naranja);
+    color: var(--blanco);
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    box-shadow: 0 4px 14px rgba(236,103,27,0.22);
+}
+#searchForm button:hover {
+    background: #d45a15;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(236,103,27,0.32);
+}
+
+/* ── MODAL DONAR ── */
+#modal-donar {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+#modal-donar.activo { display: flex; }
+
+.modal-donar-caja {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.20);
+    animation: subirFadeIn 0.28s ease both;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-donar-caja::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+    border-radius: 20px 20px 0 0;
+}
+
+.modal-donar-h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--verde-oscuro);
+    margin: 0;
+}
+
+.modal-info-linea {
+    font-size: 0.88rem;
+    color: var(--texto-suave);
+    margin: 0;
+    font-weight: 400;
+    line-height: 1.7;
+}
+.modal-info-linea strong {
+    color: var(--texto);
+    font-weight: 700;
+}
+
+.modal-cantidad-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.83rem;
+    font-weight: 700;
+    color: var(--texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+#modal-donar-cantidad {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid #ccd9cc;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    color: var(--texto);
+    transition: border-color 0.2s;
+}
+#modal-donar-cantidad:focus {
+    outline: none;
+    border-color: var(--verde);
+}
+
+.modal-donar-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--verde-suave);
+}
+
+.btn-confirmar {
+    background: var(--verde);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 9px 24px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    box-shadow: 0 4px 14px rgba(0,153,51,0.22);
+}
+.btn-confirmar:hover {
+    background: var(--verde-oscuro);
+    transform: translateY(-2px);
+}
+
+.btn-cancelar-modal {
+    background: none;
+    border: none;
+    color: var(--gris-medio);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.btn-cancelar-modal:hover { color: var(--gris-texto); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+    #school-finder-wrapper { margin: -55px 14px 0; border-radius: 30px 30px 0 0; padding: 36px 20px; }
+    #searchForm { flex-direction: column; }
+    #searchForm select { width: 100%; }
+    #searchForm button { width: 100%; }
+    #results { grid-template-columns: 1fr; }
+    #finder-layout { grid-template-columns: 1fr; }
+    #sidebar { position: static; }
+    #carrito-panel { width: 100%; right: -100%; border-radius: 0; }
+}
+
+@media (max-width: 480px) {
+    h1 { font-size: 24px; letter-spacing: -0.4px; }
+    #school-finder-wrapper { margin: -44px 8px 0; border-radius: 22px 22px 0 0; padding: 28px 14px; }
+    .card { padding: 20px 16px; }
+}

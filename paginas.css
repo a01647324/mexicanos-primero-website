@@ -1,0 +1,809 @@
+/* ============================================================
+   PÁGINAS SECUNDARIAS
+   ============================================================ */
+
+/* ── HEADER SUBPÁGINA (faq, contacto, pasos, quienesSomos) ── */
+.subpagina-header {
+    background: linear-gradient(135deg, var(--azul) 0%, #1a5c34 100%);
+    border-bottom: 3px solid var(--naranja);
+    padding: 90px 1.5rem 2.5rem;
+    text-align: center;
+    position: relative;
+}
+.subpagina-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: white;
+}
+.subpagina-header p { color: rgba(255,255,255,0.80); font-weight: 300; font-style: italic; margin-top: 0.4rem; }
+
+/* Badge decorativa */
+.info-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.38);
+    color: rgba(255,255,255,0.92);
+    font-size: 0.70rem;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    padding: 0.3rem 1.1rem;
+    border-radius: 50px;
+    margin-bottom: 0.9rem;
+}
+
+/* Botón casa */
+.btn-home {
+    position: absolute;
+    top: 16px; right: 1.5rem;
+    background: rgba(255,255,255,0.18);
+    border: 1.5px solid rgba(255,255,255,0.45);
+    color: white;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+}
+.btn-home:hover { background: rgba(255,255,255,0.32); }
+
+/* ── HEADER DONACIÓN (donacionEconomica, voluntariado, talleres, vinculaciones) ── */
+.header-donacion {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(135deg, var(--azul) 0%, #1a5c34 100%);
+    border-bottom: 3px solid var(--naranja);
+}
+
+.header-top-donacion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 52px 24px 44px;
+    position: relative;
+    gap: 6px;
+}
+
+#economica-nav .header-logo,
+#voluntariado-nav .header-logo { display: none; }
+
+.economicaTitulo,
+.voluntariadoTitulo {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: var(--blanco);
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.20);
+}
+
+.economicaSub,
+.voluntariadoSub {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.80);
+    text-transform: uppercase;
+    font-style: normal;
+    margin: 0;
+}
+
+.header-top-donacion .boton-inicio {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+}
+
+/* ── HEADER OTROS (migrado de styleOtros.css) ── */
+.header-otros {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(135deg, var(--azul) 0%, #1a5c34 100%);
+    border-bottom: 3px solid var(--naranja);
+}
+
+#header-top-otros {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 48px 24px 40px;
+    text-align: center;
+    position: relative;
+}
+
+#header-top-otros p {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.80);
+    text-transform: uppercase;
+    font-style: normal;
+}
+
+/* ── BOTÓN INICIO (compartido: donación + otros) ── */
+.boton-inicio {
+    background-color: var(--azul);
+    color: white;
+    border-radius: 50px;
+    text-decoration: none;
+    padding: 10px 22px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    transition: all 0.20s ease;
+    box-shadow: 0 4px 14px rgba(28,54,97,0.20);
+}
+.boton-inicio:hover {
+    background-color: #163050;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(28,54,97,0.30);
+}
+
+/* ── SECCIONES ── */
+.seccion {
+    padding: 4.5rem 1.5rem;
+    background: var(--blanco);
+}
+.seccion:nth-child(even) {
+    background: var(--fondo);
+}
+
+.contenedor {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.seccion-titulo {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    color: var(--verde-oscuro);
+    margin-bottom: 0.5rem;
+}
+
+.linea-verde {
+    width: 50px;
+    height: 4px;
+    background: var(--verde);
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+}
+
+.seccion-sub {
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+    margin-bottom: 1rem;
+}
+
+/* ── TARJETA CENTRAL DONACIÓN ── */
+.container-donacion {
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--fondo);
+    padding: 64px 24px 80px;
+}
+
+.donacion-card {
+    background: var(--crema);
+    border-radius: 44px;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.07), 0 1px 8px rgba(0,0,0,0.04);
+    padding: clamp(32px, 5vw, 52px) clamp(28px, 5vw, 48px);
+    max-width: 560px;
+    width: 100%;
+    border: 1px solid rgba(0,153,51,0.08);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.donacion-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+    border-radius: 44px 44px 0 0;
+}
+
+#titulo-donacion {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    color: var(--verde-oscuro);
+    line-height: 1.3;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+}
+
+#descripción-donacion {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: var(--gris-medio);
+    line-height: 1.85;
+    font-weight: 400;
+    margin-bottom: 32px;
+}
+
+.container-donacion .btn-verde {
+    background: var(--naranja);
+    color: white;
+    font-size: 13.5px;
+    padding: 12px 30px;
+    border-radius: 50px;
+    box-shadow: 0 6px 20px rgba(236,103,27,0.28);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    transition: all 0.22s ease;
+    display: inline-block;
+}
+.container-donacion .btn-verde:hover {
+    background: #d45a15;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(236,103,27,0.40);
+}
+
+/* Botón Atrás en footer de donación */
+.footer-accion .btn.btn-atras {
+    background: transparent;
+    color: rgba(255,255,255,0.85);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 50px;
+    box-shadow: none;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 9px 22px;
+    transition: all 0.22s ease;
+    cursor: pointer;
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+}
+.footer-accion .btn.btn-atras:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.6);
+    transform: none;
+    box-shadow: none;
+}
+
+/* ── TARJETA OTROS (migrado de styleOtros.css) ── */
+.main-otros {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px 80px;
+}
+
+.otros-card {
+    background: var(--crema);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra-xl);
+    padding: clamp(32px, 5vw, 56px) clamp(28px, 5vw, 52px);
+    max-width: 560px;
+    width: 100%;
+    border: 1px solid rgba(0,153,51,0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.otros-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+    border-radius: var(--radio-xl) var(--radio-xl) 0 0;
+}
+
+.otros-card h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    color: var(--verde-oscuro);
+    line-height: 1.3;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+}
+
+.otros-card p {
+    font-size: 1rem;
+    color: var(--gris-medio);
+    line-height: 1.85;
+    font-weight: 400;
+    margin-bottom: 28px;
+}
+.otros-card p em {
+    font-style: italic;
+    color: var(--gris-texto);
+}
+
+.otros-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 24px;
+    border-top: 1px solid var(--gris-claro);
+}
+
+.otros-logo { width: 64px; height: auto; }
+
+.btn-contacto {
+    background: var(--naranja);
+    color: white;
+    border-radius: 50px;
+    padding: 11px 28px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    box-shadow: 0 6px 20px rgba(236,103,27,0.28);
+    letter-spacing: 0.3px;
+}
+.btn-contacto:hover {
+    background: #d45a15;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(236,103,27,0.40);
+}
+
+/* Botón Atrás de otros (footer) */
+.footer-accion .btn-atras {
+    background: var(--azul);
+    color: white;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 50px;
+    padding: 10px 24px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    margin-bottom: 6px;
+    display: inline-block;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.20);
+    letter-spacing: 0.3px;
+}
+.footer-accion .btn-atras:hover {
+    background: #163050;
+    border-color: rgba(255,255,255,0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.28);
+}
+
+/* ── TARJETA GENÉRICA ── */
+.tarjeta {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: var(--sombra);
+    max-width: 580px;
+    margin: 2rem auto;
+    text-align: center;
+}
+.tarjeta h2 { font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--verde-oscuro); font-size: 1.65rem; margin-bottom: 1rem; }
+.tarjeta p { color: var(--texto-suave); line-height: 1.75; font-weight: 300; font-size: 0.95rem; }
+.tarjeta-icono { font-size: 3rem; margin-bottom: 0.8rem; }
+
+/* ── QUIÉNES SOMOS ── */
+.quienes-texto p {
+    color: var(--texto-suave);
+    line-height: 1.75;
+    margin-bottom: 1rem;
+    font-size: 0.93rem;
+    font-weight: 300;
+}
+
+.texto-cuerpo {
+    color: var(--texto-suave);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    font-weight: 300;
+    font-size: 0.95rem;
+}
+
+.qs-bloque { margin-bottom: 1rem; }
+.qs-bloque p {
+    color: var(--texto-suave);
+    line-height: 1.8;
+    font-weight: 300;
+    margin-bottom: 0.9rem;
+    font-size: 0.95rem;
+}
+
+.qs-separador { border: none; border-top: 1px solid #e0ece0; margin: 2.5rem 0; }
+
+.qs-valores {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    margin-top: 2.5rem;
+}
+
+.valor-card {
+    background: var(--gris-claro);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border-left: 4px solid var(--verde);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.valor-card:hover { transform: translateY(-3px); box-shadow: var(--sombra); }
+.valor-icono { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.valor-card h3 { font-weight: 700; font-size: 1rem; color: var(--verde-oscuro); margin-bottom: 0.4rem; }
+.valor-card p { font-size: 0.85rem; color: var(--texto-suave); font-weight: 300; line-height: 1.6; }
+
+.qs-body .seccion        { background: var(--blanco); }
+.qs-body .seccion:nth-child(even) { background: var(--gris-claro); }
+
+.qs-body .valor-card {
+    background: white;
+    border-left: 4px solid var(--verde);
+    border-radius: 16px;
+    padding: 1.6rem 1.4rem;
+    box-shadow: 0 2px 12px rgba(0,100,40,0.06);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.qs-body .valor-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,100,40,0.11);
+}
+
+.qs-btn-wrap { text-align: center; padding: 0 0 2.5rem; }
+
+/* ── NAVBAR (faq, quienesSomos) ── */
+.navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    height: 64px;
+    background: var(--blanco);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    box-shadow: 0 2px 16px rgba(0,153,51,0.07);
+    border-bottom: 1px solid rgba(0,153,51,0.10);
+}
+
+.whatsappIcon,
+.facebookIcon,
+.instagramIcon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    transition: opacity 0.2s, transform 0.2s;
+    filter: brightness(0) saturate(100%) invert(22%) sepia(83%) saturate(500%) hue-rotate(103deg) brightness(85%);
+}
+.whatsappIcon:hover,
+.facebookIcon:hover,
+.instagramIcon:hover { opacity: 0.7; transform: scale(1.1); }
+
+.lineas {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 4px;
+}
+.lineas span {
+    display: block;
+    width: 26px;
+    height: 2px;
+    background: var(--verde-oscuro);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.lineas.abierto span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.lineas.abierto span:nth-child(2) { opacity: 0; }
+.lineas.abierto span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+.menu-desplegable {
+    position: fixed;
+    top: 64px;
+    left: 0; right: 0;
+    z-index: 999;
+    background: var(--azul);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.menu-desplegable.abierto { max-height: 320px; }
+
+.menu-desplegable ul { list-style: none; padding: 0.5rem 0 1rem; }
+.menu-desplegable ul li a {
+    display: block;
+    padding: 0.9rem 2rem;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    transition: background 0.2s, padding-left 0.2s;
+    cursor: pointer;
+}
+.menu-desplegable ul li a:hover {
+    background: rgba(255,255,255,0.1);
+    padding-left: 2.5rem;
+}
+
+/* ── FAQ ── */
+.faq-seccion { background: var(--verde-oscuro); padding: 3rem 1.5rem; }
+.faq-contenedor { display: flex; flex-direction: column; gap: 0.8rem; }
+
+.faq-item {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: background 0.2s;
+}
+.faq-item:hover { background: rgba(255,255,255,0.11); }
+
+.faq-pregunta {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 1.1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.93rem;
+    font-weight: 700;
+    text-align: left;
+    gap: 1rem;
+}
+
+.faq-icono { font-size: 1.3rem; flex-shrink: 0; transition: transform 0.3s; color: rgba(255,255,255,0.7); }
+.faq-item.abierto .faq-icono { transform: rotate(45deg); color: #69F0AE; }
+
+.faq-respuesta { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; }
+.faq-respuesta.abierto { max-height: 300px; padding: 0 1.4rem 1.2rem; }
+.faq-respuesta p { color: rgba(255,255,255,0.78); font-size: 0.88rem; line-height: 1.75; font-weight: 300; }
+.faq-link { color: #69F0AE; font-weight: 700; text-decoration: underline; }
+
+/* FAQ área (estilo alternativo faq.html) */
+.faq-area {
+    background: var(--blanco);
+    padding: 3.5rem 1.5rem 3rem;
+}
+.faq-area .contenedor-faq { max-width: 720px; margin: 0 auto; }
+
+.faq-area .faq-item {
+    background: var(--gris-claro);
+    border: 1px solid #d6e8d8;
+    border-radius: 14px;
+    box-shadow: none;
+    overflow: hidden;
+    transition: border-color 0.22s ease;
+}
+.faq-area .faq-item:hover { border-color: rgba(0,153,51,0.35); }
+.faq-area .faq-item.abierto { border-color: var(--verde); background: white; }
+
+.faq-area .faq-pregunta { color: var(--verde-oscuro); font-size: 0.91rem; font-weight: 700; padding: 1.1rem 1.4rem; }
+
+.faq-area .faq-icono { color: var(--verde); font-size: 1.3rem; flex-shrink: 0; transition: transform 0.3s, color 0.25s; }
+.faq-area .faq-item.abierto .faq-icono { transform: rotate(45deg); color: var(--verde-oscuro); }
+
+.faq-area .faq-respuesta { background: transparent; }
+.faq-area .faq-respuesta p { color: var(--texto-suave); font-size: 0.88rem; line-height: 1.78; font-weight: 400; }
+.faq-area .faq-link { color: var(--verde-oscuro); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+
+.faq-btn-wrap { text-align: center; padding: 0 0 2.5rem; background: var(--blanco); }
+
+/* ── CONTACTO ── */
+.contacto-body { background: var(--blanco); padding: 0 1.5rem 0; }
+
+.contacto-body .tarjeta {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: var(--sombra);
+    max-width: 540px;
+    margin: 2rem auto;
+    border: 1px solid rgba(0,153,51,0.09);
+    position: relative;
+    overflow: hidden;
+}
+.contacto-body .tarjeta::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+    border-radius: 20px 20px 0 0;
+}
+
+.contacto-frase {
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--verde-oscuro);
+    font-weight: 400;
+    max-width: 500px;
+    margin: 0 auto;
+    border-left: 4px solid var(--verde);
+    padding-left: 1rem;
+    text-align: left;
+}
+
+.contacto-body .contacto-frase {
+    border-left: 4px solid var(--verde);
+    color: var(--verde-oscuro);
+    background: var(--verde-suave);
+    font-size: 1rem;
+}
+
+.contacto-body .btn-verde { background: var(--verde); color: white; }
+.contacto-body .btn-verde:hover { background: var(--verde-oscuro); }
+
+.contacto-datos {
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--texto-suave);
+    line-height: 2;
+    border-top: 1px solid var(--verde-suave);
+    padding-top: 1.2rem;
+}
+.contacto-datos strong { color: var(--texto); font-size: 1rem; font-weight: 700; display: block; }
+.contacto-datos a { color: var(--verde); }
+
+.contacto-btn-wrap { text-align: center; padding: 0.5rem 0 2rem; background: var(--blanco); }
+
+/* ── FORMULARIO ── */
+.form-grupo { margin-bottom: 1.2rem; text-align: left; }
+.form-grupo label {
+    display: block;
+    font-size: 0.83rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    color: var(--texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+.form-grupo input,
+.form-grupo textarea,
+.form-grupo select {
+    width: 100%;
+    padding: 0.78rem 1rem;
+    border: 1.5px solid #ccd9cc;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 400;
+    background: var(--blanco);
+    color: var(--texto);
+    transition: border-color 0.2s;
+}
+.form-grupo input:focus,
+.form-grupo textarea:focus,
+.form-grupo select:focus { outline: none; border-color: var(--verde); }
+.form-grupo textarea { resize: vertical; min-height: 100px; }
+
+/* ── MODALES ── */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.modal-overlay.activo { display: flex; }
+
+.modal-caja {
+    background: white;
+    border-radius: 20px;
+    max-width: 520px;
+    width: 90%;
+    padding: 2rem;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: subirFadeIn 0.3s ease both;
+}
+.modal-caja h2 { font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--verde-oscuro); margin-bottom: 1rem; font-size: 1.35rem; }
+.modal-intro { color: var(--texto-suave); font-size: 0.87rem; margin-bottom: 1rem; font-weight: 300; }
+
+.btn-ver-mas {
+    background: none;
+    border: none;
+    color: var(--verde);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.4rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.btn-ver-mas:hover { color: var(--verde-oscuro); }
+
+.terminos-cuerpo {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    font-size: 0.82rem;
+    color: var(--texto-suave);
+    line-height: 1.75;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+}
+.terminos-cuerpo.expandido { max-height: 600px; }
+.terminos-cuerpo p { margin-bottom: 0.7rem; }
+.terminos-cuerpo strong { color: var(--texto); font-weight: 700; }
+
+.terminos-check { display: flex; align-items: flex-start; gap: 0.75rem; margin: 1.2rem 0; cursor: pointer; }
+.terminos-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--verde); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+.terminos-check span { font-size: 0.87rem; color: var(--texto); line-height: 1.5; }
+
+.btn-aceptar {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--verde);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    transition: background 0.2s, opacity 0.2s;
+    margin-bottom: 0.6rem;
+}
+.btn-aceptar:disabled { opacity: 0.38; cursor: not-allowed; }
+.btn-aceptar:not(:disabled):hover { background: var(--verde-oscuro); }
+
+.btn-cancelar-modal {
+    width: 100%;
+    padding: 0.7rem;
+    background: none;
+    border: none;
+    color: var(--texto-suave);
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+}
+.btn-cancelar-modal:hover { color: var(--texto); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+    .faq-area { padding: 2.5rem 1rem 2rem; }
+    .contacto-body { padding: 0 1rem; }
+    .faq-btn-wrap, .contacto-btn-wrap { padding-bottom: 1.5rem; }
+}
+
+@media (max-width: 600px) {
+    .qs-valores { grid-template-columns: 1fr; }
+    #header-top-otros { padding: 40px 16px 32px; }
+    .boton-inicio { font-size: 12px; padding: 7px 14px; }
+    .main-otros { padding: 40px 16px 56px; }
+}
