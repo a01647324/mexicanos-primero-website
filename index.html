@@ -14,39 +14,35 @@
 
     <!-- ── NAVBAR ── -->
     <nav class="navbar">
-        <button class="lineas" id="lineas" aria-label="menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <div class="navbar-iconos">
-            <a href="images/https://wa.me/3339548892" target="_blank" aria-label="WhatsApp">
-                <img src="img/whatsapp.png" class="whatsappIcon"/>
-            </a>
-            <a href="images/https://www.facebook.com/MexPrimJal/" target="_blank" aria-label="Facebook">
-                <img src="img/facebook.png" class="facebookIcon"/>
-            </a>
-            <a href="images/https://www.instagram.com/mexicanosprimjal/?hl=es-la" target="_blank" aria-label="Instagram">
-                <img src="img/instagram.png" class="instagramIcon"/>
+        <div class="navbar-logo">
+            <a href="index.html">
+                <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
             </a>
         </div>
+    
+        <div class="navbar-menu">
+            <a href="index.html" class="active">Inicio</a>
+            <a href="quienesSomos.html">¿Quiénes somos?</a>
+            <a href="donacionEconomica.html">Donación Económica</a>
+            <a href="voluntariado.html">Voluntariado</a>
+            <a href="talleres.html">Brindar Talleres</a>
+            <a href="vinculaciones.html">Vinculaciones</a>
+            <a href="contacto.html">Contacto</a>
+        </div>
+    
+        <div class="navbar-acciones">
+            <a href="admin-login.html" class="btn-iniciar-sesion">Iniciar sesión</a>
+            <a href="catalogo.html" class="btn-ayudar-flotante">♡ ¡Quiero ayudar!</a>
+        </div>
     </nav>
+    
 
-    <!-- ── MENÚ DESPLEGABLE ── -->
-    <div class="menu-desplegable" id="menuDesplegable">
-        <ul>
-            <li><a href="index.html">🏠︎ Inicio</a></li>
-            <li><a href="quienesSomos.html">❤︎ ¿Quiénes somos?</a></li>
-            <li><a href="faq.html">? Preguntas frecuentes</a></li>
-            <li><a href="contacto.html">☎ Contacto</a></li>
-        </ul>
-    </div>
 
     <!-- ── PORTADA ── -->
     <section class="portada">
         <span class="portada-banner">Mexicanos Primero Jalisco</span>
         <h1 class="portada-titulo">Mi Escuela Primero</h1>
-        <p class="portada-sub">Construyendo Futuros</p>
+        <p class="portada-sub">Mejorar las condiciones para transformar las vidas</p>
         <div class="portada-btns">
             <a class="btn btn-catalogo" href="catalogo.html">Catálogo</a>
             <a class="btn btn-donacion" href="donacionEconomica.html">Donación Económica</a>
@@ -163,6 +159,7 @@
     <!-- ── PASOS PARA DONAR ── -->
     <section class="pasos-seccion">
         <div class="contenedor">
+            <p class="pasos-subtitulo">Camino para ayudar</p>
             <h2 class="seccion-titulo">Pasos para Donar</h2>
             <div class="linea-verde"></div>
             <div class="pasos-lista">
@@ -201,45 +198,321 @@
                     <p class="paso-num">Paso 6</p>
                     <p class="paso-desc">¡Te contactamos!</p>
                 </div>
+                <span class="paso-flecha">→</span>
+                <div class="paso">
+                    <div class="paso-circulo">💚</div>
+                    <p class="paso-num">Paso 7</p>
+                    <p class="paso-desc">¡Tu ayuda es recibida!</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- ── FOOTER ── -->
-    <footer>
-        <div class="footer-accion">
-            <a href="admin-login.html" class="btn btn-login">⚙ Admin</a>
-            <p class="derechos">© 2026 Mexicanos Primero Jalisco A.C. Todos los derechos reservados.</p>
+    <!-- ── DATOS ── -->
+    <section class="seccion seccion-datos">
+        <div class="contenedor">
+            <h2 class="seccion-titulo">Datos</h2>
+            <div class="linea-verde"></div>
+    
+            <div class="datos-grid">
+                <div class="dato-card dato-rosa">
+                    <div class="dato-barra"></div>
+                    <div class="dato-icono">
+                        <img src="images/schoolicon.png" alt="Escuelas">
+                    </div>
+                    <div class="dato-info">
+                        <p class="dato-label">Escuelas</p>
+                        <p class="dato-numero">16</p>
+                    </div>
+                </div>
+    
+                <div class="dato-card dato-morado">
+                    <div class="dato-barra"></div>
+                    <div class="dato-icono">
+                        <img src="images/studentsicon.png" alt="Estudiantes">
+                    </div>
+                    <div class="dato-info">
+                        <p class="dato-label">Estudiantes</p>
+                        <p class="dato-numero">2,770</p>
+                    </div>
+                </div>
+    
+                <div class="dato-card dato-amarillo">
+                    <div class="dato-barra"></div>
+                    <div class="dato-icono">
+                        <img src="images/allyicon.png" alt="Aliados">
+                    </div>
+                    <div class="dato-info">
+                        <p class="dato-label">Aliados</p>
+                        <p class="dato-numero">32</p>
+                    </div>
+                </div>
+    
+                <div class="dato-card dato-verde">
+                    <div class="dato-barra"></div>
+                    <div class="dato-icono">
+                        <img src="images/locationicon.png" alt="Municipios">
+                    </div>
+                    <div class="dato-info">
+                        <p class="dato-label">Municipios</p>
+                        <p class="dato-numero">4</p>
+                    </div>
+                </div>
+            </div>
+            <div class="datos-detalle">
+                <!-- Columna izquierda: mapa -->
+                <div class="datos-mapa-card">
+                    <img src="images/localmap.png" alt="Mapa de escuelas participantes" class="datos-mapa-img">
+                </div>
+            
+                <!-- Columna derecha: gráficas -->
+                <div class="datos-graficas">
+            
+                    <!-- Gráfica 1 -->
+                    <div class="grafica-card">
+                        <h3 class="grafica-titulo">Crecimiento de escuelas</h3>
+            
+                        <div class="grafica-item">
+                            <div class="grafica-label">
+                                <span>Ciclo 2023-2024</span>
+                                <strong>5</strong>
+                            </div>
+                            <div class="barra-horizontal">
+                                <div class="barra-valor barra-escuelas-1"></div>
+                            </div>
+                        </div>
+            
+                        <div class="grafica-item">
+                            <div class="grafica-label">
+                                <span>Ciclo 2024-2025</span>
+                                <strong>8</strong>
+                            </div>
+                            <div class="barra-horizontal">
+                                <div class="barra-valor barra-escuelas-2"></div>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!-- Gráfica 2 -->
+                    <div class="grafica-card">
+                        <h3 class="grafica-titulo">Crecimiento de municipios</h3>
+            
+                        <div class="grafica-item">
+                            <div class="grafica-label">
+                                <span>Ciclo 2023-2024</span>
+                                <strong>2</strong>
+                            </div>
+                            <div class="barra-horizontal">
+                                <div class="barra-valor barra-municipios-1"></div>
+                            </div>
+                        </div>
+            
+                        <div class="grafica-item">
+                            <div class="grafica-label">
+                                <span>Ciclo 2024-2025</span>
+                                <strong>3</strong>
+                            </div>
+                            <div class="barra-horizontal">
+                                <div class="barra-valor barra-municipios-2"></div>
+                            </div>
+                        </div>
+                    </div>
+            
+                </div>
+            </div>
         </div>
-        <div class="footer-contacto">
+    </section>
+
+    <!-- TESTIMONIOS -->
+    <section class="seccion testimonios-seccion">
+        <div class="contenedor">
+            <p class="testimonios-subtitulo">Lo que comparten sobre Mi Escuela Primero</p>
+            <h2 class="seccion-titulo">Testimonios</h2>
+            <div class="linea-verde"></div>
+    
+            <div class="testimonios-carrusel">
+                <button class="testimonio-btn prev" id="prevTestimonio" aria-label="Testimonio anterior">
+                    &#10094;
+                </button>
+    
+                <div class="testimonios-track" id="testimoniosTrack">
+                    <article class="testimonio-card">
+                        <h3 class="testimonio-nombre">Director</h3>
+                        <p class="testimonio-rol">Escuela de San Juan de los Lagos</p>
+                        <p class="testimonio-texto">
+                            La diferencia que ha marcado este proyecto dentro de la escuela es sabernos acompañados de agentes con posturas innovadoras en las cuales se ha visto favorecido la infraestructura, el material didáctico y el desarrollo humano personal de la escuela.
+                        </p>
+                    </article>
+    
+                    <article class="testimonio-card">
+                        <h3 class="testimonio-nombre">Docente participante</h3>
+                        <p class="testimonio-rol">Escuela de San Juan de los Lagos</p>
+                        <p class="testimonio-texto">
+                            En lo particular en nuestra escuela ha habido importantes cambios con el apoyo que se nos ha brindado: material didáctico, educativo y mobiliario, pero sobre todo con el apoyo humano. 
+                            Los talleristas y psicólogos que nos han brindado su apoyo nos han dado más herramientas a los docentes, han aclarado dudas por parte de los padres de familia acerca de su crianza y han apoyado a niños en cuestiones familiares complejas y proyecto de vida. 
+                            Así que a mi parecer es un programa al cual se le debe dar confianza y apoyo total.
+
+                        </p>
+                    </article>
+    
+                    <article class="testimonio-card">
+                        <h3 class="testimonio-nombre">Docente participante</h3>
+                        <p class="testimonio-rol">Escuela de Zapopan</p>
+                        <p class="testimonio-texto">
+                            Los apoyos recibidos por Mi Escuela Primero han tenido un impacto alto en la asistencia y permanencia de las y los estudiantes, ya que mejoraron aspectos como la infraestructura, el ambiente escolar y la disponibilidad de recursos. 
+                            Estos factores generan mayor motivación y condiciones más favorables para que las niñas y los niños asistan con regularidad.
+
+                        </p>
+                    </article>
+    
+                    <article class="testimonio-card">
+                        <h3 class="testimonio-nombre">Docente participante</h3>
+                        <p class="testimonio-rol">Escuela de San Juan de los Lagos</p>
+                        <p class="testimonio-texto">
+                            Muy agradecida con todas las personas que se han involucrado. 
+                            Sin duda con lo que nos han apoyado ha mejorado el desarrollo integral de los alumnos de nuestra institución.
+                        </p>
+                    </article>
+    
+                    <article class="testimonio-card">
+                        <h3 class="testimonio-nombre">Docente participante</h3>
+                        <p class="testimonio-rol">Escuela de San Pedro Tlaquepaque</p>
+                        <p class="testimonio-texto">
+                            Esto es una esperanza porque es algo diferente. Una mano como el símbolo que tienen para apoyarnos; un apoyo de fuera que nos está dando una esperanza. 
+                            El problema que teníamos ya lo vimos de otra forma y ya vimos que hay soluciones y que hay manos que nos pueden apoyar en todo esto. 
+                            Para que nuestros niños puedan tener mejor bienestar y desenvolvimiento en esta comunidad.
+                        </p>
+                    </article>
+    
+                    <article class="testimonio-card">
+                        <h3 class="testimonio-nombre">Docente participante</h3>
+                        <p class="testimonio-rol">Escuela de Zapopan</p>
+                        <p class="testimonio-texto">
+                            Los apoyos de Mi Escuela Primero impactaron de manera positiva y significativa en el aprendizaje de las y los estudiantes, pues al contar con mejores materiales, infraestructura y condiciones de trabajo, se favorece un ambiente más adecuado para la enseñanza. 
+                            Esto ha permitido que las y los alumnos se concentren mejor y participen con mayor disposición.
+                        </p>
+                    </article>
+                </div>
+    
+                <button class="testimonio-btn next" id="nextTestimonio" aria-label="Siguiente testimonio">
+                    &#10095;
+                </button>
+            </div>
+    
+            <div class="testimonios-dots" id="testimoniosDots"></div>
+        </div>
+    </section>
+
+    <!-- GALERÍA DE FOTOS  -->
+    <section class="seccion galeria-seccion">
+        <div class="contenedor">
+            <p class="galeria-subtitulo">Momentos que transforman</p>
+            <h2 class="seccion-titulo">Nuestra Galería</h2>
+            <div class="linea-verde"></div>
+    
+            <div class="galeria-carrusel">
+                <button class="galeria-btn prev" id="prevGaleria" aria-label="Imagen anterior">
+                    &#10094;
+                </button>
+    
+                <div class="galeria-viewport">
+                    <div class="galeria-track" id="galeriaTrack">
+                        <article class="galeria-slide active">
+                            <img src="images/fotocarr1.jpg" alt="Actividad en escuela 1">
+                            <div class="galeria-overlay">
+                                <h3>Aprendizaje con impacto</h3>
+                                <p>Espacios que impulsan nuevas oportunidades.</p>
+                            </div>
+                        </article>
+    
+                        <article class="galeria-slide">
+                            <img src="images/fotocarr2.JPG" alt="Actividad en escuela 2">
+                            <div class="galeria-overlay">
+                                <h3>Comunidades que participan</h3>
+                                <p>La educación mejora cuando avanzamos juntos.</p>
+                            </div>
+                        </article>
+    
+                        <article class="galeria-slide">
+                            <img src="images/fotocarr3.jpg" alt="Actividad en escuela 3">
+                            <div class="galeria-overlay">
+                                <h3>Aliados por la educación</h3>
+                                <p>Cada apoyo llega a donde más se necesita.</p>
+                            </div>
+                        </article>
+    
+                        <article class="galeria-slide">
+                            <img src="images/fotocarr4.png" alt="Actividad en escuela 4">
+                            <div class="galeria-overlay">
+                                <h3>Escuelas con más posibilidades</h3>
+                                <p>Infraestructura, materiales y acompañamiento.</p>
+                            </div>
+                        </article>
+    
+                        <article class="galeria-slide">
+                            <img src="images/fotocarr5.jpg" alt="Actividad en escuela 5">
+                            <div class="galeria-overlay">
+                                <h3>Historias que inspiran</h3>
+                                <p>Pequeñas acciones que generan grandes cambios.</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+    
+                <button class="galeria-btn next" id="nextGaleria" aria-label="Siguiente imagen">
+                    &#10095;
+                </button>
+            </div>
+    
+            <div class="galeria-dots" id="galeriaDots"></div>
+        </div>
+    </section>
+
+    
+
+    <!-- ── FOOTER ── -->
+    <footer class="footer">
+
+        <div class="footer-container">
+      
+          <!-- IZQUIERDA -->
+          <div class="footer-left">
+            <div class="footer-logo-box">
+              <img src="images/mi-escuela-logo.png" alt="Mi Escuela Primero">
+            </div>
+      
+            <div class="footer-redes">
+              <a href="#"><img src="images/whatsapp.png"></a>
+              <a href="#"><img src="images/facebook.png"></a>
+              <a href="#"><img src="images/youtube.png"></a>
+              <a href="#"><img src="images/twitter.png"></a>
+              <a href="#"><img src="images/linkedin.png"></a>
+            </div>
+          </div>
+      
+          <!-- DERECHA -->
+          <div class="footer-right">
             <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
             <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
             <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
-            <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad</a></p>
+            <p><a href="#">Aviso de privacidad</a></p>
+          </div>
+      
         </div>
-    </footer>
+      
+      </footer>
 
     <script>
-        /* ── MENÚ HAMBURGUESA ── */
-        const btnLineas = document.getElementById('lineas');
-        const menuDesplegable = document.getElementById('menuDesplegable');
+        /* ── HEADER AL HACER SCROLL ── */
+        const navbar = document.querySelector('.navbar');
 
-        if (btnLineas && menuDesplegable) {
-            btnLineas.addEventListener('click', function() {
-                btnLineas.classList.toggle('abierto');
-                menuDesplegable.classList.toggle('abierto');
-            });
-
-            document.addEventListener('click', function(e) {
-                const clickFueraDelBoton = !btnLineas.contains(e.target);
-                const clickFueraDelMenu  = !menuDesplegable.contains(e.target);
-
-                if (clickFueraDelBoton && clickFueraDelMenu) {
-                    btnLineas.classList.remove('abierto');
-                    menuDesplegable.classList.remove('abierto');
-                }
-            });
-        }
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 40) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
 
         /* ── BARRA DE PROGRESO PRINCIPAL ── */
         const barraPrincipal = document.getElementById('barra-principal');
@@ -288,6 +561,131 @@
             miniBarras.forEach(function(barra) {
                 observadorMini.observe(barra);
             });
+        }
+
+        /* ── TESTIMONIOS ── */
+        const testimoniosTrack = document.getElementById('testimoniosTrack');
+        const prevTestimonio = document.getElementById('prevTestimonio');
+        const nextTestimonio = document.getElementById('nextTestimonio');
+        const testimoniosDots = document.getElementById('testimoniosDots');
+
+        if (testimoniosTrack && prevTestimonio && nextTestimonio && testimoniosDots) {
+            const cards = Array.from(testimoniosTrack.querySelectorAll('.testimonio-card'));
+            let currentIndex = 0;
+
+            function renderTestimonios() {
+                cards.forEach(card => card.classList.remove('active'));
+                testimoniosTrack.innerHTML = '';
+
+                const total = cards.length;
+                const prevIndex = (currentIndex - 1 + total) % total;
+                const nextIndex = (currentIndex + 1) % total;
+
+                const visibleCards = [
+                    cards[prevIndex],
+                    cards[currentIndex],
+                    cards[nextIndex]
+                ];
+
+                visibleCards.forEach((card, index) => {
+                    if (index === 1) {
+                        card.classList.add('active');
+                    }
+                    testimoniosTrack.appendChild(card);
+                });
+
+                renderDots();
+            }
+
+            function renderDots() {
+                testimoniosDots.innerHTML = '';
+                cards.forEach((_, index) => {
+                    const dot = document.createElement('span');
+                    dot.classList.add('testimonio-dot');
+                    if (index === currentIndex) {
+                        dot.classList.add('active');
+                    }
+                    dot.addEventListener('click', function () {
+                        currentIndex = index;
+                        renderTestimonios();
+                    });
+                    testimoniosDots.appendChild(dot);
+                });
+            }
+
+            prevTestimonio.addEventListener('click', function () {
+                currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+                renderTestimonios();
+            });
+
+            nextTestimonio.addEventListener('click', function () {
+                currentIndex = (currentIndex + 1) % cards.length;
+                renderTestimonios();
+            });
+
+            renderTestimonios();
+        }
+        /* ── GALERÍA ── */
+        const galeriaTrack = document.getElementById('galeriaTrack');
+        const prevGaleria = document.getElementById('prevGaleria');
+        const nextGaleria = document.getElementById('nextGaleria');
+        const galeriaDots = document.getElementById('galeriaDots');
+
+        if (galeriaTrack && prevGaleria && nextGaleria && galeriaDots) {
+            const slides = Array.from(galeriaTrack.querySelectorAll('.galeria-slide'));
+            let currentIndex = 0;
+
+            function renderGaleria() {
+                slides.forEach(slide => slide.classList.remove('active'));
+
+                const total = slides.length;
+                const visible = 3;
+
+                galeriaTrack.innerHTML = '';
+
+                for (let i = 0; i < total; i++) {
+                    const index = (currentIndex + i) % total;
+                    galeriaTrack.appendChild(slides[index]);
+                }
+
+                const currentSlides = galeriaTrack.querySelectorAll('.galeria-slide');
+                if (currentSlides[1]) {
+                    currentSlides[1].classList.add('active');
+                }
+
+                renderDots();
+            }
+
+            function renderDots() {
+                galeriaDots.innerHTML = '';
+                slides.forEach((_, index) => {
+                    const dot = document.createElement('span');
+                    dot.classList.add('galeria-dot');
+
+                    if (index === currentIndex) {
+                        dot.classList.add('active');
+                    }
+
+                    dot.addEventListener('click', function () {
+                        currentIndex = index;
+                        renderGaleria();
+                    });
+
+                    galeriaDots.appendChild(dot);
+                });
+            }
+
+            prevGaleria.addEventListener('click', function () {
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                renderGaleria();
+            });
+
+            nextGaleria.addEventListener('click', function () {
+                currentIndex = (currentIndex + 1) % slides.length;
+                renderGaleria();
+            });
+
+            renderGaleria();
         }
     </script>
 </body>
