@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Necesidad – Mi Escuela Primero</title>
+  <link rel="icon" type="image/png" href="img/logo.png"/>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="catalogo.css">
+  <link rel="stylesheet" href="filtrado.css">
+  <style>
+    /* ── Fuente ── */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+    body { font-family: 'Montserrat', sans-serif; background: #F0F7F1; padding-top: 96px; }
+
+    /* ── Navbar ── */
+    .navbar-top {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1100;
+      height: 96px; background: #fff;
+      border-bottom: 4px solid #1f3f77;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem 0 12rem;
+    }
+    .navbar-logo-fixed { position: absolute; left: 1.8rem; top: 10px; z-index: 1102; }
+    .navbar-logo-fixed img { width: 130px; height: 130px; object-fit: contain; }
+    .navbar-menu-top a {
+      text-decoration: none; color: #178d45;
+      font-weight: 600; font-size: 0.9rem;
+      transition: color 0.2s; margin-right: 1rem;
+    }
+    .navbar-menu-top a:hover { color: #f37021; }
+    .btn-back-nav {
+      background: transparent; color: #1C3661;
+      border: 2px solid #1C3661; 
+      
+      text-decoration: none; 
+      font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.85rem 1.8rem;
+  margin-top: 15px;
+  border-radius: 999px;
+
+ 
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+    }
+    .btn-back-nav:hover { background: #1C3661; color: white; }
+
+    /* ── BANNER SUPERIOR ── */
+    .necesidad-banner {
+      width: 100%;
+      height: 340px;
+      object-fit: cover;
+      border-radius: 0;
+      display: block;
+    }
+
+    .necesidad-banner-wrapper {
+      position: relative;
+      overflow: hidden;
+      max-height: 340px;
+    }
+
+    .banner-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom,
+        transparent 40%,
+        rgba(27, 107, 53, 0.65) 100%);
+    }
+
+    .banner-badge {
+      position: absolute; bottom: 24px; left: 32px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 50px; padding: 6px 18px;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.5px;
+      color: #1B6B35;
+    }
+
+    /* ── CARD PRINCIPAL (contenido) ── */
+    .necesidad-card {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.07), 0 1px 8px rgba(0,0,0,0.04);
+      overflow: hidden;
+      margin: -60px 0 32px;
+      position: relative;
+      z-index: 3;
+    }
+
+    /* ── SECCIÓN INTERMEDIA ── */
+    .seccion-info {
+      padding: 40px 40px 32px;
+    }
+
+    .info-label {
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #6b8575; margin-bottom: 4px;
+    }
+
+    .info-valor {
+      font-size: 1rem; font-weight: 600;
+      color: #1a2e1e; margin-bottom: 20px;
+    }
+
+    .info-valor.grande {
+      font-size: 1.4rem; font-weight: 800; color: #1B6B35;
+    }
+
+    /* Nivel badge */
+    .nivel-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.82rem; font-weight: 700; padding: 5px 14px;
+      border-radius: 50px; margin-bottom: 24px;
+    }
+    .nivel-chip.urgente { background: #fff0f0; color: #c0392b; border: 1.5px solid #e74c3c; }
+    .nivel-chip.urgente::before { content: '●'; color: #e74c3c; font-size: 0.55rem; }
+    .nivel-chip.moderado { background: #fffbf0; color: #d68910; border: 1.5px solid #f39c12; }
+    .nivel-chip.moderado::before { content: '●'; color: #f39c12; font-size: 0.55rem; }
+    .nivel-chip.bajo { background: #f0fff4; color: #1e8449; border: 1.5px solid #27ae60; }
+    .nivel-chip.bajo::before { content: '●'; color: #27ae60; font-size: 0.55rem; }
+
+    /* ── MAPA ── */
+    .mapa-wrapper {
+      border-radius: 16px;
+      overflow: hidden;
+      height: 320px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    }
+    .mapa-wrapper iframe {
+      width: 100%; height: 100%; border: none;
+    }
+
+    /* ── SECCIÓN INFERIOR: BARRA DE PROGRESO ── */
+    .seccion-progreso {
+      background: #f7faf7;
+      border-top: 1px solid #e8f0ea;
+      padding: 32px 40px;
+    }
+
+    .progreso-titulo {
+      font-size: 1rem; font-weight: 800; color: #1B6B35;
+      margin-bottom: 6px;
+    }
+
+    .progreso-subtitulo {
+      font-size: 0.82rem; color: #6b8575; margin-bottom: 20px;
+    }
+
+    /* Barra estilo imagen compartida: verde con thumb blanco */
+    .barra-wrap {
+      background: #e8f0ea;
+      border-radius: 50px;
+      height: 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .barra-fill {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      background: linear-gradient(90deg, #1B6B35, #009933);
+      border-radius: 50px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      min-width: 56px;
+    }
+
+    .barra-thumb {
+      width: 36px; height: 36px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      flex-shrink: 0;
+    }
+
+    .barra-pct {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 800; font-size: 0.8rem; color: #1B6B35;
+      pointer-events: none;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      
+    }
+
+    .progreso-stats {
+      display: flex; justify-content: space-between;
+      margin-top: 10px; font-size: 0.8rem; color: #6b8575; font-weight: 600;
+    }
+
+    /* ── PRESETS (inspirado imagen) ── */
+    .presets-row {
+      display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .preset-btn {
+      border-radius: 50px; border: 1.5px solid #e0e8e2;
+      background: white; color: #7b61b9;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.82rem; font-weight: 600;
+      padding: 6px 16px; cursor: pointer;
+      transition: all 0.18s;
+    }
+    .preset-btn.activo, .preset-btn:hover {
+      background: #7b61b9; color: white; border-color:#7b61b9;
+    }
+
+    /* ── BOTÓN DONAR FINAL ── */
+    .btn-donar-final {
+      display: block; width: 100%;
+      background: #EC671B;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      padding: 18px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem; font-weight: 800;
+      cursor: pointer;
+      transition: all 0.22s;
+      box-shadow: 0 6px 20px rgba(236,103,27,0.30);
+      text-align: center;
+      margin-top: 32px;
+    }
+    .btn-donar-final:hover {
+      background: #d45a15;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(236,103,27,0.40);
+    }
+
+    /* ── DIVIDER SEPARADOR ── */
+    .divider { border: none; border-top: 1px solid #e8f0ea; margin: 0; }
+
+    @media (max-width: 768px) {
+      body { padding-top: 72px; }
+      .navbar-top { height: 72px; padding: 0 1rem 0 6rem; }
+      .navbar-logo-fixed img { width: 80px; height: 80px; }
+      .necesidad-banner { height: 200px; max-height: 200px; }
+      .seccion-info { padding: 24px 20px; }
+      .seccion-progreso { padding: 24px 20px; }
+      .mapa-wrapper { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+        <div class="navbar-logo">
+            <a href="index.html">
+                <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <a href="index.html">Inicio</a>
+            <a href="quienesSomos.html">¿Quiénes somos?</a>
+            <a href="donacionEconomica.html">Donación Económica</a>
+            <a href="voluntariado.html">Voluntariado</a>
+            <a href="talleres.html">Brindar Talleres</a>
+            <a href="vinculaciones.html">Vinculaciones</a>
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <div class="navbar-acciones">
+            <a href="admin-login.html" class="btn-iniciar-sesion">Iniciar sesión</a>
+             <button class="btn-carrito" onclick="abrirCarrito()">
+          ♡ Mis donaciones <span id="carrito-count">0</span>
+        </button>
+        </div>
+    </nav>
+
+
+
+  <!-- BANNER SUPERIOR -->
+  <div class="necesidad-banner-wrapper" id="banner-wrapper">
+    <img id="banner-img" class="necesidad-banner"
+         src="images/otros.png"
+         alt="Imagen de la escuela"
+         onerror="this.src='images/otros.png'">
+    <div class="banner-overlay"></div>
+    <span class="banner-badge" id="banner-badge">Cargando...</span>
+  </div>
+
+  <!-- CARD PRINCIPAL -->
+  <div class="container" style="max-width: 960px;">
+    <div class="necesidad-card">
+
+      <!-- SECCIÓN INTERMEDIA: info + mapa -->
+      <div class="seccion-info">
+        <div class="row g-4">
+
+          <!-- IZQUIERDA: información -->
+          <div class="col-lg-6">
+            <div id="nivel-chip-wrap" style="margin-bottom:16px;"></div>
+
+            <div class="info-label">Material solicitado</div>
+            <div class="info-valor grande" id="det-propuesta">—</div>
+
+            <div class="info-label">Escuela</div>
+            <div class="info-valor" id="det-escuela">—</div>
+
+            <div class="info-label">Municipio</div>
+            <div class="info-valor" id="det-municipio">—</div>
+
+            <div class="info-label">Categoría</div>
+            <div class="info-valor" id="det-categoria">—</div>
+
+            <div class="info-label">Subcategoría</div>
+            <div class="info-valor" id="det-subcategoria">—</div>
+
+            <div class="info-label">Cantidad requerida</div>
+            <div class="info-valor" id="det-cantidad">—</div>
+          </div>
+
+          <!-- DERECHA: mapa -->
+          <div class="col-lg-6">
+            <p class="info-label" style="margin-bottom:8px;">Ubicación de la escuela</p>
+            <div class="mapa-wrapper" id="mapa-wrapper">
+              <iframe id="mapa-iframe"
+                src=""
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
+            </div>
+            
+          </div>
+
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- SECCIÓN INFERIOR: barra de progreso de donaciones -->
+      <div class="seccion-progreso">
+        <div class="progreso-titulo">Necesidades cubiertas de esta escuela</div>
+        <div class="progreso-subtitulo" id="progreso-subtitulo">
+          Calculando datos de la escuela...
+        </div>
+
+        <!-- Presets de cantidad a donar (inspirado en imagen) -->
+        <p class="info-label" style="margin-bottom:8px;">¿Cuánto quieres donar?</p>
+        <div class="presets-row" id="presets-row">
+          <!-- Se llena dinámicamente según la cantidad disponible -->
+        </div>
+
+        <!-- Barra de progreso -->
+        <p class="info-label" style="margin-bottom:8px; margin-top: 16px;">Progreso de donaciones</p>
+        <div class="barra-wrap">
+          <div class="barra-fill" id="barra-fill" style="width: 0%;">
+            <div class="barra-thumb"></div>
+          </div>
+          
+        </div>
+        <div class="progreso-stats">
+          <span id="stat-cubiertas">0 cubiertas</span>
+          <span id="stat-total">0 requeridas</span>
+        </div>
+<!-- BOTONES DE ACCIÓN -->
+<div style="display:flex; gap:12px; margin-top:32px; flex-wrap:wrap;">
+
+    <!-- Botón 1: Agregar al carrito -->
+    <button class="btn-donar-final" 
+            id="btn-agregar-carrito"
+            onclick="agregarAlCarrito(cantidadSeleccionada)"
+            style="flex:2; margin-top:0;">
+        ♡ Agregar donación
+    </button>
+
+    <!-- Botón 2: Volver a resultados -->
+    <a href="filtrado.html" 
+       class="btn-donar-final"
+       style="flex:1; margin-top:0; background:transparent; 
+              color:var(--azul, #1C3661); border:2px solid var(--azul, #1C3661);
+              text-decoration:none; display:flex; align-items:center; 
+              justify-content:center; box-shadow:none;">
+        ← Volver a resultados
+    </a>
+
+</div>
+        
+        <!-- PANEL CARRITO -->
+  <div id="carrito-panel">
+    <div id="carrito-header">
+      <h2>Mis donaciones</h2>
+      <button id="carrito-cerrar" onclick="cerrarCarrito()">✕</button>
+    </div>
+    <div id="carrito-lista">
+      <p class="carrito-vacio">Aún no has seleccionado ninguna donación.</p>
+    </div>
+    <div id="carrito-footer">
+      <button class="btn-donar" onclick="irADonar()" style="width:100%;font-size:1rem;padding:14px;">♡ Finalizar donación</button>
+    </div>
+  </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+  const API_URL = "http://localhost:3000/api";
+
+  /* ══════════════════════════════════════════════════════════
+     LEER DATOS DE LA NECESIDAD
+     Primero intenta localStorage (puesto por filtrado.html),
+     luego hace fetch al backend como fallback.
+     ══════════════════════════════════════════════════════════ */
+  const urlParams = new URLSearchParams(window.location.search);
+  const necesidadId = urlParams.get('id');
+
+  let necesidad = null;
+  let cantidadSeleccionada = 0;
+  let carrito = [];
+try {
+    const guardado = sessionStorage.getItem('carrito_donacion');
+    if (guardado) carrito = JSON.parse(guardado);
+} catch(e) { carrito = []; }
+
+  // Imágenes por categoría (usa las que ya tienes)
+  const imagenesCategoria = {
+    'Material':         'images/fotocarr2.JPG',
+    'Infraestructura':  'images/infraF.jpg',
+    'Formación':        'images/formacionF.jpg',
+    'Salud':            'images/salud.jpg',
+  };
+
+  async function iniciar() {
+    // 1. Intentar leer de localStorage
+    const guardado = localStorage.getItem('necesidad_actual');
+    if (guardado) {
+      try {
+        necesidad = JSON.parse(guardado);
+        localStorage.removeItem('necesidad_actual');
+      } catch(e) { necesidad = null; }
+    }
+
+    // 2. Fallback: fetch por ID
+    if (!necesidad && necesidadId) {
+      try {
+        const res = await fetch(`${API_URL}/data`);
+        if (res.ok) {
+          const { data } = await res.json();
+          necesidad = data.find(d => String(d.id) === String(necesidadId));
+        }
+      } catch(e) { console.error('Fetch fallback:', e); }
+    }
+
+    if (!necesidad) {
+      document.body.innerHTML = `
+        <div style="text-align:center;padding:120px 20px;font-family:Montserrat,sans-serif">
+          <h2 style="color:#c0392b">No se encontró la necesidad</h2>
+          <p style="color:#888">Intenta volver a los resultados</p>
+          <a href="filtrado.html" style="color:#1B6B35;font-weight:700;">← Volver</a>
+        </div>`;
+      return;
+    }
+
+    renderDetalle();
+    await cargarProgresoEscuela();
+    await cargarNavbarCategorias();
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     RENDER DETALLE
+     ══════════════════════════════════════════════════════════ */
+  function renderDetalle() {
+    document.title = `${necesidad.Propuesta} – Mi Escuela Primero`;
+
+    // Banner: imagen por categoría
+    const imgSrc = imagenesCategoria[necesidad.Categoría] || 'images/otros.png';
+    document.getElementById('banner-img').src = imgSrc;
+    document.getElementById('banner-badge').textContent = necesidad.Categoría;
+
+    // Info
+    document.getElementById('det-propuesta').textContent    = necesidad.Propuesta;
+    document.getElementById('det-escuela').textContent      = necesidad.Escuela;
+    document.getElementById('det-municipio').textContent    = necesidad.Municipio;
+    document.getElementById('det-categoria').textContent    = necesidad.Categoría;
+    document.getElementById('det-subcategoria').textContent = necesidad.Subcategoría;
+    document.getElementById('det-cantidad').textContent     = `${necesidad.Cantidad} ${necesidad.Unidad || ''}`;
+
+    // Nivel de necesidad
+    const nivel = calcularNivel(necesidad.Cantidad);
+    document.getElementById('nivel-chip-wrap').innerHTML =
+      `<span class="nivel-chip ${nivel.claseBase}">${nivel.label}</span>`;
+
+    // Mapa — Google Maps embed buscando nombre de escuela + municipio
+   const query = encodeURIComponent(
+  `${necesidad.Escuela}, ${necesidad.Municipio}, Jalisco, México`
+);
+    document.getElementById('mapa-iframe').src =
+  `https://www.google.com/maps?q=${query}&output=embed`;
+    
+    generarPresets(parseInt(necesidad.Cantidad) || 0);
+  }
+
+  function calcularNivel(cantidad) {
+    const n = parseInt(cantidad) || 0;
+    if (n > 50) return { label: 'Urgente',  claseBase: 'urgente' };
+    if (n > 10) return { label: 'Moderado', claseBase: 'moderado' };
+    return          { label: 'Bajo',      claseBase: 'bajo' };
+  }
+
+  function generarPresets(max) {
+    const row = document.getElementById('presets-row');
+    row.innerHTML = '';
+
+    // Generar opciones: 10%, 25%, 50%, 75%, 90%, 100% de la cantidad
+    const porcentajes = [10, 25, 50, 75, 90, 100];
+    const opciones = [...new Set(
+      porcentajes.map(p => Math.max(1, Math.round(max * p / 100)))
+    )].filter(v => v <= max);
+
+    
+
+    // Selección por defecto: 25%
+    const defecto = opciones[1] || opciones[0] || 1;
+    cantidadSeleccionada = defecto;
+
+    opciones.forEach(val => {
+      const btn = document.createElement('button');
+      btn.className = `preset-btn${val === defecto ? ' activo' : ''}`;
+      btn.textContent = `${val} ${necesidad.Unidad || 'uds.'}`;
+      btn.onclick = () => {
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('activo'));
+        btn.classList.add('activo');
+        cantidadSeleccionada = val;
+      };
+      row.appendChild(btn);
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     PROGRESO DE LA ESCUELA
+     Calcula cuántas de sus necesidades están cubiertas vs total
+     ══════════════════════════════════════════════════════════ */
+  async function cargarProgresoEscuela() {
+    try {
+      const res = await fetch(
+        `${API_URL}/data?escuela=${encodeURIComponent(necesidad.Escuela)}`
+      );
+      if (!res.ok) return;
+      const { data } = await res.json();
+
+      const total    = data.length;
+      const cubiertas = data.filter(d => d.Estado === 'Cubierto').length;
+      const pct       = total > 0 ? Math.round((cubiertas / total) * 100) : 0;
+
+      // Animar barra
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          document.getElementById('barra-fill').style.width = `${pct}%`;
+          document.getElementById('barra-pct').textContent  = `${pct}%`;
+        }, 300);
+      });
+
+      document.getElementById('stat-cubiertas').textContent = `${cubiertas} necesidades cubiertas`;
+      document.getElementById('stat-total').textContent     = `${total} necesidades totales`;
+      document.getElementById('progreso-subtitulo').textContent =
+        `Esta escuela tiene ${cubiertas} de ${total} necesidades cubiertas (${pct}%)`;
+
+    } catch(e) {
+      document.getElementById('progreso-subtitulo').textContent =
+        'No se pudo cargar el progreso de la escuela.';
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     DONAR DESDE DETALLE
+     ══════════════════════════════════════════════════════════ */
+  function donarDesdeDetalle() {
+    if (!cantidadSeleccionada || cantidadSeleccionada < 1) {
+      alert('Selecciona una cantidad primero');
+      return;
+    }
+
+    // Leer carrito existente o crear nuevo
+    let carrito = [];
+    try {
+      const guardado = sessionStorage.getItem('carrito_donacion');
+      if (guardado) carrito = JSON.parse(guardado);
+    } catch(e) {}
+
+    // Agregar o actualizar
+    const existente = carrito.find(c => c.id === necesidad.id);
+    if (existente) {
+      existente.cantidad = Math.min(
+        existente.cantidad + cantidadSeleccionada,
+        parseInt(necesidad.Cantidad)
+      );
+    } else {
+      carrito.push({
+        id:        necesidad.id,
+        escuela:   necesidad.Escuela,
+        propuesta: necesidad.Propuesta,
+        cantidad:  cantidadSeleccionada,
+        max:       parseInt(necesidad.Cantidad),
+        unidad:    necesidad.Unidad || ''
+      });
+    }
+
+    sessionStorage.setItem('carrito_donacion', JSON.stringify(carrito));
+    location.href = 'pasos.html';
+  }
+/* ══════════════════════════════════════════════════════════
+     CARRITO
+     ══════════════════════════════════════════════════════════ */
+ 
+
+function agregarAlCarrito(cantidad) {
+    if (!necesidad) return;
+    if (!cantidad || cantidad < 1) {
+        alert('Selecciona una cantidad primero');
+        return;
+    }
+
+    const existente = carrito.find(c => c.id === necesidad.id);
+    if (existente) {
+        existente.cantidad = Math.min(
+            existente.cantidad + cantidad,
+            parseInt(necesidad.Cantidad)
+        );
+    } else {
+        carrito.push({
+            id:        necesidad.id,
+            escuela:   necesidad.Escuela,
+            propuesta: necesidad.Propuesta,
+            cantidad:  cantidad,
+            max:       parseInt(necesidad.Cantidad),
+            unidad:    necesidad.Unidad || ''
+        });
+    }
+
+    renderCarrito(); // esto ya guarda en sessionStorage
+    abrirCarrito();  // abre el panel lateral
+}
+  
+  function cambiarCantidadCarrito(id, delta) {
+    const item = carrito.find(c => c.id === id);
+    if (!item) return;
+    item.cantidad = Math.max(1, Math.min(item.cantidad + delta, item.max));
+    renderCarrito();
+  }
+ 
+  function quitarDelCarrito(id) {
+    carrito = carrito.filter(c => c.id !== id);
+    renderCarrito();
+  }
+ 
+  function renderCarrito() {
+    
+    sessionStorage.setItem('carrito_donacion', JSON.stringify(carrito));
+
+    const lista = document.getElementById("carrito-lista");
+    lista.innerHTML = "";
+    document.getElementById("carrito-count").textContent = carrito.length;
+
+    if (carrito.length === 0) {
+        lista.innerHTML = "<p class='carrito-vacio'>Aún no has seleccionado ninguna donación.</p>";
+        return;
+    }
+
+    carrito.forEach(item => {
+        const el = document.createElement("div");
+        el.className = "carrito-item";
+        el.innerHTML = `
+            <div class="carrito-item-info">
+                <strong>${item.escuela}</strong>
+                <span>${item.propuesta} (${item.unidad})</span>
+            </div>
+            <div class="carrito-cantidad-wrap">
+                <button class="carrito-cantidad-btn" onclick="cambiarCantidadCarrito(${item.id}, -1)">−</button>
+                <span class="carrito-cantidad-num">${item.cantidad}</span>
+                <button class="carrito-cantidad-btn" onclick="cambiarCantidadCarrito(${item.id}, +1)">+</button>
+            </div>
+            <button class="carrito-quitar" onclick="quitarDelCarrito(${item.id})">✕</button>
+        `;
+        lista.appendChild(el);
+    });
+}
+ 
+  function abrirCarrito()  { document.getElementById("carrito-panel").classList.add("abierto"); }
+  function cerrarCarrito() { document.getElementById("carrito-panel").classList.remove("abierto"); }
+ 
+  
+  function irADonar() {
+    if (carrito.length === 0) {
+      alert('Agrega al menos una donación antes de continuar.');
+      return;
+    }
+    sessionStorage.setItem('carrito_donacion', JSON.stringify(carrito));
+    location.href = 'pasos.html';
+  }
+ 
+  /* ══════════════════════════════════════════════════════════
+     MODAL DONAR
+*/
+ 
+  function confirmarModalDonar() {
+    agregarAlCarrito(cantidadSeleccionada);
+}
+  iniciar();
+  </script>
+</body>
+</html>
