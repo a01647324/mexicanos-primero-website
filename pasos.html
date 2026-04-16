@@ -13,46 +13,69 @@
 </head>
 <body>
  
-    <div class="subpagina-header">
-        <div style="display:flex; align-items:center; justify-content:center; gap:0.8rem; margin-bottom:0.9rem;">
-            <span class="info-badge" style="margin-bottom:0;">Siguientes Pasos</span>
-            <a href="index.html" class="btn-home" style="position:static; width:32px; height:32px; font-size:0.85rem;">🏠︎</a>
-        </div>
+    <div class="subpagina-header header-pasos">
+        <div class="hero-contenido">
+        
+        <span class="info-badge">Siguientes Pasos</span>
+        
+
         <h1>Siguientes Pasos</h1>
         <p>Con cada gesto, podemos transformar la educación.</p>
     </div>
- 
+    </div>
     
     <!-- TARJETA DE CONTACTO -->
-    <section class="seccion" style="padding-top: 1.5rem; background: transparent;">
+    <section class="contacto-body">
         <div class="contenedor">
         <div class="tarjeta">
-          
- <!--BRANDON SI QUIERES QUITA LA CLASE-->
-            <h2 class="subtituloPasos" style="text-align:center; margin-bottom: 1.5rem;">
-            Estas a unos pasos de terminar tu proceso de donación...
-            </h2>
+       
+            
+            <h2 class="pasos-titulo">
+    Estás a unos pasos de terminar tu proceso de donación
+</h2>
 
-            <p style="text-align:center; margin-bottom: 1.5rem;">
-            1. Confirma tu donación presionando el boton <strong id="finalizar">Finalizar</strong>
-           <br> 2. Dejanos tus datos para poder comunicarnos contigo
-            <br>3. Una asesora te contactara para acompañarte en el proceso
-            <br>4. Definimos juntos el siguiente paso de tu donacion.
-            </p>
+<div class="pasos-barra-wrap">
+    <div class="pasos-linea"></div>
+    <div class="pasos-linea-progreso"></div>
+
+    <div class="paso activo">
+        <div class="paso-circulo">✓</div>
+        <p>Confirmar</p>
+    </div>
+
+    <div class="paso activo">
+        <div class="paso-circulo">✓</div>
+        <p>Datos</p>
+    </div>
+
+    <div class="paso activo actual">
+        <div class="paso-circulo">✓</div>
+        <p>Contacto</p>
+    </div>
+
+    <div class="paso">
+        <div class="paso-circulo">4</div>
+        <p>Seguimiento</p>
+    </div>
+</div>
+
+<p class="pasos-texto-ayuda">
+    Presiona <strong>Finalizar</strong> para aceptar los términos y continuar con el formulario.
+</p>
  
-            <div style="text-align:center; margin-bottom: 2rem;">
-            <button class="btn btn-verde" onclick="abrirTerminos()">📋 Finalizar</button>
+            <div>
+                <button class="btn btn-verde" onclick="abrirTerminos()">📋 Finalizar</button>
             </div>
  
         
         </div>
  
-        <div style="text-align:center; padding-bottom: 1rem;">
-        </div>
+        
+        
         </div>
     </section>
  
-    </div><!-- /contacto-body -->
+    
  
     <div class="contacto-btn-wrap">
         <a href="index.html" class="btn btn-borde">← Regresar al Inicio</a>
@@ -61,12 +84,14 @@
     <div class="modal-overlay" id="modal-terminos">
         <div class="modal-caja">
         <h2>Antes de continuar</h2>
-        <p style="color: var(--texto-suave); font-size: 0.88rem; margin-bottom: 1rem;">
+        <p style="color: var(--texto-suave); font-size: 0.85rem; margin-bottom: 1.2rem;">
             Para llenar el formulario de contacto es necesario que aceptes nuestros términos y condiciones de privacidad.
         </p>
  
  
-        <a class="btn-ver-mas" href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de Privacidad completo → </a>
+        <a class="btn-ver-mas" href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf" target="_blank">
+            Aviso de Privacidad completo →
+        </a>
  
         
  
@@ -82,7 +107,7 @@
         </div>
     </div>
  
-    
+    <div id="resumen-carrito" class="resumen-carrito"></div>
     <div class="modal-overlay" id="modal-formulario">
         <div class="modal-caja">
         <h2>✉️ Formulario de Contacto</h2>
@@ -91,56 +116,46 @@
         </p>
  
         <form id="contacto-donor">
-            <div class="form-grupo">
-                <label for="nombre">Nombre completo: </label>
-                <input type="text" placeholder="Tu nombre completo" required/>
-            </div>
-            <div class="form-group">
-                    <label for="instancia">Tipo de instancia desde la que nos contactas:</label>
-                    <!--AQUI PONER ALGO PQ ESTE LE FALTA PADDING Y MARGIN-->
-                    <select
-                    id="instancia" 
-                    name="instancia"> 
-                    <option value="">Selecciona</option>
-                    <option value="Empresa">Empresa</option>
-                    <option value="Organizacion">Organización de la sociedad civil</option>
-                    <option value="Institucion">Institución educativa</option>
-                    <option value="Gobierno">Gobierno municipal</option>
-                    <option value="noAplica">No represento una instancia</option>
-                    <option value="Otro:">Otro:</option>
-                    </select>
-                </div>
- 
-                <div class="form-grupo">
-                    <label for="nombreInstancia">Nombre de la instancia de la que nos contactas (si aplica):</label>
-                    <input type="text" placeholder="Nombre de la instancia"/>
-                </div>
-                <div class="form-grupo">
-                    <label>Correo electrónico: </label>
-                    <input type="email" placeholder="tucorreo@ejemplo.com" required/>
-                </div>
- 
-                <div class="form-grupo">
-                    <label>Teléfono</label>
-                    <input type="tel" placeholder="33 1234 5678" required/>
-                </div>
- 
-                <div class="form-grupo">
-                    <label>Tipo de donación</label>
-                    <select>
-                    <option value="">Selecciona una opción</option>
-                    <option>Donación económica</option>
-                    <option>Donación en especie</option>
-                    <option>Voluntariado</option>
-                    <option>Brindar talleres</option>
-                    <option>Otro</option>
-                    </select>
-                </div>
-                <div class="form-grupo">
-                    <label>Mensaje adicional</label>
-                    <textarea placeholder="Cuéntanos cómo deseas apoyar..."></textarea>
-                </div>
-        </form>
+    <div class="form-grupo">
+        <label for="nombre">Nombre completo:</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre completo" required>
+    </div>
+
+    <div class="form-grupo">
+        <label for="instancia">Tipo de instancia desde la que nos contactas:</label>
+        <select id="instancia" name="tipo_instancia" required>
+            <option value="">Selecciona</option>
+            <option value="Empresa">Empresa</option>
+            <option value="Organizacion">Organización de la sociedad civil</option>
+            <option value="Institucion">Institución educativa</option>
+            <option value="Gobierno">Gobierno municipal</option>
+            <option value="No aplica">No represento una instancia</option>
+            <option value="Otro">Otro</option>
+        </select>
+    </div>
+
+    <div class="form-grupo">
+        <label for="nombreInstancia">Nombre de la instancia de la que nos contactas (si aplica):</label>
+        <input type="text" id="nombreInstancia" name="nombreInstancia" placeholder="Nombre de la instancia">
+    </div>
+
+    <div class="form-grupo">
+        <label for="correo">Correo electrónico:</label>
+        <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
+    </div>
+
+    <div class="form-grupo">
+        <label for="telefono">Teléfono:</label>
+        <input type="tel" id="telefono" name="telefono" placeholder="33 1234 5678" required>
+    </div>
+
+    
+
+    <div class="form-grupo">
+        <label for="mensaje">Mensaje adicional:</label>
+        <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos cómo deseas apoyar..."></textarea>
+    </div>
+</form>
  
         <button class="btn-aceptar" onclick="enviarFormulario()">Enviar mensaje →</button>
         <button class="btn-cancelar-modal" onclick="cerrarFormulario()">Cancelar</button>
@@ -161,7 +176,114 @@
             <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad </a></p>
         </div>
     </footer>
+    <script>
+// ── MODAL TÉRMINOS ─────────────────────────────
+function abrirTerminos() {
+  document.getElementById("modal-terminos").classList.add("activo");
+}
 
+function cerrarTerminos() {
+  document.getElementById("modal-terminos").classList.remove("activo");
+}
+
+// ── ACTIVAR BOTÓN DE ACEPTAR ───────────────────
+const checkbox = document.getElementById("check-terminos");
+const btnAceptar = document.getElementById("btn-aceptar-terminos");
+
+if (checkbox && btnAceptar) {
+  checkbox.addEventListener("change", () => {
+    btnAceptar.disabled = !checkbox.checked;
+  });
+}
+
+// ── ABRIR FORMULARIO ───────────────────────────
+if (btnAceptar) {
+  btnAceptar.addEventListener("click", () => {
+    cerrarTerminos();
+    document.getElementById("modal-formulario").classList.add("activo");
+  });
+}
+
+function cerrarFormulario() {
+  document.getElementById("modal-formulario").classList.remove("activo");
+}
+
+// ── RESUMEN DEL CARRITO ────────────────────────
+const carritoGuardado = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
+const resumen = document.getElementById("resumen-carrito");
+
+if (resumen) {
+  if (!carritoGuardado.length) {
+    resumen.innerHTML = "<p>No hay materiales seleccionados todavía.</p>";
+  } else {
+    resumen.innerHTML = `
+      <h3 style="margin-bottom: 1rem;">Resumen de materiales</h3>
+      ${carritoGuardado.map(item => `
+        <div style="padding: .7rem 0; border-bottom: 1px solid #dce8dc;">
+          <strong>${item.escuela}</strong><br>
+          <span>${item.propuesta}</span><br>
+          <small>Cantidad: ${item.cantidad} ${item.unidad || ""}</small>
+        </div>
+      `).join("")}
+    `;
+  }
+}
+
+// ── ENVÍO DEL FORMULARIO ───────────────────────
+window.enviarFormulario = async function() {
+  const materiales = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
+
+  const payload = {
+    nombre_completo: document.getElementById("nombre").value.trim(),
+    tipo_instancia: document.getElementById("instancia").value,
+    nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
+    correo: document.getElementById("correo").value.trim(),
+    telefono: document.getElementById("telefono").value.trim(),
+    mensaje: document.getElementById("mensaje").value.trim(),
+    aviso_privacidad_aceptado: document.getElementById("check-terminos").checked,
+    materiales
+  };
+
+  if (!payload.nombre_completo || !payload.telefono || !payload.correo) {
+    alert("Completa nombre, correo y teléfono.");
+    return;
+  }
+
+  if (materiales.length === 0) {
+    alert("No hay materiales en el carrito.");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/api/solicitud-material", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "No se pudo enviar la solicitud.");
+      return;
+    }
+
+    alert("¡Gracias! Tu solicitud fue enviada correctamente.");
+
+    sessionStorage.removeItem("carrito_donacion");
+    document.getElementById("contacto-donor").reset();
+    cerrarFormulario();
+
+    window.location.href = "index.html";
+
+  } catch (error) {
+    console.error(error);
+    alert("Error de conexión con el servidor.");
+  }
+};
+</script>
     <script src="main.js"></script>
 
 </body>

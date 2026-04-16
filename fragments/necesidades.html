@@ -1,0 +1,974 @@
+<div class="seccion-necesidades">
+
+  <!-- Encabezado de la subpágina -->
+  <div class="subpagina-header">
+    <div>
+      <h1 class="subpagina-titulo">Gestión de Necesidades</h1>
+      <p class="subpagina-subtitulo">Centro de Registros · Administración completa de necesidades escolares</p>
+    </div>
+  </div>
+
+  <!-- Grid de las 3 secciones -->
+  <div class="necesidades-grid">
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN 1: CONSULTA (READ) — Verde
+         ════════════════════════════════════════════ -->
+    <section class="panel-card panel-consulta">
+
+      <div class="panel-header">
+        <div class="panel-icono panel-icono-verde">
+          <i class="bi bi-search"></i>
+        </div>
+        <div>
+          <h2 class="panel-titulo">Consulta de Registros</h2>
+          <p class="panel-descripcion">Localiza, edita o elimina registros existentes.</p>
+        </div>
+      </div>
+
+      <!-- Buscador de escuela con autocompletado -->
+      <div class="panel-buscador-wrapper">
+        <i class="bi bi-search panel-buscador-icono"></i>
+        <input
+          type="text"
+          id="buscador-escuela"
+          class="panel-input"
+          placeholder="Buscar por nombre de escuela..."
+          autocomplete="off">
+        <ul id="buscador-sugerencias" class="panel-sugerencias"></ul>
+      </div>
+
+      <!-- Filtros (dropdowns) -->
+      <div class="panel-filtros">
+        <select id="filtro-municipio" class="panel-select">
+          <option value="">Todos los municipios</option>
+        </select>
+        <select id="filtro-categoria" class="panel-select">
+          <option value="">Todas las categorías</option>
+        </select>
+        <select id="filtro-subcategoria" class="panel-select">
+          <option value="">Todas las subcategorías</option>
+        </select>
+        <select id="filtro-escuela" class="panel-select">
+          <option value="">Todas las escuelas</option>
+        </select>
+      </div>
+
+      <!-- Resultados: tarjetas -->
+      <div class="panel-resultados-info">
+        <span id="contador-resultados">Usa los filtros o busca una escuela para ver registros</span>
+      </div>
+
+      <div id="lista-registros" class="lista-registros">
+      </div>
+
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN 2: CREAR (CREATE) — Azul
+         ════════════════════════════════════════════ -->
+    <section class="panel-card panel-crear">
+
+      <div class="panel-header">
+        <div class="panel-icono panel-icono-azul">
+          <i class="bi bi-plus-lg"></i>
+        </div>
+        <div>
+          <h2 class="panel-titulo">Crear Registro</h2>
+          <p class="panel-descripcion">Agrega una nueva necesidad al sistema.</p>
+        </div>
+      </div>
+
+      <form id="form-crear" class="panel-form">
+
+        <div class="form-grupo">
+          <label class="form-label">Escuela</label>
+          <div style="position:relative;">
+            <input type="text" id="crear-escuela" name="escuela" class="panel-input"
+              placeholder="Buscar escuela existente..." autocomplete="off" required>
+            <ul id="crear-escuela-sugerencias" class="panel-sugerencias"></ul>
+          </div>
+          <small class="form-ayuda">Si la escuela no existe, se creará automáticamente</small>
+        </div>
+
+        <div class="form-grupo">
+          <label class="form-label">Municipio</label>
+          <div style="position:relative;">
+            <input type="text" id="crear-municipio" name="municipio" class="panel-input"
+              placeholder="Buscar municipio..." autocomplete="off" required>
+            <ul id="crear-municipio-sugerencias" class="panel-sugerencias"></ul>
+          </div>
+        </div>
+
+        <div class="form-grupo">
+          <label class="form-label">Categoría</label>
+          <select id="crear-categoria" name="categoria" class="panel-select" required>
+            <option value="">Cargando categorías...</option>
+          </select>
+        </div>
+
+        <div class="form-grupo">
+          <label class="form-label">Subcategoría</label>
+          <select id="crear-subcategoria" name="subcategoria" class="panel-select" required>
+            <option value="">Selecciona primero una categoría</option>
+          </select>
+        </div>
+
+        <div class="form-grupo form-grupo-completo">
+          <label class="form-label">Propuesta / Necesidad</label>
+          <textarea name="propuesta" class="panel-input panel-textarea" rows="2"
+            placeholder="Describe la necesidad específica" required></textarea>
+        </div>
+
+        <div class="form-grupo-doble">
+          <div class="form-grupo">
+            <label class="form-label">Cantidad</label>
+            <input type="number" name="cantidad" class="panel-input" placeholder="0" min="0" required>
+          </div>
+          <div class="form-grupo">
+            <label class="form-label">Unidad</label>
+            <input type="text" name="unidad" class="panel-input" placeholder="Ej. piezas" required>
+          </div>
+        </div>
+
+        <div class="form-grupo">
+          <label class="form-label">Estado</label>
+          <select name="estado" class="panel-select" required>
+            <option value="Pendiente">Pendiente</option>
+            <option value="En proceso">En proceso</option>
+            <option value="Completado">Completado</option>
+          </select>
+        </div>
+
+        <div class="form-grupo form-grupo-completo">
+          <label class="form-label">Detalles <span style="font-weight:400;opacity:.6">(opcional)</span></label>
+          <textarea name="detalles" class="panel-input panel-textarea" rows="2"
+            placeholder="Información adicional..."></textarea>
+        </div>
+
+        <button type="submit" class="panel-btn panel-btn-azul form-grupo-completo">
+          <i class="bi bi-plus-lg"></i>
+          Guardar Registro
+        </button>
+
+      </form>
+
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN 3: SINCRONIZACIÓN EXCEL — Naranja
+         ════════════════════════════════════════════ -->
+    <section class="panel-card panel-carga">
+
+      <div class="panel-header">
+        <div class="panel-icono panel-icono-naranja">
+          <i class="bi bi-arrow-down-up"></i>
+        </div>
+        <div>
+          <h2 class="panel-titulo">Sincronización Excel</h2>
+          <p class="panel-descripcion">Descarga el archivo actualizado o sube cambios masivos.</p>
+        </div>
+      </div>
+
+      <!-- Flujo de trabajo recomendado -->
+      <div class="panel-flujo">
+        <div class="flujo-paso">
+          <span class="flujo-numero">1</span>
+          <span class="flujo-texto"><strong>Descarga</strong> el Excel con el estado actual</span>
+        </div>
+        <div class="flujo-flecha">
+          <i class="bi bi-arrow-right"></i>
+        </div>
+        <div class="flujo-paso">
+          <span class="flujo-numero">2</span>
+          <span class="flujo-texto"><strong>Edita</strong> el archivo localmente</span>
+        </div>
+        <div class="flujo-flecha">
+          <i class="bi bi-arrow-right"></i>
+        </div>
+        <div class="flujo-paso">
+          <span class="flujo-numero">3</span>
+          <span class="flujo-texto"><strong>Sube</strong> el archivo modificado</span>
+        </div>
+      </div>
+
+      <!-- ── DESCARGAR EXCEL ── -->
+      <div class="panel-bloque">
+        <div class="panel-bloque-header">
+          <i class="bi bi-cloud-download"></i>
+          <h3 class="panel-bloque-titulo">Descargar Excel Actualizado</h3>
+        </div>
+        <p class="panel-bloque-texto">
+          Genera un archivo .xlsx con todos los registros actuales, incluyendo cambios manuales recientes.
+        </p>
+        <div class="descarga-info" id="descarga-info">
+          <i class="bi bi-info-circle"></i>
+          <span>Última actualización en sistema: <strong id="ultima-actualizacion">cargando...</strong></span>
+        </div>
+        <button type="button" id="btn-descargar" class="panel-btn panel-btn-outline-naranja">
+          <i class="bi bi-download"></i>
+          Descargar Excel Actual
+        </button>
+      </div>
+
+      <!-- Separador -->
+      <div class="panel-divisor">
+        <span>o</span>
+      </div>
+
+      <!-- ── SUBIR EXCEL ── -->
+      <div class="panel-bloque">
+        <div class="panel-bloque-header">
+          <i class="bi bi-cloud-upload"></i>
+          <h3 class="panel-bloque-titulo">Subir Excel Modificado</h3>
+        </div>
+
+        <!-- Aviso importante -->
+        <div class="panel-aviso">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <div>
+            <strong>Importante:</strong>
+            <span>El archivo debe mantener el mismo formato y orden de columnas que el Excel descargado. Esta acción reemplazará todos los registros existentes.</span>
+          </div>
+        </div>
+
+        <!-- Zona de drop -->
+        <div class="dropzone" id="dropzone">
+          <div class="dropzone-icono">
+            <i class="bi bi-cloud-arrow-up"></i>
+          </div>
+          <p class="dropzone-titulo">Arrastra tu archivo aquí</p>
+          <p class="dropzone-sub">o haz clic para seleccionar</p>
+          <input type="file" id="input-excel" accept=".xlsx,.xls" hidden>
+        </div>
+
+        <!-- Tags de formatos aceptados -->
+        <div class="formato-tags">
+          <span class="formato-tag">.XLSX</span>
+          <span class="formato-tag">.XLS</span>
+        </div>
+
+        <!-- Archivo seleccionado (oculto hasta seleccionar) -->
+        <div id="archivo-info" class="archivo-info" hidden>
+          <div class="archivo-icono">
+            <i class="bi bi-file-earmark-spreadsheet"></i>
+          </div>
+          <div class="archivo-detalles">
+            <strong id="archivo-nombre">archivo.xlsx</strong>
+            <span id="archivo-meta">— · — KB</span>
+          </div>
+          <button type="button" id="btn-quitar-archivo" class="archivo-quitar" aria-label="Quitar archivo">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        <!-- Botón procesar (deshabilitado hasta tener archivo) -->
+        <button type="button" id="btn-procesar" class="panel-btn panel-btn-naranja" disabled>
+          <i class="bi bi-check2-circle"></i>
+          Procesar Archivo
+        </button>
+      </div>
+
+    </section>
+
+  </div>
+</div>
+
+<script>
+// ============================================================
+// LÓGICA DE GESTIÓN DE NECESIDADES
+// Envuelto en IIFE para no contaminar el scope global
+// ============================================================
+
+(function() {
+
+  var API_URL = "http://localhost:3000/api";
+
+  // ── Estado ──
+  var todasSubcatsAdmin = [];
+  var resultadosActuales = [];
+
+  // ══════════════════════════════════════════════════════════
+  // ARRANQUE
+  // ══════════════════════════════════════════════════════════
+
+  function iniciarNecesidades() {
+    cargarFiltrosAdmin();
+    configurarBuscadorEscuela();
+    configurarEventosFiltros();
+    configurarFormCrear();
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // CARGA DE FILTROS
+  // ══════════════════════════════════════════════════════════
+
+  async function cargarFiltrosAdmin() {
+    try {
+      var res = await fetch(API_URL + "/filtros");
+      if (!res.ok) throw new Error("Error cargando filtros");
+      var filtros = await res.json();
+
+      var selMun = document.getElementById("filtro-municipio");
+      filtros.municipios.forEach(function(nombre) {
+        var o = document.createElement("option");
+        o.value = nombre;
+        o.textContent = nombre;
+        selMun.appendChild(o);
+      });
+
+      var selEsc = document.getElementById("filtro-escuela");
+      filtros.escuelas.forEach(function(nombre) {
+        var o = document.createElement("option");
+        o.value = nombre;
+        o.textContent = nombre;
+        selEsc.appendChild(o);
+      });
+
+      var selCat = document.getElementById("filtro-categoria");
+      filtros.categorias.forEach(function(cat) {
+        var o = document.createElement("option");
+        o.value = cat.id;
+        o.textContent = cat.nombre;
+        o.dataset.categoriaRealId = cat.categoria_real_id;
+        selCat.appendChild(o);
+      });
+
+      todasSubcatsAdmin = filtros.subcategorias;
+      renderSubcatAdmin(todasSubcatsAdmin);
+
+    } catch (err) {
+      console.error("Error cargando filtros admin:", err);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // SUBCATEGORÍAS
+  // ══════════════════════════════════════════════════════════
+
+  function renderSubcatAdmin(subcats) {
+    var sel = document.getElementById("filtro-subcategoria");
+    sel.innerHTML = '<option value="">Todas las subcategorías</option>';
+    subcats.forEach(function(sub) {
+      var o = document.createElement("option");
+      o.value = sub.id;
+      o.textContent = sub.nombre;
+      o.dataset.subcategoriaRealId = sub.subcategoria_real_id;
+      o.dataset.categoriaCatalogoId = sub.categoria_catalogo_id;
+      sel.appendChild(o);
+    });
+  }
+
+  function actualizarSubcatsAdmin() {
+    var categoriaId = document.getElementById("filtro-categoria").value;
+    if (!categoriaId) {
+      renderSubcatAdmin(todasSubcatsAdmin);
+    } else {
+      var filtradas = todasSubcatsAdmin.filter(function(s) {
+        return String(s.categoria_catalogo_id) === String(categoriaId);
+      });
+      renderSubcatAdmin(filtradas);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // EVENTOS DE FILTROS
+  // ══════════════════════════════════════════════════════════
+
+  function configurarEventosFiltros() {
+    document.getElementById("filtro-categoria").addEventListener("change", function() {
+      actualizarSubcatsAdmin();
+      buscarRegistros();
+    });
+    document.getElementById("filtro-subcategoria").addEventListener("change", buscarRegistros);
+    document.getElementById("filtro-municipio").addEventListener("change", buscarRegistros);
+    document.getElementById("filtro-escuela").addEventListener("change", buscarRegistros);
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // BUSCADOR CON AUTOCOMPLETADO
+  // ══════════════════════════════════════════════════════════
+
+  function configurarBuscadorEscuela() {
+    var input = document.getElementById("buscador-escuela");
+    var lista = document.getElementById("buscador-sugerencias");
+    var debounceTimer = null;
+
+    input.addEventListener("input", function() {
+      var texto = input.value.trim();
+      clearTimeout(debounceTimer);
+      if (texto.length < 2) {
+        lista.classList.remove("visible");
+        lista.innerHTML = "";
+        return;
+      }
+      debounceTimer = setTimeout(function() {
+        buscarSugerenciasEscuela(texto);
+      }, 300);
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!input.contains(e.target) && !lista.contains(e.target)) {
+        lista.classList.remove("visible");
+      }
+    });
+
+    input.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        lista.classList.remove("visible");
+        buscarRegistros();
+      }
+    });
+  }
+
+  async function buscarSugerenciasEscuela(texto) {
+    var lista = document.getElementById("buscador-sugerencias");
+    try {
+      var res = await fetch(API_URL + "/admin/escuelas/buscar?q=" + encodeURIComponent(texto));
+      if (!res.ok) throw new Error("Error buscando escuelas");
+      var data = await res.json();
+
+      lista.innerHTML = "";
+      if (data.data.length === 0) {
+        lista.innerHTML = '<li class="sugerencia-vacia">No se encontraron escuelas</li>';
+        lista.classList.add("visible");
+        return;
+      }
+
+      data.data.forEach(function(nombre) {
+        var li = document.createElement("li");
+        li.textContent = nombre;
+        li.addEventListener("click", function() {
+          document.getElementById("buscador-escuela").value = nombre;
+          lista.classList.remove("visible");
+          buscarRegistros();
+        });
+        lista.appendChild(li);
+      });
+      lista.classList.add("visible");
+    } catch (err) {
+      console.error("Error en autocompletado:", err);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // BÚSQUEDA DE REGISTROS (READ)
+  // ══════════════════════════════════════════════════════════
+
+  async function buscarRegistros() {
+    var params = new URLSearchParams();
+    var municipio   = document.getElementById("filtro-municipio").value;
+    var escuela     = document.getElementById("filtro-escuela").value;
+    var categoriaId = document.getElementById("filtro-categoria").value;
+    var subcatId    = document.getElementById("filtro-subcategoria").value;
+    var busqueda    = document.getElementById("buscador-escuela").value.trim();
+
+    if (municipio)   params.set("municipio",       municipio);
+    if (escuela)     params.set("escuela",         escuela);
+    if (categoriaId) params.set("categoria_id",    categoriaId);
+    if (subcatId)    params.set("subcategoria_id", subcatId);
+    if (busqueda)    params.set("busqueda",        busqueda);
+
+    if (params.toString() === "") {
+      document.getElementById("contador-resultados").textContent = "Usa los filtros o busca una escuela para ver registros";
+      document.getElementById("lista-registros").innerHTML = "";
+      return;
+    }
+
+    try {
+      document.getElementById("contador-resultados").textContent = "Buscando...";
+      var res = await fetch(API_URL + "/admin/necesidades?" + params.toString());
+      if (!res.ok) throw new Error("Error del servidor");
+      var data = await res.json();
+      resultadosActuales = data.data;
+      renderTarjetas(resultadosActuales);
+    } catch (err) {
+      console.error("Error buscando registros:", err);
+      document.getElementById("contador-resultados").textContent = "Error al cargar registros";
+      document.getElementById("lista-registros").innerHTML = "";
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // RENDER DE TARJETAS
+  // ══════════════════════════════════════════════════════════
+
+  function renderTarjetas(registros) {
+    var lista = document.getElementById("lista-registros");
+    var contador = document.getElementById("contador-resultados");
+    lista.innerHTML = "";
+
+    if (registros.length === 0) {
+      contador.textContent = "Sin resultados";
+      lista.innerHTML = '<div class="lista-registros-vacio">No se encontraron registros con estos filtros.</div>';
+      return;
+    }
+
+    contador.textContent = registros.length + (registros.length === 1 ? " registro" : " registros");
+
+    registros.forEach(function(reg) {
+      var card = document.createElement("div");
+      card.className = "registro-card";
+      card.innerHTML =
+        '<div class="registro-card-info">' +
+          '<p class="registro-card-escuela">' + reg.Escuela + '</p>' +
+          '<p class="registro-card-propuesta">' + reg.Propuesta + '</p>' +
+        '</div>' +
+        '<i class="bi bi-chevron-right registro-card-flecha"></i>';
+      card.addEventListener("click", function() {
+        abrirModalDetalle(reg.id);
+      });
+      lista.appendChild(card);
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // MODAL DE DETALLE (READ)
+  // ══════════════════════════════════════════════════════════
+
+  async function abrirModalDetalle(id) {
+    try {
+      var res = await fetch(API_URL + "/admin/necesidades/" + id);
+      if (!res.ok) throw new Error("No se encontró el registro");
+      var data = await res.json();
+      mostrarModalLectura(data.data);
+    } catch (err) {
+      console.error("Error abriendo detalle:", err);
+      alert("Error al cargar el registro");
+    }
+  }
+
+  function mostrarModalLectura(reg) {
+    var previo = document.getElementById("modal-detalle");
+    if (previo) previo.remove();
+
+    var modal = document.createElement("div");
+    modal.id = "modal-detalle";
+    modal.className = "modal-overlay";
+    modal.innerHTML =
+      '<div class="modal-caja">' +
+        '<div class="modal-header">' +
+          '<h2 class="modal-titulo">' + reg.Escuela + '</h2>' +
+          '<button class="modal-cerrar" id="modal-cerrar-btn"><i class="bi bi-x-lg"></i></button>' +
+        '</div>' +
+        '<div class="modal-body">' +
+          '<div class="modal-campo"><span class="modal-label">Municipio</span><span class="modal-valor">' + reg.Municipio + '</span></div>' +
+          '<div class="modal-campo"><span class="modal-label">Categoría</span><span class="modal-valor">' + reg["Categoría"] + '</span></div>' +
+          '<div class="modal-campo"><span class="modal-label">Subcategoría</span><span class="modal-valor">' + reg["Subcategoría"] + '</span></div>' +
+          '<div class="modal-campo"><span class="modal-label">Propuesta</span><span class="modal-valor">' + reg.Propuesta + '</span></div>' +
+          '<div class="modal-campo-doble">' +
+            '<div class="modal-campo"><span class="modal-label">Cantidad</span><span class="modal-valor">' + reg.Cantidad + '</span></div>' +
+            '<div class="modal-campo"><span class="modal-label">Unidad</span><span class="modal-valor">' + (reg.Unidad || '—') + '</span></div>' +
+          '</div>' +
+          '<div class="modal-campo"><span class="modal-label">Estado</span><span class="modal-valor modal-estado">' + reg.Estado + '</span></div>' +
+          (reg.Detalles ? '<div class="modal-campo"><span class="modal-label">Detalles</span><span class="modal-valor">' + reg.Detalles + '</span></div>' : '') +
+        '</div>' +
+        '<div class="modal-acciones">' +
+          '<button class="panel-btn panel-btn-azul" id="modal-btn-editar"><i class="bi bi-pencil"></i> Editar</button>' +
+          '<button class="panel-btn panel-btn-rojo" id="modal-btn-eliminar"><i class="bi bi-trash3"></i> Eliminar</button>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(modal);
+
+    modal.addEventListener("click", function(e) {
+      if (e.target === modal) modal.remove();
+    });
+    document.getElementById("modal-cerrar-btn").addEventListener("click", function() {
+      modal.remove();
+    });
+    document.getElementById("modal-btn-editar").addEventListener("click", function() {
+      mostrarModalEdicion(reg);
+    });
+    document.getElementById("modal-btn-eliminar").addEventListener("click", function() {
+      mostrarConfirmacionEliminar(reg);
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // MODAL DE EDICIÓN (UPDATE)
+  // ══════════════════════════════════════════════════════════
+
+  function mostrarModalEdicion(reg) {
+    var modal = document.getElementById("modal-detalle");
+    var caja = modal.querySelector(".modal-caja");
+
+    caja.innerHTML =
+      '<div class="modal-header">' +
+        '<h2 class="modal-titulo">Editar Registro</h2>' +
+        '<button class="modal-cerrar" id="modal-cerrar-btn"><i class="bi bi-x-lg"></i></button>' +
+      '</div>' +
+      '<div class="modal-body">' +
+        '<div class="form-grupo">' +
+          '<label class="form-label">Escuela</label>' +
+          '<input type="text" class="panel-input" id="edit-escuela" value="' + reg.Escuela + '">' +
+        '</div>' +
+        '<div class="form-grupo">' +
+          '<label class="form-label">Municipio</label>' +
+          '<input type="text" class="panel-input" id="edit-municipio" value="' + reg.Municipio + '">' +
+        '</div>' +
+        '<div class="form-grupo">' +
+          '<label class="form-label">Categoría</label>' +
+          '<input type="text" class="panel-input" id="edit-categoria" value="' + reg["Categoría"] + '">' +
+          '<small class="form-ayuda">Categoría real de la BD (no la del catálogo visual)</small>' +
+        '</div>' +
+        '<div class="form-grupo">' +
+          '<label class="form-label">Subcategoría</label>' +
+          '<input type="text" class="panel-input" id="edit-subcategoria" value="' + reg["Subcategoría"] + '">' +
+        '</div>' +
+        '<div class="form-grupo">' +
+          '<label class="form-label">Propuesta / Necesidad</label>' +
+          '<textarea class="panel-input panel-textarea" id="edit-propuesta" rows="2">' + reg.Propuesta + '</textarea>' +
+        '</div>' +
+        '<div class="form-grupo-doble">' +
+          '<div class="form-grupo">' +
+            '<label class="form-label">Cantidad</label>' +
+            '<input type="number" class="panel-input" id="edit-cantidad" value="' + reg.Cantidad + '" min="0">' +
+          '</div>' +
+          '<div class="form-grupo">' +
+            '<label class="form-label">Unidad</label>' +
+            '<input type="text" class="panel-input" id="edit-unidad" value="' + (reg.Unidad || '') + '">' +
+          '</div>' +
+        '</div>' +
+        '<div class="form-grupo">' +
+          '<label class="form-label">Estado</label>' +
+          '<select class="panel-select" id="edit-estado">' +
+            '<option value="Pendiente"' + (reg.Estado === 'Pendiente' ? ' selected' : '') + '>Pendiente</option>' +
+            '<option value="En proceso"' + (reg.Estado === 'En proceso' ? ' selected' : '') + '>En proceso</option>' +
+            '<option value="Completado"' + (reg.Estado === 'Completado' ? ' selected' : '') + '>Completado</option>' +
+          '</select>' +
+        '</div>' +
+        '<div class="form-grupo">' +
+          '<label class="form-label">Detalles</label>' +
+          '<textarea class="panel-input panel-textarea" id="edit-detalles" rows="2">' + (reg.Detalles || '') + '</textarea>' +
+        '</div>' +
+      '</div>' +
+      '<div class="modal-acciones">' +
+        '<button class="panel-btn panel-btn-outline-gris" id="modal-btn-cancelar">Cancelar</button>' +
+        '<button class="panel-btn panel-btn-azul" id="modal-btn-guardar"><i class="bi bi-check-lg"></i> Guardar Cambios</button>' +
+      '</div>';
+
+    document.getElementById("modal-cerrar-btn").addEventListener("click", function() {
+      modal.remove();
+    });
+    document.getElementById("modal-btn-cancelar").addEventListener("click", function() {
+      mostrarModalLectura(reg);
+    });
+    document.getElementById("modal-btn-guardar").addEventListener("click", function() {
+      guardarEdicion(reg.id);
+    });
+  }
+
+  function guardarEdicion(id) {
+    if (!confirm("¿Estás seguro de que deseas guardar los cambios?")) return;
+
+    var body = {
+      escuela:      document.getElementById("edit-escuela").value.trim(),
+      municipio:    document.getElementById("edit-municipio").value.trim(),
+      categoria:    document.getElementById("edit-categoria").value.trim(),
+      subcategoria: document.getElementById("edit-subcategoria").value.trim(),
+      propuesta:    document.getElementById("edit-propuesta").value.trim(),
+      cantidad:     parseInt(document.getElementById("edit-cantidad").value),
+      unidad:       document.getElementById("edit-unidad").value.trim(),
+      estado:       document.getElementById("edit-estado").value,
+      detalles:     document.getElementById("edit-detalles").value.trim() || null
+    };
+
+    if (!body.escuela || !body.municipio || !body.categoria || !body.subcategoria || !body.propuesta || !body.unidad) {
+      alert("Completa todos los campos obligatorios");
+      return;
+    }
+
+    fetch(API_URL + "/admin/necesidades/" + id, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    })
+    .then(function(res) {
+      if (!res.ok) throw new Error("Error al actualizar");
+      return res.json();
+    })
+    .then(function() {
+      alert("Registro actualizado exitosamente");
+      var modal = document.getElementById("modal-detalle");
+      if (modal) modal.remove();
+      buscarRegistros();
+    })
+    .catch(function(err) {
+      console.error("Error actualizando:", err);
+      alert("Error al actualizar el registro");
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // ELIMINAR (DELETE)
+  // ══════════════════════════════════════════════════════════
+
+  function mostrarConfirmacionEliminar(reg) {
+    if (!confirm('¿Estás seguro de que deseas eliminar este registro?\n\n"' + reg.Propuesta + '" de ' + reg.Escuela + '\n\nEsta acción no se puede deshacer.')) {
+      return;
+    }
+
+    fetch(API_URL + "/admin/necesidades/" + reg.id, {
+      method: "DELETE"
+    })
+    .then(function(res) {
+      if (!res.ok) throw new Error("Error al eliminar");
+      return res.json();
+    })
+    .then(function() {
+      alert("Registro eliminado exitosamente");
+      var modal = document.getElementById("modal-detalle");
+      if (modal) modal.remove();
+      buscarRegistros();
+    })
+    .catch(function(err) {
+      console.error("Error eliminando:", err);
+      alert("Error al eliminar el registro");
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // FORMULARIO CREAR (CREATE)
+  // ══════════════════════════════════════════════════════════
+
+  // Variable de módulo para guardar todas las subcategorías reales
+  var todasSubcatsReales = [];
+
+  function configurarFormCrear() {
+    cargarCategoriasReales();
+    configurarAutocompletadoCrear(
+      "crear-escuela",
+      "crear-escuela-sugerencias",
+      "/admin/escuelas/buscar"
+    );
+    configurarAutocompletadoCrear(
+      "crear-municipio",
+      "crear-municipio-sugerencias",
+      "/admin/municipios/buscar"
+    );
+    configurarSelectSubcatCrear();
+
+    var form = document.getElementById("form-crear");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      var escuela = document.getElementById("crear-escuela").value.trim();
+      var municipio = document.getElementById("crear-municipio").value.trim();
+      var categoriaEl = document.getElementById("crear-categoria");
+      var subcatEl = document.getElementById("crear-subcategoria");
+      var propuesta = form.propuesta.value.trim();
+      var cantidad = parseInt(form.cantidad.value);
+      var unidad = form.unidad.value.trim();
+      var estado = form.estado.value;
+      var detalles = form.detalles.value.trim() || null;
+
+      // Obtener los textos seleccionados (los nombres reales)
+      var categoria =
+        categoriaEl.options[categoriaEl.selectedIndex]?.text || "";
+      var subcategoria =
+        subcatEl.options[subcatEl.selectedIndex]?.text || "";
+
+      if (
+        !escuela ||
+        !municipio ||
+        !categoria ||
+        !subcategoria ||
+        !propuesta ||
+        !unidad ||
+        isNaN(cantidad)
+      ) {
+        alert("Completa todos los campos obligatorios.");
+        return;
+      }
+
+      if (
+        !confirm(
+          "¿Deseas crear este registro?\n\n" +
+            "Escuela: " +
+            escuela +
+            "\n" +
+            "Municipio: " +
+            municipio +
+            "\n" +
+            "Categoría: " +
+            categoria +
+            "\n" +
+            "Subcategoría: " +
+            subcategoria +
+            "\n" +
+            "Propuesta: " +
+            propuesta
+        )
+      )
+        return;
+
+      var body = {
+        escuela,
+        municipio,
+        categoria,
+        subcategoria,
+        propuesta,
+        cantidad,
+        unidad,
+        estado,
+        detalles,
+      };
+
+      fetch(API_URL + "/admin/necesidades", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("Error al crear");
+          return res.json();
+        })
+        .then(function () {
+          alert("✅ Registro creado exitosamente.");
+          form.reset();
+
+          // Resetear los selects también
+          cargarCategoriasReales();
+          document.getElementById("crear-subcategoria").innerHTML =
+            '<option value="">Selecciona primero una categoría</option>';
+
+          buscarRegistros();
+        })
+        .catch(function (err) {
+          console.error("Error creando:", err);
+          alert("Error al crear el registro");
+        });
+    });
+  }
+
+  // Carga las categorías reales de la BD en el select de Categoría.
+  // Cuando el usuario selecciona una, se filtran las subcategorías.
+  async function cargarCategoriasReales() {
+    try {
+      var res = await fetch(API_URL + "/admin/categorias-reales");
+      if (!res.ok) throw new Error("Error cargando categorías");
+
+      var data = await res.json();
+
+      todasSubcatsReales = data.subcategorias;
+
+      var sel = document.getElementById("crear-categoria");
+      sel.innerHTML = '<option value="">Selecciona una categoría</option>';
+
+      data.categorias.forEach(function (cat) {
+        var o = document.createElement("option");
+        o.value = cat.id;
+        o.textContent = cat.nombre;
+        sel.appendChild(o);
+      });
+    } catch (err) {
+      console.error("Error cargando categorías reales:", err);
+    }
+  }
+
+  // Escucha el cambio en el select de Categoría y filtra subcategorías
+  function configurarSelectSubcatCrear() {
+    var selCat = document.getElementById("crear-categoria");
+    if (!selCat) return;
+
+    selCat.addEventListener("change", function () {
+      var catId = selCat.value;
+      var selSub = document.getElementById("crear-subcategoria");
+
+      selSub.innerHTML =
+        '<option value="">Selecciona una subcategoría</option>';
+
+      if (!catId) return;
+
+      var filtradas = todasSubcatsReales.filter(function (s) {
+        return String(s.categoria_id) === String(catId);
+      });
+
+      if (filtradas.length === 0) {
+        selSub.innerHTML =
+          '<option value="">Sin subcategorías para esta categoría</option>';
+        return;
+      }
+
+      filtradas.forEach(function (sub) {
+        var o = document.createElement("option");
+        o.value = sub.id;
+        o.textContent = sub.nombre;
+        selSub.appendChild(o);
+      });
+    });
+  }
+
+  // Autocompletado reutilizable
+  function configurarAutocompletadoCrear(inputId, listaId, endpointPath) {
+    var input = document.getElementById(inputId);
+    var lista = document.getElementById(listaId);
+    if (!input || !lista) return;
+
+    var debounceTimer = null;
+
+    input.addEventListener("input", function () {
+      var texto = input.value.trim();
+      clearTimeout(debounceTimer);
+
+      if (texto.length < 2) {
+        lista.classList.remove("visible");
+        lista.innerHTML = "";
+        return;
+      }
+
+      debounceTimer = setTimeout(function () {
+        fetch(API_URL + endpointPath + "?q=" + encodeURIComponent(texto))
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (data) {
+            lista.innerHTML = "";
+
+            if (!data.data || data.data.length === 0) {
+              lista.innerHTML =
+                '<li class="sugerencia-vacia">No encontrado — se creará nuevo</li>';
+              lista.classList.add("visible");
+              return;
+            }
+
+            data.data.forEach(function (nombre) {
+              var li = document.createElement("li");
+              li.textContent = nombre;
+
+              li.addEventListener("click", function () {
+                input.value = nombre;
+                lista.classList.remove("visible");
+                lista.innerHTML = "";
+              });
+
+              lista.appendChild(li);
+            });
+
+            lista.classList.add("visible");
+          })
+          .catch(function (err) {
+            console.error("Autocompletado error:", err);
+          });
+      }, 300);
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!input.contains(e.target) && !lista.contains(e.target)) {
+        lista.classList.remove("visible");
+      }
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // INICIAR
+  // ══════════════════════════════════════════════════════════
+
+  iniciarNecesidades();
+
+})();
+</script>

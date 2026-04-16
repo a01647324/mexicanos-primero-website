@@ -102,13 +102,13 @@
         <form id="contacto-donor">
             <div class="form-grupo">
                 <label for="nombre">Nombre completo: </label>
-                <input type="text" placeholder="Tu nombre completo" required/>
+                <input id="nombre" name="nombre_completo" type="text" placeholder="Tu nombre completo" required/>
             </div>
             <div class="form-group">
                     <label for="instancia">Tipo de instancia desde la que nos contactas:</label>
                     <select
                     id="instancia" 
-                    name="instancia"> 
+                    name="tipo_instancia"> 
                     <option value="">Selecciona</option>
                     <option value="Empresa">Empresa</option>
                     <option value="Organizacion">Organización de la sociedad civil</option>
@@ -121,32 +121,24 @@
  
                 <div class="form-grupo">
                     <label for="nombreInstancia">Nombre de la instancia de la que nos contactas (si aplica):</label>
-                    <input type="text" placeholder="Nombre de la instancia"/>
+                    <input id="nombreInstancia" name="nombre_instancia" type="text" placeholder="Nombre de la instancia"/>
                 </div>
+
+
                 <div class="form-grupo">
-                    <label>Correo electrónico: </label>
-                    <input type="email" placeholder="tucorreo@ejemplo.com" required/>
-                </div>
- 
-                <div class="form-grupo">
-                    <label>Teléfono</label>
-                    <input type="tel" placeholder="33 1234 5678" required/>
+                    <label for="correo">Correo electrónico: </label>
+                    <input id="correo" name="correo" type="email" placeholder="tucorreo@ejemplo.com" required/>
                 </div>
  
                 <div class="form-grupo">
-                    <label>Tipo de donación</label>
-                    <select>
-                    <option value="">Selecciona una opción</option>
-                    <option>Donación económica</option>
-                    <option>Donación en especie</option>
-                    <option>Voluntariado</option>
-                    <option>Brindar talleres</option>
-                    <option>Otro</option>
-                    </select>
+                    <label for="telefono">Teléfono</label>
+                    <input id="telefono" name="telefono" type="tel" placeholder="33 1234 5678" required/>
                 </div>
+ 
+                
                 <div class="form-grupo">
-                    <label>Mensaje adicional</label>
-                    <textarea placeholder="Cuéntanos cómo deseas apoyar..."></textarea>
+                    <label for="mensaje">Mensaje adicional</label>
+                    <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos cómo deseas apoyar..."></textarea>
                 </div>
         </form>
  
@@ -218,10 +210,45 @@
         });
         }
 
-        window.enviarFormulario = function() {
-        alert('¡Gracias! Tu mensaje fue enviado. Nos pondremos en contacto contigo pronto 💚');
-        cerrarFormulario();
-        };
+        window.enviarFormulario = async function() {
+  const payload = {
+    nombre_completo: document.getElementById("nombre").value.trim(),
+    tipo_instancia: document.getElementById("instancia").value,
+    nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
+    correo: document.getElementById("correo").value.trim(),
+    telefono: document.getElementById("telefono").value.trim(),
+    mensaje: document.getElementById("mensaje").value.trim(),
+    aviso_privacidad_aceptado: document.getElementById("check-terminos").checked
+  };
+  if (!payload.nombre_completo || !payload.telefono || !payload.correo) {
+        alert("Completa nombre, correo y teléfono.");
+        return;
+}
+
+  try {
+    const res = await fetch("http://localhost:3000/api/contacto", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "No se pudo enviar el formulario.");
+      return;
+    }
+
+    alert("¡Gracias! Tu información fue enviada correctamente.");
+    document.getElementById("contacto-donor").reset();
+    cerrarFormulario();
+  } catch (error) {
+    console.error(error);
+    alert("Error de conexión con el servidor.");
+  }
+};
     </script>
 </body>
 </html>

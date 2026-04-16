@@ -4,20 +4,253 @@
 
 /* ── HEADER SUBPÁGINA (faq, contacto, pasos, quienesSomos) ── */
 .subpagina-header {
-    background: linear-gradient(135deg, var(--azul) 0%, #1a5c34 100%);
-    margin-top: 120px;
+    margin-top: 96px;
+    min-height: 460px;
     border-bottom: 3px solid var(--naranja);
-    padding: 6rem 1.5rem 5rem;
+    padding: 7rem 1.5rem 6rem;
     text-align: center;
     position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+.subpagina-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(27, 107, 53, 0.35),
+        rgba(27, 107, 53, 0.62)
+    );
+    z-index: 0;
+}
+
+.subpagina-header > * {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-contenido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.header-quienes {
+    background-image: url("images/who.jpg");
+    background-position: center center;
+}
+/* CAMBIR FOTOS!!!! */
+.header-contacto {
+    background-image: url("images/acceso.png");
+    background-position: center center;
+}
+
+.header-pasos {
+    background-image: url("images/fotocarr1.jpg");
+    background-position: center center;
+}
+/*-----------------*/
+.header-faq {
+    background-image: url("images/faq.jpg");
+    background-position: center center;
+}
+
+
 .subpagina-header h1 {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 900;
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
     color: white;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 0.8rem;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.18);
 }
-.subpagina-header p { color: rgba(255,255,255,0.80); font-weight: 300; font-style: italic; margin-top: 0.4rem; }
+
+.subpagina-header p {
+    color: rgba(255,255,255,0.82);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 1.05rem;
+}
+
+.qs-body {
+    background: var(--fondo);
+    padding: 0 0 4rem;
+}
+
+.qs-panel-principal {
+    background: var(--crema);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra-xl);
+    margin-top: -120px;
+    position: relative;
+    z-index: 3;
+    padding: 58px 48px;
+    border: 1px solid rgba(0,153,51,0.08);
+}
+
+.qs-grid-info {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 24px;
+    margin-top: 2.5rem;
+}
+
+.qs-card-destacada,
+.qs-mini-card {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra-m);
+    border: 1px solid rgba(0,153,51,0.07);
+}
+
+.qs-card-destacada {
+    padding: 2rem;
+}
+
+.qs-mini-wrap {
+    display: grid;
+    gap: 20px;
+}
+
+.qs-mini-card {
+    padding: 1.5rem;
+}
+
+.qs-card-destacada h3,
+.qs-mini-card h3 {
+    color: var(--verde-oscuro);
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 0.7rem;
+}
+
+.qs-card-destacada p,
+.qs-mini-card p {
+    color: var(--gris-texto);
+    line-height: 1.75;
+    font-size: 0.96rem;
+}
+
+.qs-seccion-final {
+    margin-top: 3rem;
+    background: var(--blanco);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra-xl);
+    padding: 2.2rem 2rem;
+    border: 1px solid rgba(0,153,51,0.08);
+}
+
+.qs-seccion-final p {
+    color: var(--gris-texto);
+    line-height: 1.85;
+    font-size: 1rem;
+}
+
+@media (max-width: 900px) {
+    .qs-grid-info {
+        grid-template-columns: 1fr;
+    }
+
+    .qs-panel-principal {
+        padding: 40px 24px;
+        margin-top: -70px;
+        border-radius: 30px;
+    }
+}
+
+@media (max-width: 900px) {
+    .subpagina-header {
+        min-height: 400px;
+        padding: 5.5rem 1.25rem 4.5rem;
+    }
+
+    .subpagina-header h1 {
+        font-size: clamp(2.2rem, 7vw, 3.4rem);
+        line-height: 1.08;
+        letter-spacing: -0.5px;
+    }
+
+    .subpagina-header p {
+        font-size: 0.98rem;
+        line-height: 1.6;
+        max-width: 680px;
+    }
+
+    .info-badge {
+        font-size: 0.68rem;
+        letter-spacing: 1.3px;
+        padding: 0.42rem 0.95rem;
+    }
+
+    .qs-grid-info {
+        grid-template-columns: 1fr;
+    }
+
+    .qs-panel-principal {
+        padding: 40px 24px;
+        margin-top: -70px;
+        border-radius: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .subpagina-header {
+        min-height: 340px;
+        padding: 4.8rem 1rem 3.8rem;
+        margin-top: 96px;
+    }
+
+    .hero-contenido {
+        padding: 0 0.5rem;
+    }
+
+    .subpagina-header h1 {
+        font-size: clamp(2rem, 10vw, 2.8rem);
+        line-height: 1.1;
+        margin-bottom: 0.6rem;
+    }
+
+    .subpagina-header p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        max-width: 100%;
+    }
+
+    .info-badge {
+        font-size: 0.62rem;
+        letter-spacing: 1px;
+        padding: 0.38rem 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .qs-panel-principal {
+        padding: 28px 18px;
+        margin-top: -50px;
+        border-radius: 24px;
+    }
+
+    .qs-card-destacada,
+    .qs-mini-card,
+    .valor-card,
+    .qs-seccion-final {
+        padding: 1.25rem;
+    }
+}
 
 /* Badge decorativa */
 .info-badge {
@@ -109,6 +342,22 @@
     z-index: 10;
     background: linear-gradient(135deg, var(--azul) 0%, #1a5c34 100%);
     border-bottom: 3px solid var(--naranja);
+}
+
+.tarjeta ol {
+    text-align: left;
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    line-height: 1.7;
+}
+.tarjeta .btn {
+    width: 100%;
+    max-width: 260px;
+}
+@media (max-width: 600px) {
+    .modal-caja {
+        padding: 1.5rem 1.2rem;
+    }
 }
 
 #header-top-otros {
@@ -445,7 +694,20 @@
     padding: 1.5rem;
     border-left: 4px solid var(--verde);
     transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
 }
+
+.valor-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+}
+
 .valor-card:hover { transform: translateY(-3px); box-shadow: var(--sombra); }
 .valor-icono { font-size: 1.8rem; margin-bottom: 0.5rem; }
 .valor-card h3 { font-weight: 700; font-size: 1rem; color: var(--verde-oscuro); margin-bottom: 0.4rem; }
@@ -568,36 +830,75 @@
 .faq-icono { font-size: 1.3rem; flex-shrink: 0; transition: transform 0.3s; color: rgba(255,255,255,0.7); }
 .faq-item.abierto .faq-icono { transform: rotate(45deg); color: #69F0AE; }
 
-.faq-respuesta { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; }
-.faq-respuesta.abierto { max-height: 300px; padding: 0 1.4rem 1.2rem; }
+.faq-respuesta {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s ease, padding 0.28s ease;
+}
+
+.faq-respuesta.abierto {
+    max-height: 500px;
+    padding: 0 1.4rem 1.2rem;
+}
+
 .faq-respuesta p { color: rgba(255,255,255,0.78); font-size: 0.88rem; line-height: 1.75; font-weight: 300; }
 .faq-link { color: #69F0AE; font-weight: 700; text-decoration: underline; }
 
 /* FAQ área (estilo alternativo faq.html) */
 .faq-area {
-    background: var(--blanco);
-    padding: 3.5rem 1.5rem 3rem;
+    background: var(--fondo);
+    padding: 0 1.5rem 4rem;
 }
-.faq-area .contenedor-faq { max-width: 720px; margin: 0 auto; }
+.faq-area .contenedor-faq {
+    max-width: 1000px;
+    margin: -90px auto 0;
+    background: var(--crema);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra-xl);
+    padding: 42px 32px;
+    position: relative;
+    z-index: 3;
+    border: 1px solid rgba(0,153,51,0.08);
+}
 
 .faq-area .faq-item {
-    background: var(--gris-claro);
-    border: 1px solid #d6e8d8;
-    border-radius: 14px;
-    box-shadow: none;
+    background: var(--blanco);
+    border: 1px solid rgba(0,153,51,0.10);
+    border-radius: 18px;
+    box-shadow: var(--sombra-s);
     overflow: hidden;
-    transition: border-color 0.22s ease;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    margin-bottom: 16px;
 }
-.faq-area .faq-item:hover { border-color: rgba(0,153,51,0.35); }
-.faq-area .faq-item.abierto { border-color: var(--verde); background: white; }
 
-.faq-area .faq-pregunta { color: var(--verde-oscuro); font-size: 0.91rem; font-weight: 700; padding: 1.1rem 1.4rem; }
+.faq-area .faq-item:hover {
+    border-color: rgba(0,153,51,0.28);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-m);
+}
+.faq-area .faq-item.abierto {
+    border-color: rgba(0,153,51,0.30);
+    background: white;
+    box-shadow: var(--sombra-m);
+}
+
+.faq-area .faq-pregunta {
+    color: var(--verde-oscuro);
+    font-size: 0.98rem;
+    font-weight: 800;
+    padding: 1.2rem 1.4rem;
+}
 
 .faq-area .faq-icono { color: var(--verde); font-size: 1.3rem; flex-shrink: 0; transition: transform 0.3s, color 0.25s; }
 .faq-area .faq-item.abierto .faq-icono { transform: rotate(45deg); color: var(--verde-oscuro); }
 
 .faq-area .faq-respuesta { background: transparent; }
-.faq-area .faq-respuesta p { color: var(--texto-suave); font-size: 0.88rem; line-height: 1.78; font-weight: 400; }
+.faq-area .faq-respuesta p {
+    color: var(--gris-texto);
+    font-size: 0.94rem;
+    line-height: 1.85;
+    font-weight: 400;
+}
 .faq-area .faq-link { color: var(--verde-oscuro); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
 
 .faq-btn-wrap { text-align: center; padding: 0 0 2.5rem; background: var(--blanco); }
@@ -793,4 +1094,152 @@
     #header-top-otros { padding: 40px 16px 32px; }
     .boton-inicio { font-size: 12px; padding: 7px 14px; }
     .main-otros { padding: 40px 16px 56px; }
+}
+
+@media (max-width: 900px) {
+    .faq-area .contenedor-faq {
+        margin-top: -60px;
+        padding: 32px 22px;
+        border-radius: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .faq-area {
+        padding: 0 1rem 3rem;
+    }
+
+    .faq-area .contenedor-faq {
+        margin-top: -45px;
+        padding: 24px 16px;
+        border-radius: 24px;
+    }
+
+    .faq-area .faq-pregunta {
+        font-size: 0.92rem;
+        padding: 1rem 1rem;
+    }
+
+    .faq-area .faq-respuesta.abierto {
+        padding: 0 1rem 1rem;
+    }
+
+    .faq-area .faq-respuesta p {
+        font-size: 0.9rem;
+    }
+}
+
+
+.pasos-titulo {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.pasos-barra-wrap {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: start;
+    gap: 0.5rem;
+    max-width: 760px;
+    margin: 0 auto 1.5rem;
+    padding: 0 0.5rem;
+}
+
+.pasos-linea,
+.pasos-linea-progreso {
+    position: absolute;
+    top: 24px;
+    left: 12%;
+    right: 12%;
+    height: 6px;
+    border-radius: 999px;
+    z-index: 0;
+}
+
+.pasos-linea {
+    background: #dfe5df;
+}
+
+.pasos-linea-progreso {
+    width: 51%;
+    background: linear-gradient(90deg, #f97316 0%, #22c55e 55%, #16a34a 100%);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.22);
+}
+
+.paso {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.paso-circulo {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 0.8rem;
+    border-radius: 50%;
+    background: #e5e7eb;
+    color: #6b7280;
+    border: 3px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+}
+
+.paso p {
+    font-size: 0.9rem;
+    color: var(--texto-suave);
+    line-height: 1.4;
+    margin: 0;
+    font-weight: 600;
+}
+
+.paso.activo .paso-circulo {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border-color: #dcfce7;
+    box-shadow: 0 0 14px rgba(34, 197, 94, 0.35);
+}
+
+.paso.actual .paso-circulo {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+    border-color: #dbeafe;
+    box-shadow: 0 0 18px rgba(59, 130, 246, 0.4);
+    transform: scale(1.08);
+}
+
+.paso.activo p,
+.paso.actual p {
+    color: var(--verde-oscuro);
+}
+
+.pasos-texto-ayuda {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto 1.8rem;
+}
+
+@media (max-width: 768px) {
+    .pasos-barra-wrap {
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 1.5rem;
+    }
+
+    .pasos-linea,
+    .pasos-linea-progreso {
+        display: none;
+    }
+
+    .paso-circulo {
+        width: 44px;
+        height: 44px;
+    }
+
+    .paso p {
+        font-size: 0.85rem;
+    }
 }

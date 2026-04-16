@@ -1,7 +1,12 @@
 import "./loadEnv.js";
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import { pool } from "./db.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 console.log("DB URL:", process.env.DATABASE_URL?.replace(/:[^:@]+@/, ":***@"));
 
@@ -9,7 +14,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "..")));
 
 // ── TEST ──────────────────────────────────────────────────
 app.get("/api/test", (req, res) => {
@@ -17,12 +22,17 @@ app.get("/api/test", (req, res) => {
 });
 
 
-/* ══════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════
+   ██  ENDPOINTS PÚBLICOS (CATÁLOGO + FILTRADO)
+   ══════════════════════════════════════════════════════════ */
+
+
+/* ══════════════════════════════════════════════════════════
    /api/catalogo
    Devuelve todas las categorías del catálogo visual
    (las tarjetas grandes de catalogo.html)
    con su mapeo a la categoría real de la BD.
-   ══════════════════════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════════ */
 app.get("/api/catalogo", async (req, res) => {
   try {
     const result = await pool.query(
@@ -44,13 +54,13 @@ app.get("/api/catalogo", async (req, res) => {
   }
 });
  
-/* ══════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════
    /api/catalogo/:id/subcategorias
    Devuelve las subcategorías visuales de una categoría catálogo.
    Ej: /api/catalogo/3/subcategorias → cards de deportivo.html
    Incluye el mapeo a subcategoria_real y categoria_real para
    que el frontend sepa qué filtros pre-seleccionar.
-   ══════════════════════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════════ */
 app.get("/api/catalogo/:id/subcategorias", async (req, res) => {
   try {
     const { id } = req.params;
@@ -78,7 +88,7 @@ app.get("/api/catalogo/:id/subcategorias", async (req, res) => {
   }
 });
  
-/* ══════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════
    /api/filtros
    Devuelve las opciones para los <select> de filtrado.html.
  
@@ -90,7 +100,7 @@ app.get("/api/catalogo/:id/subcategorias", async (req, res) => {
  
    El frontend mostrará los nombres del catálogo visual, pero
    al hacer la query real usaremos los IDs reales mapeados.
-   ══════════════════════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════════ */
 app.get("/api/filtros", async (req, res) => {
   try {
     const [municipios, categorias, subcategorias, escuelas] = await Promise.all([
@@ -134,9 +144,9 @@ app.get("/api/filtros", async (req, res) => {
   }
 });
  
-/* ══════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════
    /api/data  — Filtrado inteligente
-   ══════════════════════════════════════════════════════════════
+   ══════════════════════════════════════════════════════════
    Parámetros que acepta:
      - municipio       → nombre directo (tabla real)
      - escuela         → nombre directo (tabla real)
@@ -153,7 +163,7 @@ app.get("/api/filtros", async (req, res) => {
      subcategoria_id=12 (Bloques geométricos en catálogo)
        → subcategoria_real_id = 9 (Material didáctico en BD real)
        → WHERE s.id = 9
-   ══════════════════════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════════ */
 app.get("/api/data", async (req, res) => {
   try {
     const { municipio, escuela, categoria_id, subcategoria_id } = req.query;
