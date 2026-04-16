@@ -13,59 +13,66 @@
 </head>
 <body>
  
-    <div class="subpagina-header">
-        <div style="display:flex; align-items:center; justify-content:center; gap:0.8rem; margin-bottom:0.9rem;">
-            <span class="info-badge" style="margin-bottom:0;">☎ Contáctanos</span>
-            <a href="index.html" class="btn-home" style="position:static; width:32px; height:32px; font-size:0.85rem;">🏠︎</a>
-        </div>
-        <h1>Información de Contacto</h1>
-        <p>Con cada gesto, podemos transformar la educación.</p>
+    <div class="subpagina-header header-contacto">
+    <div class="hero-contenido">
+        <span class="info-badge">Contáctanos</span>
+        <h1>Información de contacto</h1>
+        <p>Contáctate y únete a una red que quiere transformar la educación.</p>
     </div>
+</div>
  
     <!-- FRASE -->
     <div class="contacto-body">
     <div style="text-align:center; padding: 2rem 1.5rem 0;">
-        <p class="contacto-frase">"La oportunidad de transformar vidas está a un mensaje de distancia."</p>
+        <p class="contacto-frase">Contáctate y únete a una red de personas e instituciones que quieren apoyar donde más se necesita.</p>
     </div>
  
     <!-- TARJETA DE CONTACTO -->
-    <section class="seccion" style="padding-top: 1.5rem; background: transparent;">
-        <div class="contenedor">
-        <div class="tarjeta">
- 
-            <!-- Logo dentro de la tarjeta -->
-            <div style="text-align:center; margin-bottom: 1.2rem;">
-            <div style="font-size: 2rem; margin-bottom: 0.3rem;">🤍</div>
-            <img src="img/logo.png" alt="Mi Escuela Primero" style="height: 40px; object-fit: contain;"/>
+    <section class="seccion contacto-seccion" style="padding-top: 1.5rem; background: transparent;">
+    <div class="contenedor contacto-contenedor">
+        <div class="contacto-grid">
+
+            <div class="tarjeta contacto-card-info">
+                <div class="contacto-logo-wrap">
+                    <img src="images/logo.png" alt="Mi Escuela Primero" class="contacto-logo-img"/>
+                </div>
+
+                <p class="contacto-card-texto">
+                    Para conocerte mejor y ponernos en contacto más rápido, llena este formulario.
+                </p>
+
+                <div class="contacto-boton-wrap">
+                    <button class="btn btn-verde" onclick="abrirTerminos()">Formulario</button>
+                </div>
+
+                <div class="contacto-datos">
+                    <p><strong>Rosalba Gascón</strong></p>
+                    <p>Coordinadora de Mi Escuela Primero</p>
+                    <p><a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
+                    <p>33 1177 8783</p>
+                </div>
             </div>
- 
-            <p style="text-align:center; margin-bottom: 1.5rem;">
-            Para conocer más sobre ti y ponernos en contacto más rápido, llena este formulario.
-            </p>
- 
-            <div style="text-align:center; margin-bottom: 2rem;">
-            <button class="btn btn-verde" onclick="abrirTerminos()">📋 Formulario</button>
+
+            <div class="tarjeta contacto-card-mapa">
+                <h2 class="contacto-mapa-titulo">Ubicación</h2>
+                <p class="contacto-mapa-texto">
+                    Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México
+                </p>
+
+                <iframe
+                    class="contacto-mapa-frame"
+                    src="https://www.google.com/maps?q=Prado%20de%20los%20Cedros%201530%20Ciudad%20del%20Sol%20Zapopan&output=embed"
+                    loading="lazy"
+                    allowfullscreen>
+                </iframe>
             </div>
- 
-            <!-- DATOS DE CONTACTO -->
-            <div class="contacto-datos">
-            <p><strong>Rosalba Gascón</strong></p>
-            <p>Coordinadora de Mi Escuela Primero</p>
-            <p><a href="/cdn-cgi/l/email-protection#bbc9dcdac8d8d4d5fbd6cbd195d4c9dc95d6c3"><span class="__cf_email__" data-cfemail="d5a7b2b4a6b6babb95b8a5bffbbaa7b2fbb8ad">[email&#160;protected]</span></a></p>
-            <p>33 1177 8783</p>
-            </div>
+
         </div>
- 
-        <div style="text-align:center; padding-bottom: 1rem;">
-        </div>
-        </div>
-    </section>
+    </div>
+</section>
  
     </div><!-- /contacto-body -->
  
-    <div class="contacto-btn-wrap">
-        <a href="index.html" class="btn btn-borde">← Regresar al Inicio</a>
-    </div>
  
     <div class="modal-overlay" id="modal-terminos">
         <div class="modal-caja">
@@ -85,7 +92,7 @@
         </label>
  
         <button class="btn-aceptar" id="btn-aceptar-terminos" disabled>
-            Aceptar y continuar al formulario
+            Aceptar y continuar
         </button>
         <button class="btn-cancelar-modal" onclick="cerrarTerminos()">Cancelar</button>
         </div>
@@ -94,7 +101,7 @@
     
     <div class="modal-overlay" id="modal-formulario">
         <div class="modal-caja">
-        <h2>✉️ Formulario de Contacto</h2>
+        <h2 class="modal-titulo-centrado">Formulario de contacto</h2>
         <p style="color: var(--texto-suave); font-size: 0.85rem; margin-bottom: 1.2rem;">
             Completa tus datos y nuestro equipo se pondrá en contacto contigo a la brevedad.
         </p>
@@ -142,7 +149,7 @@
                 </div>
         </form>
  
-        <button class="btn-aceptar" onclick="enviarFormulario()">Enviar mensaje →</button>
+        <button class="btn-aceptar" onclick="enviarFormulario()">Enviar información / solicitud</button>
         <button class="btn-cancelar-modal" onclick="cerrarFormulario()">Cancelar</button>
         </div>
     </div>
@@ -150,17 +157,7 @@
  
  
     <!-- ── FOOTER ── -->
-    <footer>
-        <div class="footer-accion">
-            <p class="derechos">© 2026 Mexicanos Primero Jalisco A.C. Todos los derechos reservados.</p>
-        </div>
-        <div class="footer-contacto">
-            <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
-            <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
-            <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
-            <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad </a></p>
-        </div>
-    </footer>
+    
 
     <script>
         /* TERMINOS Y CONDICIONES FORMULARIO */

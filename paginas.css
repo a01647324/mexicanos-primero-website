@@ -54,7 +54,7 @@
 }
 /* CAMBIR FOTOS!!!! */
 .header-contacto {
-    background-image: url("images/acceso.png");
+    background-image: url("images/contactanos.jpg");
     background-position: center center;
 }
 
@@ -904,15 +904,18 @@
 .faq-btn-wrap { text-align: center; padding: 0 0 2.5rem; background: var(--blanco); }
 
 /* ── CONTACTO ── */
-.contacto-body { background: var(--blanco); padding: 0 1.5rem 0; }
+.contacto-body {
+    background: var(--fondo);
+    padding: 0 1.5rem 0;
+}
 
 .contacto-body .tarjeta {
     background: white;
     border-radius: 20px;
     padding: 2.5rem;
     box-shadow: var(--sombra);
-    max-width: 540px;
-    margin: 2rem auto;
+    max-width: none;
+    margin: 0;
     border: 1px solid rgba(0,153,51,0.09);
     position: relative;
     overflow: hidden;
@@ -960,6 +963,87 @@
 .contacto-datos a { color: var(--verde); }
 
 .contacto-btn-wrap { text-align: center; padding: 0.5rem 0 2rem; background: var(--blanco); }
+
+
+/*Contacto*/
+.contacto-seccion {
+    padding-bottom: 4rem;
+}
+
+.contacto-contenedor {
+    max-width: 1180px;
+}
+
+.contacto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.contacto-card-info,
+.contacto-card-mapa {
+    max-width: none;
+    margin: 0;
+    height: 100%;
+    text-align: left;
+}
+
+.contacto-card-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.contacto-logo-wrap {
+    text-align: center;
+    margin-bottom: 1.4rem;
+}
+
+.contacto-logo-img {
+    height: 72px;
+    object-fit: contain;
+}
+
+.contacto-card-texto {
+    text-align: center;
+    margin-bottom: 1.6rem;
+    color: var(--gris-texto);
+    line-height: 1.75;
+}
+
+.contacto-boton-wrap {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.contacto-card-mapa {
+    display: flex;
+    flex-direction: column;
+}
+
+.contacto-mapa-titulo {
+    text-align: center;
+    margin-bottom: 0.8rem;
+}
+
+.contacto-mapa-texto {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--texto-suave);
+}
+
+.contacto-mapa-frame {
+    width: 100%;
+    min-height: 320px;
+    border: 0;
+    border-radius: 16px;
+    box-shadow: var(--sombra-s);
+}
+
+.modal-titulo-centrado {
+    text-align: center;
+}
 
 /* ── FORMULARIO ── */
 .form-grupo { margin-bottom: 1.2rem; text-align: left; }
@@ -1241,5 +1325,37 @@
 
     .paso p {
         font-size: 0.85rem;
+    }
+}
+
+
+@media (max-width: 900px) {
+    .contacto-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contacto-card-info,
+    .contacto-card-mapa {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .contacto-frase {
+        font-size: 0.95rem;
+        padding-left: 0.85rem;
+    }
+
+    .contacto-logo-img {
+        height: 60px;
+    }
+
+    .contacto-card-texto,
+    .contacto-mapa-texto {
+        font-size: 0.92rem;
+    }
+
+    .contacto-mapa-frame {
+        min-height: 260px;
     }
 }
