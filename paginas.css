@@ -1359,3 +1359,105 @@
         min-height: 260px;
     }
 }
+
+.resumen-carrito {
+    margin: 1.75rem 0 2rem;
+    text-align: left;
+    background: linear-gradient(180deg, #dff2e2 0%, #d3ebd8 100%);
+    border: 1px solid rgba(0, 153, 51, 0.14);
+    border-radius: 22px;
+    padding: 1.4rem;
+    box-shadow: 0 10px 28px rgba(0, 100, 40, 0.08);
+}
+
+.resumen-titulo {
+    margin: 0 0 1rem;
+    color: var(--verde-oscuro);
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+}
+
+.resumen-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.resumen-item {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(3px);
+    border-radius: 18px;
+    padding: 1rem 1.15rem;
+    border: 1px solid rgba(0, 153, 51, 0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.resumen-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0, 100, 40, 0.08);
+}
+
+.resumen-escuela {
+    margin: 0 0 0.35rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--verde-oscuro);
+}
+
+.resumen-material {
+    margin: 0 0 0.45rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--texto);
+    line-height: 1.4;
+}
+
+.resumen-cantidad {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--texto-suave);
+    font-weight: 500;
+}
+
+.resumen-vacio {
+    text-align: center;
+    color: var(--texto-suave);
+    padding: 0.5rem 0;
+}
+@media (max-width: 600px) {
+    .resumen-carrito {
+        padding: 1rem;
+        border-radius: 18px;
+    }
+
+    .resumen-titulo {
+        font-size: 1.15rem;
+    }
+
+    .resumen-item {
+        padding: 0.9rem 0.95rem;
+        border-radius: 14px;
+    }
+
+    .resumen-material {
+        font-size: 1rem;
+    }
+
+    .resumen-cantidad,
+    .resumen-escuela {
+        font-size: 0.88rem;
+    }
+}
+#grupo-tipo-donacion {
+    margin-top: 0.2rem;
+}
+
+#grupo-tipo-donacion label {
+    color: var(--verde-oscuro);
+}
+
+#tipoDonacionSelect {
+    font-weight: 600;
+}

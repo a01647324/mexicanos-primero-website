@@ -82,7 +82,7 @@
         </p>
  
  
-        <a class="btn-ver-mas" href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de Privacidad completo → </a>
+        <a class="btn-ver-mas" href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf" target="_blank">Aviso de Privacidad completo → </a>
  
         
  
@@ -105,13 +105,16 @@
         <p style="color: var(--texto-suave); font-size: 0.85rem; margin-bottom: 1.2rem;">
             Completa tus datos y nuestro equipo se pondrá en contacto contigo a la brevedad.
         </p>
+        
+        
+        <div id="resumen-carrito" class="resumen-carrito" style="display: none;"></div>
  
         <form id="contacto-donor">
             <div class="form-grupo">
                 <label for="nombre">Nombre completo: </label>
                 <input id="nombre" name="nombre_completo" type="text" placeholder="Tu nombre completo" required/>
             </div>
-            <div class="form-group">
+            <div class="form-grupo">
                     <label for="instancia">Tipo de instancia desde la que nos contactas:</label>
                     <select
                     id="instancia" 
@@ -123,6 +126,18 @@
                     <option value="Gobierno">Gobierno municipal</option>
                     <option value="noAplica">No represento una instancia</option>
                     <option value="Otro:">Otro:</option>
+                    </select>
+                </div>
+
+                <div class="form-grupo" id="grupo-tipo-donacion" style="display: none;">
+                    <label for="tipoDonacionSelect">Tipo de apoyo:</label>
+                    <select id="tipoDonacionSelect" name="tipo_donacion">
+                        <option value="">Selecciona una opción</option>
+                        <option value="Voluntariado">Voluntariado</option>
+                        <option value="Donación económica">Donación económica</option>
+                        <option value="Brindar talleres">Brindar talleres</option>
+                        <option value="Vinculaciones">Vinculaciones</option>
+                        <option value="Otro">Otro</option>
                     </select>
                 </div>
  
@@ -207,16 +222,72 @@
         });
         }
 
+        const origenFormulario = sessionStorage.getItem("origen_formulario");
+        const tipoDonacion = sessionStorage.getItem("tipo_donacion");
+        const carritoGuardado = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
+
+        const resumenTipo = document.getElementById("resumen-tipo-donacion");
+        const resumenCarrito = document.getElementById("resumen-carrito");
+
+        const grupoTipoDonacion = document.getElementById("grupo-tipo-donacion");
+        const tipoDonacionSelect = document.getElementById("tipoDonacionSelect");
+        
+
+        function generarResumenCarritoHTML(items) {
+        if (!items.length) {
+            return `
+            <div class="resumen-vacio">
+                <p>No hay materiales seleccionados todavía.</p>
+            </div>
+            `;
+        }
+
+        return `
+            <h3 class="resumen-titulo">Materiales seleccionados</h3>
+            <div class="resumen-lista">
+            ${items.map(item => `
+                <div class="resumen-item">
+                <p class="resumen-escuela">${item.escuela}</p>
+                <p class="resumen-material">${item.propuesta}</p>
+                <p class="resumen-cantidad"><strong>Cantidad:</strong> ${item.cantidad} ${item.unidad || ""}</p>
+                </div>
+            `).join("")}
+            </div>
+        `;
+        }
+
+      if (origenFormulario === "catalogo") {
+            if (resumenCarrito) {
+                resumenCarrito.style.display = "block";
+                resumenCarrito.innerHTML = generarResumenCarritoHTML(carritoGuardado);
+            }
+
+            if (grupoTipoDonacion) {
+                grupoTipoDonacion.style.display = "none";
+            }
+        } else if (tipoDonacion) {
+            if (resumenCarrito) {
+                resumenCarrito.style.display = "none";
+            }
+
+            if (grupoTipoDonacion && tipoDonacionSelect) {
+                grupoTipoDonacion.style.display = "block";
+                tipoDonacionSelect.value = tipoDonacion;
+            }
+        }
+
         window.enviarFormulario = async function() {
-  const payload = {
-    nombre_completo: document.getElementById("nombre").value.trim(),
-    tipo_instancia: document.getElementById("instancia").value,
-    nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
-    correo: document.getElementById("correo").value.trim(),
-    telefono: document.getElementById("telefono").value.trim(),
-    mensaje: document.getElementById("mensaje").value.trim(),
-    aviso_privacidad_aceptado: document.getElementById("check-terminos").checked
-  };
+        const payload = {
+        nombre_completo: document.getElementById("nombre").value.trim(),
+        tipo_instancia: document.getElementById("instancia").value,
+        nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
+        correo: document.getElementById("correo").value.trim(),
+        telefono: document.getElementById("telefono").value.trim(),
+        mensaje: document.getElementById("mensaje").value.trim(),
+        aviso_privacidad_aceptado: document.getElementById("check-terminos").checked,
+        origen_formulario: sessionStorage.getItem("origen_formulario"),
+        tipo_donacion: document.getElementById("tipoDonacionSelect")?.value || sessionStorage.getItem("tipo_donacion")
+        };
   if (!payload.nombre_completo || !payload.telefono || !payload.correo) {
         alert("Completa nombre, correo y teléfono.");
         return;
