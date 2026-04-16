@@ -10,21 +10,29 @@
 <body>
 
     <!-- ── NAVBAR ── -->
-    <header class="catalogo-header">
-        <div id="header-top">
-            <img class="header-logo" src="images/Logo Mi Escuela Primero.png" alt="Logo Mi Escuela Primero">
-
-            <nav id="header-categorias">
-                <a href="papeleria.html">Papelería</a>
-                <a href="literario.html">Literario</a>
-                <a href="deportivo.html">Deportivo</a>
-                <a href="didactico.html">Didáctico</a>
-                <a href="tecnologico.html">Tecnológico</a>
-            </nav>
-
-            <a href="index.html" class="boton-inicio">🏠︎ Inicio</a>
+     
+     
+  
+        <nav class="navbar">
+        <div class="navbar-logo">
+            <a href="index.html">
+                <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
+            </a>
         </div>
-    </header>
+    
+        <div class="navbar-menu">
+            <a href="index.html" >Inicio</a>
+            <nav id="header-categorias">
+                
+            </nav>
+        </div>
+    
+        <div class="navbar-acciones">
+            <a href="admin-login.html" class="btn-iniciar-sesion">Iniciar sesión</a>
+            <a href="#" id="btn-ayudar-flotante" class="btn-ayudar-flotante">♡ ¡Quiero ayudar!</a>
+        </div>
+    </nav>
+
 
     <!-- ── HERO ── -->
     <div id="header-texto">
@@ -35,124 +43,109 @@
     <!-- ── CONTENIDO PRINCIPAL ── -->
     <main>
         <div id="catalog-wrapper">
-            <section id="catalog-grid">
-                <!-- Tarjetas generadas dinámicamente por main.js -->
-            </section>
+            <div id="catalog-loading" style="text-align:center;padding:60px 0;color:var(--gris-medio);font-weight:600;">
+                Cargando categorías...
+            </div>
+            <section id="catalog-grid"></section>
         </div>
     </main>
+ 
+   
 
     <!-- ── FOOTER ── -->
-    <footer>
-        <div class="footer-accion">
-            <button class="btn-ayudar" onclick="location.href='filtrado.html'">♡ ¡Quiero ayudar!</button>
-            <p class="derechos">© 2026 Mexicanos Primero Jalisco A.C. Todos los derechos reservados.</p>
-        </div>
-        <div class="footer-contacto">
+    <footer class="footer">
+
+        <div class="footer-container">
+      
+          <!-- IZQUIERDA -->
+          <div class="footer-left">
+            <div class="footer-logo-box">
+              <img src="images/mi-escuela-logo.png" alt="Mi Escuela Primero">
+            </div>
+      
+            <div class="footer-redes">
+              <a href="#"><img src="images/whatsapp.png"></a>
+              <a href="#"><img src="images/facebook.png"></a>
+              <a href="#"><img src="images/youtube.png"></a>
+              <a href="#"><img src="images/twitter.png"></a>
+              <a href="#"><img src="images/linkedin.png"></a>
+            </div>
+          </div>
+      
+          <!-- DERECHA -->
+          <div class="footer-right">
             <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
             <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
-            <p>Tel: 332-106-8253 · <a href="/cdn-cgi/l/email-protection#75161a1b011416011a3518051f5b1a07125b180d"><span class="__cf_email__" data-cfemail="12717d7c667371667d527f62783c7d60753c7f6a">[email&#160;protected]</span></a></p>
-            <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad</a></p>
+            <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
+            <p><a href="#">Aviso de privacidad</a></p>
+          </div>
+      
         </div>
-    </footer>
+      
+      </footer>
 
     <script>
-        let catalogGrid = document.getElementById('catalog-grid');
-
-        const needcategory = {
-            "Otros": {
-                categories: [],
-                image: "images/otros.png",
-                link: "otros.html"
-            },
-            "Material de papelería": {
-                categories: ["Material de papelería"],
-                image: "images/cuadernos.png",
-                link: "papeleria.html"
-            },
-            "Material literario": {
-                categories: ["Material literario"],
-                image: "images/material literario.png",
-                link: "literario.html"
-            },
-            "Material deportivo": {
-                categories: ["Material de educación física"],
-                image: "images/material deportivo.png",
-                link: "deportivo.html"
-            },
-            "Material didáctico": {
-                categories: ["Material didáctico"],
-                image: "images/materialDidactico.png",
-                link: "didactico.html"
-            },
-            "Material tecnológico": {
-                categories: ["Material tecnológico", "Servicio tecnológico"],
-                image: "images/materialTecnologico.png",
-                link: "tecnologico.html"
-            },
-            "Mobiliario": {
-                categories: ["Mobiliario", "Pizarrones / pintarrones", "Material de aseo"],
-                image: "images/Mobiliario.png",
-                link: "mobiliario.html"
-            },
-            "Infraestructura": {
-                categories: [
-                    "Construcción materiales",
-                    "Material - construcción",
-                    "Servicio de mantenimiento",
-                    "Construcción servicio"
-                ],
-                image: "images/Infraestructura.png",
-                link: "infraestructura.html"
-            },
-            "Formación a docentes": {
-                categories: ["Formación para docentes"],
-                image: "images/FormacionADocentes.png",
-                link: "docentes.html"
-            },
-            "Formación a estudiantes": {
-                categories: ["Formación para estudiantes", "Visita extraescolar educativa"],
-                image: "images/formacionAEstudiantes.png",
-                link: "estudiantes.html"
-            },
-            "Formación a familias": {
-                categories: ["Formación para familias"],
-                image: "images/FormacionAFamilias.png",
-                link: "familias.html"
-            },
-            "Acceso": {
-                categories: ["Transporte"],
-                image: "images/acceso.png",
-                link: "acceso.html"
-            },
-            "Salud": {
-                categories: ["Salud física", "Salud psicológica", "Salud material"],
-                image: "images/Salud.png",
-                link: "salud.html"
-            }
-        };
-
-        let loadNeedCards = () => {
-            for (let category in needcategory) {
-                let catData = needcategory[category];
-                catalogGrid.innerHTML += `
-                    <article class="need-card">
-                        <div class="need-card-imagen">
-                            <img src="${catData.image}" alt="${category}">
-                        </div>
-                        <div class="need-card-cuerpo">
-                            <h2 class="need-card-titulo">${category}</h2>
-                            <div class="need-card-cta">
-                                <button class="btn-ver" onclick="location.href='${catData.link}'">
-                                    Ver necesidades →
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-                `;
-            }
-        };
-
-        loadNeedCards();
+        const API_URL = "http://localhost:3000/api";
+ 
+   function irACategoria(categoriaId) {
+    location.href = `categoria.html?id=${categoriaId}`;
+}
+ 
+    async function cargarCatalogo() {
+        const grid    = document.getElementById('catalog-grid');
+        const loading = document.getElementById('catalog-loading');
+        const navCats = document.getElementById('header-categorias');
+ 
+        try {
+            const res = await fetch(`${API_URL}/catalogo`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const { data } = await res.json();
+ 
+            loading.style.display = 'none';
+ 
+            // Navbar: primeras 5 con link
+            data.filter(c => c.link).slice(0, 5).forEach(cat => {
+                const a = document.createElement('a');
+                a.href = `categoria.html?id=${cat.id}`;
+                a.textContent = cat.nombre;
+                a.onclick = (e) => { e.preventDefault(); irACategoria(cat.id); };
+                navCats.appendChild(a);
+            });
+ 
+            // Tarjetas
+            data.forEach((cat, i) => {
+                const card = document.createElement('article');
+                card.className = 'need-card';
+                card.style.animationDelay = `${(i + 1) * 0.05}s`;
+                card.onclick = () => irACategoria(cat.id);
+card.innerHTML = `
+    <div class="need-card-imagen">
+        <img src="${cat.imagen || 'images/otros.png'}" alt="${cat.nombre}"
+             onerror="this.src='images/otros.png'">
+    </div>
+    <div class="need-card-cuerpo">
+        <h2 class="need-card-titulo">${cat.nombre}</h2>
+        <div class="need-card-cta">
+            <button class="btn-ver"
+                onclick="event.stopPropagation(); irACategoria(${cat.id})">
+                Ver necesidades →
+            </button>
+        </div>
+    </div>
+`;
+                grid.appendChild(card);
+            });
+ 
+        } catch (err) {
+            loading.innerHTML = `
+                <p style="color:#c0392b;font-weight:700;">No se pudieron cargar las categorías.</p>
+                <p style="color:#888;font-size:0.85em;">Verifica que el backend esté corriendo en ${API_URL}</p>
+                <p style="color:#aaa;font-size:0.8em;">${err.message}</p>
+            `;
+        }
+    }
+ 
+    cargarCatalogo();
     </script>
 </body>
 </html>
