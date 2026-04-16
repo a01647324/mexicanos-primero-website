@@ -106,7 +106,9 @@
             // Navbar: primeras 5 con link
             data.filter(c => c.link).slice(0, 5).forEach(cat => {
                 const a = document.createElement('a');
-                a.href = `categoria.html?id=${cat.id}`;
+                a.href = cat.link?.includes('categoria.html')
+                ? `categoria.html?id=${cat.id}`
+                : cat.link;
                 a.textContent = cat.nombre;
                 a.onclick = (e) => { e.preventDefault(); irACategoria(cat.id); };
                 navCats.appendChild(a);

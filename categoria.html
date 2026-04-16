@@ -98,7 +98,9 @@
             const { data } = await res.json();
             data.filter(c => c.link).slice(0, 5).forEach(cat => {
                 const a = document.createElement('a');
-                a.href = `categoria.html?id=${cat.id}`;
+                a.href = cat.link?.includes('categoria.html')
+                ? `categoria.html?id=${cat.id}`
+                : cat.link;
                 a.textContent = cat.nombre;
                 if (String(cat.id) === String(categoriaId)) a.classList.add('active');
                 navCats.appendChild(a);
@@ -121,6 +123,9 @@
         const btnAyudar = document.getElementById('btn-ayudar-flotante');
 
         try {
+            if (categoriaId == 13) {
+    window.location.href = "otros.html";
+}
             // Ambos fetches en paralelo para mayor velocidad
             const [subRes, catRes] = await Promise.all([
                 fetch(`${API_URL}/catalogo/${categoriaId}/subcategorias`),
