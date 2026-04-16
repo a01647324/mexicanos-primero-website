@@ -239,6 +239,7 @@ if (resumen) {
 }
 
 // ── ENVÍO DEL FORMULARIO ───────────────────────
+
 window.enviarFormulario = async function() {
   const materiales = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
 
@@ -258,74 +259,45 @@ window.enviarFormulario = async function() {
     return;
   }
 
+  if (!payload.aviso_privacidad_aceptado) {
+    alert("Debes aceptar el aviso de privacidad.");
+    return;
+  }
+
   if (materiales.length === 0) {
     alert("No hay materiales en el carrito.");
     return;
   }
 
   try {
-  // 1. Crear contacto
-  const contactoRes = await fetch("http://localhost:3000/api/contacto", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      nombre_completo: payload.nombre_completo,
-      tipo_instancia: payload.tipo_instancia,
-      nombre_instancia: payload.nombre_instancia,
-      correo: payload.correo,
-      telefono: payload.telefono,
-      mensaje: payload.mensaje,
-      aviso_privacidad_aceptado: payload.aviso_privacidad_aceptado
-    })
-  });
+    const res = await fetch("http://localhost:3000/api/solicitud-material", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
 
-  const contactoData = await contactoRes.json();
+    const data = await res.json();
 
-  if (!contactoRes.ok) {
-    alert(contactoData.error || "Error al crear contacto");
-    return;
+    if (!res.ok) {
+      alert(data.error || "Error al crear la solicitud");
+      return;
+    }
+
+    alert("¡Gracias! Tu solicitud fue enviada correctamente.");
+    sessionStorage.removeItem("carrito_donacion");
+    document.getElementById("contacto-donor").reset();
+    cerrarFormulario();
+    window.location.href = "index.html";
+
+  } catch (error) {
+    console.error(error);
+    alert("Error de conexión con el servidor.");
   }
-
-  const id_contacto = contactoData.id_contacto;
-
-  // 2. Crear solicitud con FK
-  const solicitudRes = await fetch("http://localhost:3000/api/solicitud-material", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      id_contacto,
-      materiales
-    })
-  });
-
-  const solicitudData = await solicitudRes.json();
-
-  if (!solicitudRes.ok) {
-    alert(solicitudData.error || "Error al crear solicitud");
-    return;
-  }
-
-  alert("¡Gracias! Tu solicitud fue enviada correctamente.");
-
-  sessionStorage.removeItem("carrito_donacion");
-  document.getElementById("contacto-donor").reset();
-  cerrarFormulario();
-
-  window.location.href = "index.html";
-
-} catch (error) {
-  console.error(error);
-  alert("Error de conexión con el servidor.");
-}
-
-    
 };
 </script>
-    <script src="main.js"></script>
+  <script src="main.js"></script>
 
 </body>
 
