@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* ============================================================
-   CATÁLOGO + CATEGORÍAS
+   CATÁLOGO + CATEGORÍAS  — catalogo.css (actualizado)
    ============================================================ */
 
 /* ── VARIABLES GLOBALES ── */
@@ -45,105 +45,291 @@ body {
 
 /* ====================================================
    NAVBAR
-   ==================================================== */
-.catalogo-header {
-    position: relative;
-    z-index: 10;
-    background: var(--blanco);
-    border-bottom: 1px solid rgba(0,153,51,0.10);
-    box-shadow: 0 2px 16px rgba(0,153,51,0.05);
-}
-
-#header-top {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 24px;
-    padding: 14px 48px;
-}
-
-.header-logo { width: 52px; height: auto; transition: transform 0.3s ease; }
-.header-logo:hover { transform: scale(1.06); }
-
-#header-categorias { display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; }
-#header-categorias a {
-    text-decoration: none;
-    color: var(--gris-medio);
-    font-weight: 600;
-    font-size: 13px;
-    letter-spacing: 0.3px;
-    padding: 7px 16px;
-    border-radius: 50px;
-    transition: all 0.20s ease;
-    border: 1.5px solid transparent;
-}
-#header-categorias a:hover {
-    color: var(--verde-oscuro);
-    background-color: var(--gris-claro);
-    border-color: var(--gris-claro);
-}
-
-.boton-inicio {
-    justify-self: end;
-    background-color: var(--azul);
-    color: white;
-    border-radius: 50px;
-    text-decoration: none;
-    padding: 10px 22px;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.4px;
-    transition: all 0.20s ease;
-    box-shadow: 0 4px 14px rgba(28,54,97,0.20);
-}
-.boton-inicio:hover {
-    background-color: #163050;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(28,54,97,0.30);
-}
-
+/*
+/* ── NAVBAR NUEVO ── */
 /* ====================================================
-   HERO
+   NAVBAR — corregido
+   ==================================================== */
+ 
+/* Body necesita padding-top igual a la altura de la navbar
+   para que el hero no quede debajo de ella */
+body {
+  padding-top: 96px;
+}
+ 
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1100;
+  height: 96px;
+  background: #ffffff;
+  border-bottom: 4px solid #1f3f77;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+ 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem 0 12rem;
+}
+ 
+.navbar-logo {
+  position: absolute;
+  left: 1.8rem;
+  top: 10px;
+  z-index: 1102;
+}
+ 
+.logo-img {
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+  display: block;
+  transition: width 0.25s ease, height 0.25s ease, transform 0.25s ease;
+}
+ 
+/* ── Menú central ── */
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  height: 100%;
+  flex-wrap: nowrap;
+  overflow: hidden;         /* evita desbordamiento */
+  min-width: 0;             /* permite que flex achique */
+}
+ 
+.navbar-menu a,
+#header-categorias a {
+  text-decoration: none;
+  color: #178d45;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;        /* un poco más pequeño para que quepan más */
+  transition: color 0.2s ease;
+  position: relative;
+  white-space: nowrap;
+}
+ 
+.navbar-menu a:hover,
+.navbar-menu a.active,
+#header-categorias a:hover {
+  color: #f37021;
+}
+ 
+.navbar-menu a.active::after,
+.navbar-menu a:hover::after,
+#header-categorias a:hover::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -14px;
+  width: 100%;
+  height: 4px;
+  background: #f37021;
+  border-radius: 4px;
+}
+ 
+/* nav dentro del menú hereda el display flex */
+#header-categorias {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  min-width: 0;
+}
+ 
+/* ── Acciones (botones derecha) ── */
+.navbar-acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-left: 1.5rem;
+  height: 100%;
+  position: relative;
+  flex-shrink: 0;           /* nunca se achica */
+}
+ 
+/* ── Botón "Quiero ayudar" colgante ── */
+.btn-ayudar-flotante {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);   /* cuelga debajo de la navbar */
+ 
+  background: linear-gradient(180deg, #f7a63a, #e68b21);
+  color: #ffffff;
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.95rem 2.4rem;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 10px 24px rgba(243, 112, 33, 0.28);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  z-index: 1200;
+}
+ 
+.btn-ayudar-flotante:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(243, 112, 33, 0.35);
+}
+ 
+/* ── Botón "Iniciar sesión" ── */
+.btn-iniciar-sesion {
+  background: transparent;
+  color: #1B6B35;
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: 999px;
+  border: 2px solid rgba(0, 117, 38, 0.25);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+ 
+.btn-iniciar-sesion:hover {
+  background: #1B6B35;
+  color: white;
+  border-color: #1B6B35;
+  transform: translateY(-2px);
+}
+ 
+/* ── Scroll: navbar más pequeña ── */
+.navbar.scrolled {
+  height: 72px;
+}
+ 
+.navbar.scrolled .logo-img {
+  width: 72px;
+  height: 72px;
+}
+ 
+/* ====================================================
+   HERO — corregido (hero no se oculta bajo navbar fixed)
    ==================================================== */
 #header-texto {
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 90px 48px 130px;
-    position: relative;
-    overflow: hidden;
-    background-image: url('images/header.png');
-    background-size: 420%;
-    background-position: center center;
-    background-repeat: no-repeat;
+  /* min-height: 100vh ya incluye el padding-top del body,
+     así que el hero se ve completo */
+  min-height: calc(100vh - 96px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 48px 80px;
+  position: relative;
+  overflow: hidden;
+  background-image: url('images/CATA.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
-
+ 
 #header-texto h1,
 #header-texto p { position: relative; z-index: 2; }
-
+ 
 #header-texto h1 {
-    font-weight: 900;
-    font-size: clamp(26px, 4.5vw, 58px);
-    color: var(--blanco);
-    margin: 0 0 14px;
-    line-height: 1.05;
-    letter-spacing: -1px;
-    text-transform: uppercase;
-    animation: fadeInDown 0.8s ease forwards;
-    text-shadow: 0 2px 24px rgba(0,0,0,0.18);
+  font-weight: 900;
+  font-size: clamp(26px, 4.5vw, 58px);
+  color: #ffffff;
+  margin: 0 0 14px;
+  line-height: 1.05;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  animation: fadeInDown 0.8s ease forwards;
+  text-shadow:
+    0 2px 24px rgba(0,0,0,0.55),
+    0 1px 4px  rgba(0,0,0,0.70);
 }
-
+ 
 #header-texto p {
-    font-size: 11.5px;
-    font-weight: 600;
-    letter-spacing: 3px;
-    color: rgba(255,255,255,0.68);
-    text-transform: uppercase;
-    animation: fadeInUp 1s ease forwards;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.45);
+  color: white;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 0.4rem 1.4rem;
+  border-radius: 50px;
+  margin-bottom: 1.4rem;
+  animation: subirFadeIn 0.6s ease both;
+  backdrop-filter: blur(8px);
 }
+ 
+/* ====================================================
+   RESPONSIVE — 1024px
+   Ocultar categorías del nav para que quepan los botones
+   ==================================================== */
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 0 1.5rem 0 9rem;
+  }
+ 
+  #header-categorias {
+    display: none;          /* ocultar en pantallas medianas */
+  }
+ 
+  .navbar-menu {
+    gap: 0.8rem;
+  }
+}
+ 
+/* ====================================================
+   RESPONSIVE — 768px
+   ==================================================== */
+@media (max-width: 768px) {
+  body {
+    padding-top: 72px;
+  }
+ 
+  .navbar {
+    height: 72px;
+    padding: 0 1rem 0 6rem;
+  }
+ 
+  .navbar-logo {
+    top: 4px;
+    left: 1rem;
+  }
+ 
+  .logo-img {
+    width: 80px;
+    height: 80px;
+  }
+ 
+  .navbar-menu > a:not(:first-child) {
+    display: none;          /* ocultar "Inicio" extra si hay */
+  }
+ 
+  .btn-iniciar-sesion {
+    display: none;          /* ocultar en móvil */
+  }
+ 
+  /* El botón flotante vuelve a ser inline en móvil */
+  .btn-ayudar-flotante {
+    position: static;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    padding: 0.7rem 1.4rem;
+  }
+ 
+  #header-texto {
+    min-height: calc(100vh - 72px);
+    padding: 40px 20px 60px;
+  }
+ 
+  #header-texto h1 {
+    font-size: clamp(22px, 6vw, 36px);
+  }
+}
+ 
+
 
 /* ====================================================
    CONTENEDOR CATÁLOGO + GRID
@@ -160,7 +346,7 @@ body {
 
 #catalog-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 24px;
     padding: 52px 40px 20px;
     max-width: 1360px;
@@ -169,7 +355,7 @@ body {
 }
 
 /* ====================================================
-   TARJETA DE CATEGORÍA
+   TARJETA DE CATEGORÍA — imagen 50% de la card
    ==================================================== */
 .need-card {
     background: var(--blanco);
@@ -177,7 +363,6 @@ body {
     box-shadow: var(--sombra-m);
     transition: transform 0.30s ease, box-shadow 0.30s ease, border-color 0.30s ease;
     text-align: center;
-    padding: 32px 20px 26px;
     position: relative;
     overflow: hidden;
     opacity: 0;
@@ -185,6 +370,9 @@ body {
     border: 1px solid rgba(0,153,51,0.07);
     cursor: pointer;
     will-change: transform;
+    display: flex;
+    flex-direction: column;
+    padding: 0; /* quitamos padding global, lo ponemos por sección */
 }
 
 .need-card:nth-child(1)  { animation-delay: 0.05s; }
@@ -201,59 +389,78 @@ body {
 .need-card:nth-child(12) { animation-delay: 0.60s; }
 .need-card:nth-child(13) { animation-delay: 0.65s; }
 
+/* Línea verde superior en hover — ahora está por encima del marco de imagen */
 .need-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 3px;
+    height: 4px;
     background: linear-gradient(90deg, var(--verde-oscuro), var(--verde));
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.30s ease;
     border-radius: var(--radio) var(--radio) 0 0;
+    z-index: 10; /* siempre encima */
 }
 
 .need-card:hover {
-    transform: translateY(-6px) scale(1.05);
+    transform: translateY(-6px) scale(1.03);
     box-shadow: var(--sombra-hover);
-    border-color: rgba(0,153,51,0.11);
+    border-color: rgba(0,153,51,0.18);
     z-index: 2;
 }
 .need-card:hover::before { transform: scaleX(1); }
 
+/* ── ZONA IMAGEN (50% de la card) ── */
 .need-card-imagen {
-    width: 120px; height: 120px;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 20px;
-    transition: transform 0.30s ease;
+    width: 100%;
+    /* La imagen ocupa exactamente el 50% de la altura de la card.
+       Usamos aspect-ratio para que sea consistente en todos los tamaños */
+    aspect-ratio: 4 / 3;   /* proporción del bloque imagen */
+    overflow: hidden;
+    border-radius: var(--radio) var(--radio) 0 0;
+    background: var(--gris-claro);
+    position: relative;
+    flex-shrink: 0;
+    /* Marco sutil debajo de la imagen */
+    border-bottom: 2px solid var(--gris-claro);
 }
-.need-card:hover .need-card-imagen { transform: translateY(-4px); }
 
 .need-card-imagen img {
-    width: 200px; height: 200px;
-    object-fit: contain;
-    transition: transform 0.30s ease, filter 0.28s ease;
-    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.10))
-            drop-shadow(0 1px  3px rgba(0,0,0,0.06));
-}
-.need-card:hover .need-card-imagen img {
-    transform: scale(1.06);
-    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.13))
-            drop-shadow(0 2px  6px rgba(0,0,0,0.07));
+    width: 100%;
+    height: 100%;
+    object-fit: cover;          /* llena el área sin distorsionar */
+    object-position: center;
+    transition: transform 0.35s ease, filter 0.30s ease;
+    display: block;
 }
 
-.need-card-cuerpo { margin-top: 2px; }
+.need-card:hover .need-card-imagen img {
+    transform: scale(1.07);
+    filter: brightness(1.04);
+}
+
+/* ── ZONA CUERPO (50% de la card) ── */
+.need-card-cuerpo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 18px 22px;
+    gap: 12px;
+}
 
 .need-card-titulo {
     font-size: 14px;
     font-weight: 800;
     color: var(--verde-oscuro);
-    margin: 0 0 16px;
+    margin: 0;
     line-height: 1.35;
     letter-spacing: -0.1px;
 }
 
-.need-card-cta { display: flex; justify-content: center; margin-top: 8px; }
+.need-card-cta { display: flex; justify-content: center; }
 
 .btn-ver {
     background: transparent;
@@ -307,76 +514,154 @@ body {
     box-shadow: 0 6px 18px rgba(236,103,27,0.26);
 }
 
+
 /* ====================================================
-   FOOTER
+   FOOTER (limpio, sin el botón ayudar)
    ==================================================== */
-footer {
-    background: var(--azul);
-    color: rgba(255,255,255,0.80);
-    padding: 40px 48px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 24px;
-    position: relative;
-    z-index: 1;
+/* --FOOTER-- */
+.footer {
+  background: #243f6b;
+  padding: 2rem 2.5rem;
+  color: white;
 }
 
-footer::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
+.footer-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 2.5rem;
 }
 
-.footer-accion {
-    display: flex;
+.footer-left {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer-logo-box {
+  background: #f4f4f4;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.footer-logo-box img {
+  height: 80px;
+  display: block;
+}
+
+.footer-redes {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.footer-redes a {
+  width: 36px;
+  height: 36px;
+  background: #1fa34a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-redes img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.footer-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.footer-right p {
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+.footer-right a {
+  color: #00c853;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .footer-container {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 1.5rem;
+  }
+
+  .footer-right {
+    flex: none;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .footer-right p {
+    text-align: left;
+  }
 }
 
-.btn-ayudar {
-    margin-bottom: 15px;
-    background: var(--naranja);
-    color: white;
-    font-family: "Montserrat", sans-serif;
-    font-size: 13.5px;
-    font-weight: 800;
-    letter-spacing: 0.4px;
-    border: none;
-    border-radius: 50px;
-    padding: 13px 26px;
-    cursor: pointer;
-    transition: all 0.20s ease;
-    box-shadow: 0 6px 20px rgba(236,103,27,0.28);
-}
-.btn-ayudar:hover {
-    background: #d45a15;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 28px rgba(236,103,27,0.40);
+/* REDES */
+.footer-redes {
+  display: flex;
+  gap: 0.7rem;
 }
 
-.derechos { font-size: 0.72rem; color: rgba(255,255,255,0.42); font-weight: 500; }
+.footer-redes a {
+  width: 36px;
+  height: 36px;
+  background: #1fa34a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.footer-contacto { text-align: right; font-size: 13px; line-height: 2; font-weight: 500; }
-.footer-contacto strong { color: white; }
-.footer-contacto a { color: var(--amarillo); text-decoration: none; font-weight: 700; transition: color 0.2s; }
-.footer-contacto a:hover { color: white; }
+.footer-redes img {
+  width: 16px;
+  filter: brightness(0) invert(1);
+}
+
+/* DERECHA */
+.footer-right {
+  margin-left: auto;
+  text-align: right;
+  max-width: 620px;
+}
+
+.footer-right p {
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+.footer-right a {
+  color: #00c853;
+  text-decoration: none;
+}
 
 /* ====================================================
    ANIMACIONES
    ==================================================== */
 @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-28px); }
-    to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(-28px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
+ 
+@keyframes subirFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+
 @keyframes cardIn {
     from { opacity: 0; transform: translateY(22px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0)    scale(1); }
@@ -398,13 +683,12 @@ footer::before {
     #header-texto { padding: 64px 20px 110px; min-height: 300px; background-attachment: scroll; }
     #catalog-wrapper { margin: -55px 14px 0; border-radius: 30px 30px 0 0; }
     #catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 36px 18px 20px; }
-    .need-card { padding: 24px 14px 20px; }
-    .need-card-imagen { width: 90px; height: 90px; }
-    .need-card-imagen img { width: 110px; height: 110px; }
+    .need-card-cuerpo { padding: 14px 12px 18px; }
     .btn-atras-wrap { padding: 8px 18px 0; }
     footer { flex-direction: column; padding: 28px 20px; text-align: center; }
     .footer-contacto { text-align: center; }
-    .btn-ayudar { align-self: center; }
+    .seccion-ayudar { padding: 48px 24px; }
+    .btn-ayudar-grande { font-size: 18px; padding: 16px 36px; }
 }
 
 /* ====================================================
@@ -416,6 +700,4 @@ footer::before {
     #header-top { grid-template-columns: 1fr auto; }
     #catalog-wrapper { margin: -44px 8px 0; border-radius: 22px 22px 0 0; }
     #catalog-grid { grid-template-columns: 1fr; gap: 12px; padding: 28px 14px; }
-    .need-card-imagen { width: 120px; height: 120px; }
-    .need-card-imagen img { width: 140px; height: 140px; }
 }

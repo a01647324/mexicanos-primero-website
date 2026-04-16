@@ -9,25 +9,37 @@
   <link rel="stylesheet" href="filtrado.css">
 </head>
 <body>
-
   <!-- NAVBAR -->
-  <header>
-    <div id="header-top">
-      <img class="header-logo" src="images/Logo Mi Escuela Primero.png" alt="Logo Mi Escuela Primero">
-      <nav id="header-categorias"></nav>
-      <div class="header-acciones">
-        <button class="btn-carrito" onclick="abrirCarrito()">
+  <nav class="navbar">
+        <div class="navbar-logo">
+            <a href="index.html">
+                <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <a href="index.html">Inicio</a>
+            <a href="quienesSomos.html">¿Quiénes somos?</a>
+            <a href="donacionEconomica.html">Donación Económica</a>
+            <a href="voluntariado.html">Voluntariado</a>
+            <a href="talleres.html">Brindar Talleres</a>
+            <a href="vinculaciones.html">Vinculaciones</a>
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <div class="navbar-acciones">
+            <a href="admin-login.html" class="btn-iniciar-sesion">Iniciar sesión</a>
+             <button class="btn-carrito" onclick="abrirCarrito()">
           ♡ Mis donaciones <span id="carrito-count">0</span>
         </button>
-        <a href="index.html" class="boton-inicio">🏠︎ Inicio</a>
-      </div>
-    </div>
-  </header>
+        </div>
+    </nav>
+
+
+
 
   <!-- HERO -->
-  <div id="header-texto" style="background-image: url('images/header-filter.png'); background-size: 100%; background-position: center">
+  <div id="header-texto" style="background-image: url('images/HEADER.jpeg'); background-size: 120%; background-position: center">
     <h1>Busca y dona</h1>
-    <p>Filtra por municipio, categoría y necesidad para donar</p>
+    <p >Filtra por municipio, categoría y necesidad para donar</p>
   </div>
 
   <!-- BUSCADOR -->
@@ -72,21 +84,21 @@
     </div>
   </div>
 
-  <!-- DONAR (ACTUALIZACION)-->
-<div id="modal-donar">
-  <div class="modal-donar-caja">
-    <h3 id="modal-donar-titulo" class="modal-donar-h3"></h3>
-    <div id="modal-donar-lista"></div>
-    <label class="modal-cantidad-label">
-      ¿Cuántas unidades deseas donar?
-      <input id="modal-donar-cantidad" type="number" min="1" placeholder="Ej. 2">
-    </label>
-    <div class="modal-donar-acciones">
-      <button class="btn-cancelar-modal" onclick="cerrarModalDonar()">Cancelar</button>
-      <button class="btn-confirmar" onclick="confirmarModalDonar()">Donar</button>
+  <!-- MODAL DONAR -->
+  <div id="modal-donar">
+    <div class="modal-donar-caja">
+      <h3 id="modal-donar-titulo" class="modal-donar-h3"></h3>
+      <div id="modal-donar-lista"></div>
+      <label class="modal-cantidad-label">
+        ¿Cuántas unidades deseas donar?
+        <input id="modal-donar-cantidad" type="number" min="1" placeholder="Ej. 2">
+      </label>
+      <div class="modal-donar-acciones">
+        <button class="btn-cancelar-modal" onclick="cerrarModalDonar()">Cancelar</button>
+        <button class="btn-confirmar" onclick="confirmarModalDonar()">Donar</button>
+      </div>
     </div>
   </div>
-</div>
 
   <!-- PANEL CARRITO -->
   <div id="carrito-panel">
@@ -98,23 +110,43 @@
       <p class="carrito-vacio">Aún no has seleccionado ninguna donación.</p>
     </div>
     <div id="carrito-footer">
-      <button class="btn-ayudar" onclick="location.href='pasos.html'">♡ Donar</button>
+      <button class="btn-donar" onclick="irADonar()" style="width:100%;font-size:1rem;padding:14px;">♡ Finalizar donación</button>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-accion">
-      <button class="btn-ayudar">♡ ¡Quiero ayudar!</button>
-      <p class="derechos">© 2026 Mexicanos Primero Jalisco A.C. Todos los derechos reservados.</p>
-    </div>
-    <div class="footer-contacto">
-        <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
-        <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
-        <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
-        <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad</a></p>
-    </div>
-  </footer>
+
+
+  <!-- ── FOOTER ── -->
+    <footer class="footer">
+
+        <div class="footer-container">
+      
+          <!-- IZQUIERDA -->
+          <div class="footer-left">
+            <div class="footer-logo-box">
+              <img src="images/mi-escuela-logo.png" alt="Mi Escuela Primero">
+            </div>
+      
+            <div class="footer-redes">
+              <a href="#"><img src="images/whatsapp.png"></a>
+              <a href="#"><img src="images/facebook.png"></a>
+              <a href="#"><img src="images/youtube.png"></a>
+              <a href="#"><img src="images/twitter.png"></a>
+              <a href="#"><img src="images/linkedin.png"></a>
+            </div>
+          </div>
+      
+          <!-- DERECHA -->
+          <div class="footer-right">
+            <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
+            <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
+            <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
+            <p><a href="#">Aviso de privacidad</a></p>
+          </div>
+      
+        </div>
+      
+      </footer>
 
   <!-- NOTA PARA EL EQUIPO (filtrado por HTTP):
        Los datos se piden por HTTP a http://localhost:3000. CADA VEZ 
@@ -132,96 +164,184 @@
      CONFIG
      ══════════════════════════════════════════════════════════ */
   const API_URL = "http://localhost:3000/api";
-
+ 
   /* ══════════════════════════════════════════════════════════
      ESTADO GLOBAL
      ══════════════════════════════════════════════════════════ */
-  // dataGlobal ahora cambia con CADA búsqueda — solo contiene
-  // los resultados de la última query HTTP, no todos los datos.
+  let dataGlobal= [];
+  let todasSubcats = [];   // todas las subcategorias_catalogo (para filtrar por categoría)
+  let carrito    = [];
+  try {
+    const guardado = sessionStorage.getItem('carrito_donacion');
+    if (guardado) carrito = JSON.parse(guardado);
+} catch(e) { carrito = []; }
 
-  let dataGlobal = [];
-
+// Mostrar el contador actualizado al cargar
+document.addEventListener("DOMContentLoaded", () => {
+    renderCarrito(); // actualiza el badge del contador
+});
+  /* ══════════════════════════════════════════════════════════
+     NIVEL DE NECESIDAD
+     Calcula nivel basado en la cantidad (campo de la BD).
+     Umbral: >50 = Urgente, 10-50 = Moderado, <10 = Bajo
+     ══════════════════════════════════════════════════════════ */
+  function calcularNivel(cantidad) {
+    const n = parseInt(cantidad) || 0;
+    if (n > 50) return { label: 'Urgente',  clase: 'nivel-urgente' };
+    if (n > 10) return { label: 'Moderado', clase: 'nivel-moderado' };
+    return          { label: 'Bajo',      clase: 'nivel-bajo' };
+  }
   /* ══════════════════════════════════════════════════════════
      ARRANQUE
      ══════════════════════════════════════════════════════════ */
-
-  /* ─── VERSIÓN NUEVA ─────────────────────────────────── */
   document.addEventListener("DOMContentLoaded", iniciarApp);
-
+ 
   async function iniciarApp() {
     try {
-      // 1. Cargar opciones de los filtros (una sola vez)
       await cargarFiltros();
-
-      // 2. Cargar todos los datos sin filtros (primera vista)
+      aplicarPreseleccionDesdeLocalStorage();
       await buscarYRenderizar();
-
-      // 3. Enganchar eventos a los selects
+ 
+      // Eventos
       document.getElementById("searchForm").addEventListener("submit", buscarYRenderizar);
-      document.getElementById("escuelaSelect").addEventListener("change", buscarYRenderizar);
-      document.getElementById("municipioSelect").addEventListener("change", buscarYRenderizar);
-      document.getElementById("categoriaSelect").addEventListener("change", buscarYRenderizar);
-      document.getElementById("subcategoriaSelect").addEventListener("change", buscarYRenderizar);
+ 
+      // Cuando cambia la categoría → filtrar subcategorías del dropdown
+      document.getElementById("categoriaSelect")
+        .addEventListener("change", () => {
+          actualizarDropdownSubcategorias();
+          buscarYRenderizar();
+        });
+ 
+      document.getElementById("subcategoriaSelect")
+        .addEventListener("change", buscarYRenderizar);
+      document.getElementById("municipioSelect")
+        .addEventListener("change", buscarYRenderizar);
+      document.getElementById("escuelaSelect")
+        .addEventListener("change", buscarYRenderizar);
+ 
     } catch (err) {
       console.error("No se pudo iniciar la app:", err);
       mostrarErrorCarga(err.message);
     }
   }
-
+ 
   /* ══════════════════════════════════════════════════════════
-     CARGA DE FILTROS (solo al arrancar)
+     CARGA DE FILTROS desde tablas catálogo
      ══════════════════════════════════════════════════════════ */
   async function cargarFiltros() {
     const res = await fetch(`${API_URL}/filtros`);
-    if (!res.ok) {
-      throw new Error(`GET /filtros falló: ${res.status} ${res.statusText}`);
-    }
+    if (!res.ok) throw new Error(`GET /filtros falló: ${res.status}`);
     const filtros = await res.json();
-
-    const llenarSelect = (select, valores) => {
-      for (const v of valores) {
-        if (!v) continue;
-        const option = document.createElement("option");
-        option.value = v;
-        option.textContent = v;
-        select.appendChild(option);
-      }
-    };
-
-    llenarSelect(document.getElementById("municipioSelect"),    filtros.municipios);
-    llenarSelect(document.getElementById("categoriaSelect"),    filtros.categorias);
-    llenarSelect(document.getElementById("subcategoriaSelect"), filtros.subcategorias);
-    llenarSelect(document.getElementById("escuelaSelect"),      filtros.escuelas);
+ 
+    // ── Municipios (nombres directos) ──
+    const selMun = document.getElementById("municipioSelect");
+    filtros.municipios.forEach(n => {
+      const o = document.createElement("option");
+      o.value = n; o.textContent = n;
+      selMun.appendChild(o);
+    });
+ 
+    // ── Escuelas (nombres directos) ──
+    const selEsc = document.getElementById("escuelaSelect");
+    filtros.escuelas.forEach(n => {
+      const o = document.createElement("option");
+      o.value = n; o.textContent = n;
+      selEsc.appendChild(o);
+    });
+ 
+    // ── Categorías catálogo (ID como value, nombre como texto) ──
+    const selCat = document.getElementById("categoriaSelect");
+    filtros.categorias.forEach(cat => {
+      const o = document.createElement("option");
+      o.value = cat.id;
+      o.textContent = cat.nombre;
+      o.dataset.categoriaRealId = cat.categoria_real_id;
+      selCat.appendChild(o);
+    });
+ 
+    // ── Subcategorías catálogo — guardamos todas en memoria ──
+    todasSubcats = filtros.subcategorias;
+    // Pintamos todas inicialmente
+    renderSubcatOpciones(todasSubcats);
   }
-
+ 
+  /* Renderiza las opciones del select de subcategorías */
+  function renderSubcatOpciones(subcats) {
+    const sel = document.getElementById("subcategoriaSelect");
+    const v = sel.value;
+    sel.innerHTML = '<option value="">Todas</option>';
+    subcats.forEach(sub => {
+      const o = document.createElement("option");
+      o.value = sub.id;
+      o.textContent = sub.nombre;
+      o.dataset.subcategoriaRealId  = sub.subcategoria_real_id;
+      o.dataset.categoriaRealId     = sub.categoria_real_id;
+      o.dataset.categoriaCatalogoId = sub.categoria_catalogo_id;
+      sel.appendChild(o);
+    });
+    if (v) sel.value = v;
+  }
+ 
+  /* Cuando cambia la categoría → mostrar solo subcats de esa categoría */
+  function actualizarDropdownSubcategorias() {
+    const categoriaId = document.getElementById("categoriaSelect").value;
+    if (!categoriaId) {
+      renderSubcatOpciones(todasSubcats);
+    } else {
+      const filtradas = todasSubcats.filter(
+        s => String(s.categoria_catalogo_id) === String(categoriaId)
+      );
+      renderSubcatOpciones(filtradas);
+    }
+  }
+ 
   /* ══════════════════════════════════════════════════════════
-     BÚSQUEDA (cada vez que cambia un filtro → nuevo fetch)
+     PRE-SELECCIÓN DESDE LOCALSTORAGE
+     (viene desde catalogo.html o categoria.html)
+     ══════════════════════════════════════════════════════════ */
+  function aplicarPreseleccionDesdeLocalStorage() {
+    const catId = localStorage.getItem('filtro_categoria_id');
+    const subId = localStorage.getItem('filtro_subcategoria_id');
+ 
+    if (catId) {
+      const selCat = document.getElementById("categoriaSelect");
+      selCat.value = catId;
+      // Actualizar subcategorías filtradas para esa categoría
+      actualizarDropdownSubcategorias();
+      localStorage.removeItem('filtro_categoria_id');
+    }
+ 
+    if (subId) {
+      const selSub = document.getElementById("subcategoriaSelect");
+      selSub.value = subId;
+      localStorage.removeItem('filtro_subcategoria_id');
+    }
+  }
+ 
+  /* ══════════════════════════════════════════════════════════
+     BÚSQUEDA — envía IDs catálogo al backend
+     El backend los traduce a IDs reales internamente
      ══════════════════════════════════════════════════════════ */
   async function buscarYRenderizar(event) {
     if (event) event.preventDefault();
-
-    // URLSearchParams se encarga de escapar espacios, acentos y
-    // caracteres raros — así no tenemos que hacerlo a mano.
+ 
     const params = new URLSearchParams();
-    const escuela      = document.getElementById("escuelaSelect").value;
+ 
     const municipio    = document.getElementById("municipioSelect").value;
-    const categoria    = document.getElementById("categoriaSelect").value;
-    const subcategoria = document.getElementById("subcategoriaSelect").value;
-
-    if (escuela)      params.set("escuela", escuela);
-    if (municipio)    params.set("municipio", municipio);
-    if (categoria)    params.set("categoria", categoria);
-    if (subcategoria) params.set("subcategoria", subcategoria);
-
-    const url = params.toString()
-      ? `${API_URL}/data?${params.toString()}`
-      : `${API_URL}/data`;
-
+    const escuela      = document.getElementById("escuelaSelect").value;
+    const categoriaId  = document.getElementById("categoriaSelect").value;
+    const subcatId     = document.getElementById("subcategoriaSelect").value;
+ 
+    if (municipio)   params.set("municipio",       municipio);
+    if (escuela)     params.set("escuela",          escuela);
+    if (categoriaId) params.set("categoria_id",     categoriaId);   // ID catálogo
+    if (subcatId)    params.set("subcategoria_id",  subcatId);      // ID catálogo
+ 
+    const url = `${API_URL}/data${params.toString() ? '?' + params.toString() : ''}`;
+ 
     try {
       const res = await fetch(url);
-      if (!res.ok) {
-        throw new Error(`El servidor respondió ${res.status} ${res.statusText}`);
-      }
+      if (!res.ok) throw new Error(`El servidor respondió ${res.status}`);
       const apiData = await res.json();
       dataGlobal = apiData.data;
       renderResults(dataGlobal);
@@ -230,153 +350,179 @@
       mostrarErrorCarga(err.message);
     }
   }
-
+ 
   function mostrarErrorCarga(mensaje) {
-    const results = document.getElementById("results");
-    results.innerHTML =
+    document.getElementById("results").innerHTML =
       "<div class='sin-resultados'>" +
         "<h3>No se pudieron cargar los datos</h3>" +
         "<p>Verifica que el backend esté corriendo en " + API_URL + "</p>" +
         "<p style='color:#888;font-size:0.9em'>" + mensaje + "</p>" +
       "</div>";
   }
-
+ 
   /* ══════════════════════════════════════════════════════════
      RENDER DE RESULTADOS
      ══════════════════════════════════════════════════════════ */
   function renderResults(filtered) {
     const results = document.getElementById("results");
     results.innerHTML = "";
-
+ 
     if (filtered.length === 0) {
-      results.innerHTML = "<p class='sin-resultados'>No se encontraron resultados.</p>";
+      results.innerHTML = "<p class='sin-resultados'>No se encontraron necesidades pendientes.</p>";
       return;
     }
-
+ 
     for (const item of filtered) {
-      const estadoClase = item.Estado === "Cubierto" ? "estado-cubierto" : "estado-pendiente";
-
+      const nivel = calcularNivel(item.Cantidad);
+ 
       const card = document.createElement("div");
       card.className = "card";
-      // Pasamos item.id (de la DB), no un índice del array.
-      card.innerHTML =
-        "<div class='card-header'>" +
-          "<h3>" + item.Escuela + "</h3>" +
-          "<button class='btn-ver' onclick='abrirModalDonar(" + item.id + ")'>♡ Donar</button>" +
-        "</div>" +
-        "<p><strong>Municipio:</strong> " + item.Municipio + "</p>" +
-        "<p><strong>Categoría:</strong> " + item.Categoría + "</p>" +
-        "<p><strong>Subcategoría:</strong> " + item.Subcategoría + "</p>" +
-        "<p><strong>Propuesta:</strong> " + item.Propuesta + "</p>" +
-        "<p><strong>Cantidad:</strong> " + item.Cantidad + " " + item.Unidad + "</p>" +
-        "<p><span class='estado " + estadoClase + "'>" + item.Estado + "</span></p>";
-
+      card.innerHTML = `
+        <div class="card-header">
+          <h3>${item.Escuela}</h3>
+          <span class="nivel-badge ${nivel.clase}">${nivel.label}</span>
+        </div>
+        <p><strong>Municipio:</strong> ${item.Municipio}</p>
+        <p><strong>Categoría:</strong> ${item.Categoría}</p>
+        <p><strong>Subcategoría:</strong> ${item.Subcategoría}</p>
+        <p><strong>Propuesta:</strong> ${item.Propuesta}</p>
+        <p><strong>Cantidad requerida:</strong> ${item.Cantidad} ${item.Unidad || ''}</p>
+        <div class="card-acciones">
+          <button class="btn-donar" onclick="abrirModalDonar(${item.id})">♡ Donar</button>
+          <button class="btn-info"  onclick="verNecesidad(${item.id})">ⓘ Más información</button>
+        </div>
+      `;
       results.appendChild(card);
     }
   }
-
+ /* ══════════════════════════════════════════════════════════
+     VER NECESIDAD — navega a necesidad.html?id=X
+     ══════════════════════════════════════════════════════════ */
+  function verNecesidad(id) {
+    // Guardamos los datos del item en localStorage para que
+    // necesidad.html los lea sin hacer un fetch extra
+    const item = dataGlobal.find(d => d.id === id);
+    if (!item) return;
+    localStorage.setItem('necesidad_actual', JSON.stringify(item));
+    location.href = `necesidad.html?id=${id}`;
+  }
+ 
   /* ══════════════════════════════════════════════════════════
      CARRITO
      ══════════════════════════════════════════════════════════ */
-  let carrito = [];
-
+ 
+ 
   function agregarAlCarrito(id, cantidad) {
     const item = dataGlobal.find(d => d.id === id);
     if (!item) return;
-
-    const yaExiste = carrito.some(c => c.id === id);
-    if (!yaExiste) {
+ 
+    const existente = carrito.find(c => c.id === id);
+    if (existente) {
+      // Si ya existe, actualizar cantidad
+      existente.cantidad = Math.min(existente.cantidad + cantidad, parseInt(item.Cantidad));
+    } else {
       carrito.push({
-        id: item.id,
-        Escuela: item.Escuela,
-        Propuesta: item.Propuesta,
-        Cantidad: cantidad,
-        Unidad: item.Unidad || ''
+        id:        item.id,
+        escuela:   item.Escuela,
+        propuesta: item.Propuesta,
+        cantidad:  cantidad,
+        max:       parseInt(item.Cantidad),
+        unidad:    item.Unidad || ''
       });
     }
-
     renderCarrito();
     abrirCarrito();
   }
-
-  function quitarDelCarrito(index) {
-    carrito.splice(index, 1);
+ 
+  function cambiarCantidadCarrito(id, delta) {
+    const item = carrito.find(c => c.id === id);
+    if (!item) return;
+    item.cantidad = Math.max(1, Math.min(item.cantidad + delta, item.max));
     renderCarrito();
   }
-
+ 
+  function quitarDelCarrito(id) {
+    carrito = carrito.filter(c => c.id !== id);
+    renderCarrito();
+  }
+ 
   function renderCarrito() {
+    sessionStorage.setItem('carrito_donacion', JSON.stringify(carrito)); // ← AGREGA ESTA LÍNEA
+    
     const lista = document.getElementById("carrito-lista");
     lista.innerHTML = "";
     document.getElementById("carrito-count").textContent = carrito.length;
-
+ 
     if (carrito.length === 0) {
       lista.innerHTML = "<p class='carrito-vacio'>Aún no has seleccionado ninguna donación.</p>";
       return;
     }
-
-    for (let i = 0; i < carrito.length; i++) {
-      const item = carrito[i];
+ 
+    carrito.forEach(item => {
       const el = document.createElement("div");
       el.className = "carrito-item";
-      el.innerHTML =
-        "<div class='carrito-item-info'>" +
-          "<strong>" + item.Escuela + "</strong>" +
-          "<span>" + item.Propuesta + " — " + item.Cantidad + " " + item.Unidad + "</span>" +
-        "</div>" +
-        "<button class='carrito-quitar' onclick='quitarDelCarrito(" + i + ")'>✕</button>";
+      el.innerHTML = `
+        <div class="carrito-item-info">
+          <strong>${item.escuela}</strong>
+          <span>${item.propuesta} (${item.unidad})</span>
+        </div>
+        <div class="carrito-cantidad-wrap">
+          <button class="carrito-cantidad-btn" onclick="cambiarCantidadCarrito(${item.id}, -1)">−</button>
+          <span class="carrito-cantidad-num">${item.cantidad}</span>
+          <button class="carrito-cantidad-btn" onclick="cambiarCantidadCarrito(${item.id}, +1)">+</button>
+        </div>
+        <button class="carrito-quitar" onclick="quitarDelCarrito(${item.id})">✕</button>
+      `;
       lista.appendChild(el);
+    });
+  }
+ 
+  function abrirCarrito()  { document.getElementById("carrito-panel").classList.add("abierto"); }
+  function cerrarCarrito() { document.getElementById("carrito-panel").classList.remove("abierto"); }
+ 
+  
+  function irADonar() {
+    if (carrito.length === 0) {
+      alert('Agrega al menos una donación antes de continuar.');
+      return;
     }
+    sessionStorage.setItem('carrito_donacion', JSON.stringify(carrito));
+    location.href = 'pasos.html';
   }
-
-  function abrirCarrito() {
-    document.getElementById("carrito-panel").classList.add("abierto");
-  }
-
-  function cerrarCarrito() {
-    document.getElementById("carrito-panel").classList.remove("abierto");
-  }
-
+ 
   /* ══════════════════════════════════════════════════════════
      MODAL DONAR
      ══════════════════════════════════════════════════════════ */
   function abrirModalDonar(id) {
     const item = dataGlobal.find(d => d.id === id);
     if (!item) return;
-
     const modal = document.getElementById('modal-donar');
-
     document.getElementById('modal-donar-titulo').textContent = item.Escuela;
     document.getElementById('modal-donar-lista').innerHTML =
       "<p><strong>Material:</strong> " + item.Propuesta + "</p>" +
       "<p><strong>Categoría:</strong> " + item.Categoría + "</p>" +
       "<p><strong>Cantidad requerida:</strong> " + item.Cantidad + " " + item.Unidad + "</p>";
-
     document.getElementById('modal-donar-cantidad').value = '';
     modal.dataset.id = id;
     document.getElementById('modal-donar-cantidad').max = item.Cantidad;
     modal.classList.add('activo');
   }
-
-  function cerrarModalDonar() {
-    document.getElementById('modal-donar').classList.remove('activo');
-  }
-
+ 
+  function cerrarModalDonar() { document.getElementById('modal-donar').classList.remove('activo'); }
+ 
   function confirmarModalDonar() {
-    const modal = document.getElementById('modal-donar');
-    const id = parseInt(modal.dataset.id);
+    const modal    = document.getElementById('modal-donar');
+    const id       = parseInt(modal.dataset.id);
     const cantidad = parseInt(document.getElementById('modal-donar-cantidad').value);
-
-    const item = dataGlobal.find(d => d.id === id);
+    const item     = dataGlobal.find(d => d.id === id);
     if (!item) return;
     const max = parseInt(item.Cantidad);
-
     if (!cantidad || cantidad < 1) return alert('Cantidad inválida');
     if (cantidad > max) return alert('Máximo: ' + max);
-
     agregarAlCarrito(id, cantidad);
     cerrarModalDonar();
   }
-
+ 
   document.getElementById('modal-donar').addEventListener('click', function(e) {
     if (e.target === this) cerrarModalDonar();
   });

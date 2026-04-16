@@ -3,7 +3,161 @@
    Estilos exclusivos de la página de búsqueda y filtrado.
    Carga junto con style.css (base) + catalogo.css (header/hero).
    ============================================================ */
-
+body {
+  padding-top: 96px;
+}
+ 
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1100;
+  height: 96px;
+  background: #ffffff;
+  border-bottom: 4px solid #1f3f77;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+ 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem 0 12rem;
+}
+ 
+.navbar-logo {
+  position: absolute;
+  left: 1.8rem;
+  top: 10px;
+  z-index: 1102;
+}
+ 
+.logo-img {
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+  display: block;
+  transition: width 0.25s ease, height 0.25s ease, transform 0.25s ease;
+}
+ 
+/* ── Menú central ── */
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  height: 100%;
+  flex-wrap: nowrap;
+  overflow: hidden;         /* evita desbordamiento */
+  min-width: 0;             /* permite que flex achique */
+}
+ 
+.navbar-menu a,
+#header-categorias a {
+  text-decoration: none;
+  color: #178d45;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;        /* un poco más pequeño para que quepan más */
+  transition: color 0.2s ease;
+  position: relative;
+  white-space: nowrap;
+}
+ 
+.navbar-menu a:hover,
+.navbar-menu a.active,
+#header-categorias a:hover {
+  color: #f37021;
+}
+ 
+.navbar-menu a.active::after,
+.navbar-menu a:hover::after,
+#header-categorias a:hover::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -14px;
+  width: 100%;
+  height: 4px;
+  background: #f37021;
+  border-radius: 4px;
+}
+ 
+/* nav dentro del menú hereda el display flex */
+#header-categorias {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  min-width: 0;
+}
+ 
+/* ── Acciones (botones derecha) ── */
+.navbar-acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-left: 1.5rem;
+  height: 100%;
+  position: relative;
+  flex-shrink: 0;           /* nunca se achica */
+}
+ 
+/* ── Botón "Quiero ayudar" colgante ── */
+.btn-ayudar-flotante {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);   /* cuelga debajo de la navbar */
+ 
+  background: linear-gradient(180deg, #f7a63a, #e68b21);
+  color: #ffffff;
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.95rem 2.4rem;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 10px 24px rgba(243, 112, 33, 0.28);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  z-index: 1200;
+}
+ 
+.btn-ayudar-flotante:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(243, 112, 33, 0.35);
+}
+ 
+/* ── Botón "Iniciar sesión" ── */
+.btn-iniciar-sesion {
+  background: transparent;
+  color: #1B6B35;
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: 999px;
+  border: 2px solid rgba(0, 117, 38, 0.25);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+ 
+.btn-iniciar-sesion:hover {
+  background: #1B6B35;
+  color: white;
+  border-color: #1B6B35;
+  transform: translateY(-2px);
+}
+ 
+/* ── Scroll: navbar más pequeña ── */
+.navbar.scrolled {
+  height: 72px;
+}
+ 
+.navbar.scrolled .logo-img {
+  width: 72px;
+  height: 72px;
+}
 /* ── BUSCADOR ── */
 #school-finder-wrapper {
     background: var(--crema);
@@ -109,26 +263,42 @@
 /* ── HEADER ACCIONES ── */
 .header-acciones { display: flex; align-items: center; gap: 12px; justify-self: end; }
 
+/* ── BOTÓN CARRITO (estilo "Quiero ayudar") ── */
 .btn-carrito {
-    background: var(--verde);
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 10px 20px;
-    font-family: "Montserrat", sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.20s ease;
-    box-shadow: 0 4px 14px rgba(0,153,51,0.25);
+  background: linear-gradient(180deg, #f7a63a, #e68b21);
+  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.85rem 1.8rem;
+  border-radius: 999px;
+  border: none;
+  box-shadow: 0 8px 20px rgba(243, 112, 33, 0.28);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
 }
-.btn-carrito:hover { background: var(--verde-oscuro); transform: translateY(-2px); }
-.btn-carrito span {
-    background: var(--naranja);
-    border-radius: 50px;
-    padding: 2px 8px;
-    font-size: 11px;
-    margin-left: 4px;
+ 
+.btn-carrito:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(243, 112, 33, 0.38);
+}
+
+#carrito-count {
+  background: white;
+  color: #e68b21;
+  font-weight: 900;
+  font-size: 0.8rem;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 /* ── CARD HEADER + BOTON AGREGAR ── */
@@ -140,21 +310,227 @@
 }
 .card-header h3 { margin: 0; }
 
-.btn-agregar {
-    background: var(--verde);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    font-size: 20px;
-    line-height: 1;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: all 0.20s ease;
-    box-shadow: 0 4px 12px rgba(0,153,51,0.25);
+/* ── NIVELES DE NECESIDAD (reemplazo de estado) ── */
+.nivel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 50px;
+  letter-spacing: 0.3px;
 }
-.btn-agregar:hover { background: var(--verde-oscuro); transform: scale(1.1); }
+ 
+.nivel-urgente {
+  background: #fff0f0;
+  color: #c0392b;
+  border: 1.5px solid #e74c3c;
+}
+ 
+.nivel-urgente::before {
+  content: '●';
+  color: #e74c3c;
+  font-size: 0.6rem;
+}
+ 
+.nivel-moderado {
+  background: #fffbf0;
+  color: #d68910;
+  border: 1.5px solid #f39c12;
+}
+ 
+.nivel-moderado::before {
+  content: '●';
+  color: #f39c12;
+  font-size: 0.6rem;
+}
+ 
+.nivel-bajo {
+  background: #f0fff4;
+  color: #1e8449;
+  border: 1.5px solid #27ae60;
+}
+ 
+.nivel-bajo::before {
+  content: '●';
+  color: #27ae60;
+  font-size: 0.6rem;
+}
+ 
+/* ── CARD ACTUALIZADA (2 botones) ── */
+.card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 4px 20px rgba(0,0,0,0.04);
+  padding: 20px 22px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(0,153,51,0.08);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+ 
+.card:hover {
+  box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+  transform: translateY(-2px);
+}
+ 
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  gap: 12px;
+}
+ 
+.card-header h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1B6B35;
+  margin: 0;
+  line-height: 1.3;
+}
+ 
+/* Contenedor de los 2 botones de la card */
+.card-acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+ 
+.btn-donar {
+  background: #EC671B;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  white-space: nowrap;
+}
+ 
+.btn-donar:hover {
+  background: #d45a15;
+  transform: scale(1.03);
+  box-shadow: 0 4px 14px rgba(236,103,27,0.30);
+}
+ 
+.btn-info {
+  background: transparent;
+  color: #1C3661;
+  border: 2px solid #1C3661;
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  white-space: nowrap;
+}
+ 
+.btn-info:hover {
+  background: #1C3661;
+  color: white;
+  transform: scale(1.03);
+}
+ 
+/* ── CARRITO PANEL — cantidad editable ── */
+.carrito-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e8f0ea;
+}
+ 
+.carrito-item:last-child {
+  border-bottom: none;
+}
+ 
+.carrito-item-info {
+  flex: 1;
+  min-width: 0;
+}
+ 
+.carrito-item-info strong {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1B6B35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ 
+.carrito-item-info span {
+  font-size: 0.75rem;
+  color: #6b8575;
+}
+ 
+.carrito-cantidad-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+ 
+.carrito-cantidad-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid #e8f0ea;
+  background: white;
+  color: #1B6B35;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+ 
+.carrito-cantidad-btn:hover {
+  background: #1B6B35;
+  color: white;
+  border-color: #1B6B35;
+}
+ 
+.carrito-cantidad-num {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #3a4a3e;
+}
+ 
+.carrito-quitar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #fff0f0;
+  color: #c0392b;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+ 
+.carrito-quitar:hover {
+  background: #c0392b;
+  color: white;
+}
 
 /* ── ESTADO EN TARJETA ── */
 .estado {
@@ -194,6 +570,7 @@
 #carrito-header h2 { font-size: 18px; font-weight: 800; color: var(--verde-oscuro); }
 #carrito-cerrar {
     background: none;
+    margin-top: 80px;
     border: none;
     font-size: 18px;
     color: var(--gris-medio);
