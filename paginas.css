@@ -1347,15 +1347,11 @@
 
 /* Variante de .tarjeta para contacto */
 .contacto-body .tarjeta {
-    background: white;
-    border-radius: 20px;
-    padding: 2.5rem;
-    box-shadow: var(--sombra);
-    max-width: none;
-    margin: 0;
-    border: 1px solid rgba(0,153,51,0.09);
-    position: relative;
-    overflow: hidden;
+  background: var(--crema);
+  border-radius: var(--radio-xl);
+  box-shadow: var(--sombra-xl);
+  padding: 52px 40px;
+  border: none;
 }
 
 /* Línea decorativa superior */
@@ -1938,6 +1934,50 @@
     text-align: center;
     max-width: 620px;
     margin: 0 auto 1.8rem;
+}
+
+#school-finder-wrapper {
+  margin: -180px 28px 48px;
+  position: relative;
+  z-index: 3;
+}
+.header-pasos,
+.subpagina-header.header-pasos {
+  min-height: 420px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-pasos::before,
+.subpagina-header.header-pasos::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(27, 107, 53, 0.42);
+  z-index: 1;
+}
+.header-pasos .hero-contenido,
+.subpagina-header.header-pasos .hero-contenido {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 20px;
+}
+
+.header-pasos .hero-contenido h1,
+.subpagina-header.header-pasos .hero-contenido h1 {
+  margin-bottom: 14px;
+}
+
+.header-pasos .hero-contenido p,
+.subpagina-header.header-pasos .hero-contenido p {
+  margin-top: 0;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 @media (max-width: 768px) {
