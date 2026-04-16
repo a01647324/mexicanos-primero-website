@@ -235,7 +235,233 @@ app.get("/api/data", async (req, res) => {
   }
 });
  
+/* ══════════════════════════════════════════════════════════════
+   VALIDACIÓN BASE DE FORMULARIOS
+   ══════════════════════════════════════════════════════════════
+   Esta función valida los campos mínimos compartidos por:
+   - /api/contacto
+   - /api/solicitud-material
 
+   Reglas:
+   - nombre_completo y telefono son obligatorios
+   - aviso_privacidad_aceptado debe venir en true
+   - si correo viene lleno, debe tener formato válido
+   ══════════════════════════════════════════════════════════════ */
+function validarFormularioBase(body) {
+  const {
+    nombre_completo,
+    correo,
+    telefono,
+    aviso_privacidad_aceptado
+  } = body;
+
+  if (!nombre_completo || !telefono) {
+    return "Nombre completo y teléfono son obligatorios.";
+  }
+
+  if (!aviso_privacidad_aceptado) {
+    return "Debes aceptar el aviso de privacidad.";
+  }
+
+  if (correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+    return "Correo electrónico inválido.";
+  }
+
+  return null;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   /api/contacto
+   Guarda el formulario de la página de contacto.
+   ══════════════════════════════════════════════════════════════
+   Body esperado:
+   {
+     "nombre_completo": "Juan Pérez",
+     "tipo_instancia": "Empresa",
+     "nombre_instancia": "Mi Empresa SA",
+     "correo": "correo@ejemplo.com",
+     "telefono": "3312345678",
+     "mensaje": "Quiero apoyar",
+     "aviso_privacidad_aceptado": true
+   }
+
+   Se guarda en la tabla solicitudes_donacion con:
+   origen_formulario = 'contacto'
+   ══════════════════════════════════════════════════════════════ */
+app.post("/api/contacto", async (req, res) => {
+  try {
+    const error = validarFormularioBase(req.body);
+    if (error) {
+      return res.status(400).json({ error });
+    }
+
+    const {
+      nombre_completo,
+      tipo_instancia,
+      nombre_instancia,
+      correo,
+      telefono,
+      mensaje,
+      aviso_privacidad_aceptado
+    } = req.body;
+
+    const result = await pool.query(
+      `INSERT INTO solicitudes_donacion (
+         nombre_completo,
+         tipo_instancia,
+         nombre_instancia,
+         correo,
+         telefono,
+         mensaje,
+         origen_formulario,
+         aviso_privacidad_aceptado
+       )
+       VALUES ($1, $2, $3, $4, $5, $6, 'contacto', $7)
+       RETURNING id`,
+      [
+        nombre_completo,
+        tipo_instancia || null,
+        nombre_instancia || null,
+        correo || null,
+        telefono,
+        mensaje || null,
+        aviso_privacidad_aceptado
+      ]
+    );
+
+    res.status(201).json({
+      message: "Formulario de contacto guardado correctamente.",
+      solicitud_id: result.rows[0].id
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al guardar el formulario de contacto." });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════════
+   /api/solicitud-material
+   Guarda el formulario de "Siguientes Pasos" junto con los
+   materiales que vienen del carrito de filtrado.
+   ══════════════════════════════════════════════════════════════
+   Body esperado:
+   {
+     "nombre_completo": "Juan Pérez",
+     "tipo_instancia": "Empresa",
+     "nombre_instancia": "Mi Empresa SA",
+     "correo": "correo@ejemplo.com",
+     "telefono": "3312345678",
+     "mensaje": "Puedo entregar la próxima semana",
+     "aviso_privacidad_aceptado": true,
+     "materiales": [
+       {
+         "id": 15,
+         "escuela": "Primaria Benito Juárez",
+         "propuesta": "Cuadernos profesionales",
+         "cantidad": 10,
+         "unidad": "piezas"
+       }
+     ]
+   }
+
+   Flujo:
+   1) Inserta el formulario en solicitudes_donacion
+      con origen_formulario = 'pasos'
+   2) Obtiene el id de esa solicitud
+   3) Inserta cada material del carrito en solicitud_materiales
+      relacionándolo con solicitud_id
+   4) Todo se hace dentro de una transacción
+   ══════════════════════════════════════════════════════════════ */
+app.post("/api/solicitud-material", async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    const error = validarFormularioBase(req.body);
+    if (error) {
+      return res.status(400).json({ error });
+    }
+
+    const {
+      nombre_completo,
+      tipo_instancia,
+      nombre_instancia,
+      correo,
+      telefono,
+      mensaje,
+      aviso_privacidad_aceptado,
+      materiales
+    } = req.body;
+
+    if (!Array.isArray(materiales) || materiales.length === 0) {
+      return res.status(400).json({
+        error: "Debes enviar al menos un material del carrito."
+      });
+    }
+
+    await client.query("BEGIN");
+
+    const solicitudResult = await client.query(
+      `INSERT INTO solicitudes_donacion (
+         nombre_completo,
+         tipo_instancia,
+         nombre_instancia,
+         correo,
+         telefono,
+         mensaje,
+         origen_formulario,
+         aviso_privacidad_aceptado
+       )
+       VALUES ($1, $2, $3, $4, $5, $6, 'pasos', $7)
+       RETURNING id`,
+      [
+        nombre_completo,
+        tipo_instancia || null,
+        nombre_instancia || null,
+        correo || null,
+        telefono,
+        mensaje || null,
+        aviso_privacidad_aceptado
+      ]
+    );
+
+    const solicitudId = solicitudResult.rows[0].id;
+
+    for (const item of materiales) {
+      await client.query(
+        `INSERT INTO solicitud_materiales (
+           solicitud_id,
+           necesidad_id,
+           escuela,
+           propuesta,
+           cantidad,
+           unidad
+         )
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          solicitudId,
+          item.id || null,
+          item.escuela || null,
+          item.propuesta,
+          item.cantidad,
+          item.unidad || null
+        ]
+      );
+    }
+
+    await client.query("COMMIT");
+
+    res.status(201).json({
+      message: "Solicitud y materiales guardados correctamente.",
+      solicitud_id: solicitudId
+    });
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error(err);
+    res.status(500).json({ error: "Error al guardar la solicitud de materiales." });
+  } finally {
+    client.release();
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 
