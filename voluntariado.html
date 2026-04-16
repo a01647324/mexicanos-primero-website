@@ -35,10 +35,15 @@
         </p>
 
         <div>
+            /*estaba: href="contacto.html" class="btn btn-verde">Contáctanos*/
+            /* y lo cambie a esa linea*/ 
+            
           <a href="contacto.html" class="btn btn-verde" onclick="guardarTipoApoyo('Voluntariado')">Contáctanos</a>
         </div>
         </div><!-- /donacion-card -->
     </div><!-- /container-donacion -->
+
+    /* COMMENT ITZIA: agregue todo este script*/
     <script>
     function guardarTipoApoyo(tipo) {
         sessionStorage.setItem("origen_formulario", "tipo_apoyo");
@@ -46,4 +51,5 @@
         sessionStorage.removeItem("carrito_donacion");
     }
     </script>
+    /* aqui acaba*/
 </body>

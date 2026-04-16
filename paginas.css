@@ -1,8 +1,48 @@
 /* ============================================================
-   PÁGINAS SECUNDARIAS
+   PAGINAS.CSS
+   ============================================================
+   Archivo compartido para páginas secundarias del sitio.
+
+   Este archivo contiene estilos para:
+   - quienesSomos.html
+   - contacto.html
+   - faq.html
+   - pasos.html
+   - donacionEconomica.html
+   - voluntariado.html
+   - talleres / vinculaciones / otras páginas tipo "otros"
+
+   IMPORTANTE:
+   - Aquí hay estilos compartidos entre varias vistas.
+   - Antes de modificar clases genéricas, revisar si afectan otra página.
+   - Cuando una clase empieza con prefijos como:
+       qs-         -> pertenece a quienesSomos
+       contacto-   -> pertenece a contacto
+       faq-        -> pertenece a FAQ
+       pasos-      -> pertenece a pasos
+   - Clases como .seccion, .contenedor, .tarjeta, .boton-inicio
+     son reutilizables y pueden impactar múltiples páginas.
    ============================================================ */
 
-/* ── HEADER SUBPÁGINA (faq, contacto, pasos, quienesSomos) ── */
+
+
+/* ============================================================
+   1. HERO / HEADER DE SUBPÁGINAS
+   ============================================================
+   USADO EN:
+   - faq.html
+   - contacto.html
+   - pasos.html
+   - quienesSomos.html
+
+   NOTA:
+   Este bloque define la estructura visual del header grande con
+   imagen de fondo + overlay + texto central.
+   Si se cambia altura, padding o overlay, puede alterar TODAS
+   estas páginas al mismo tiempo.
+   ============================================================ */
+
+/* Contenedor principal del header visual */
 .subpagina-header {
     margin-top: 96px;
     min-height: 460px;
@@ -19,6 +59,7 @@
     justify-content: center;
 }
 
+/* Capa de color sobre la imagen para mejorar contraste del texto */
 .subpagina-header::before {
     content: "";
     position: absolute;
@@ -31,11 +72,13 @@
     z-index: 0;
 }
 
+/* Asegura que el contenido quede encima del overlay */
 .subpagina-header > * {
     position: relative;
     z-index: 1;
 }
 
+/* Wrapper del contenido centrado dentro del hero */
 .hero-contenido {
     display: flex;
     flex-direction: column;
@@ -48,27 +91,32 @@
     padding: 0 1rem;
 }
 
+/* Fondo específico: quienesSomos.html */
 .header-quienes {
     background-image: url("images/who.jpg");
     background-position: center center;
 }
-/* CAMBIR FOTOS!!!! */
+
+/* Fondo específico: contacto.html */
+/* TODO pendiente: revisar / actualizar imagen */
 .header-contacto {
     background-image: url("images/contactanos.jpg");
     background-position: center center;
 }
 
+/* Fondo específico: pasos.html */
 .header-pasos {
     background-image: url("images/fotocarr1.jpg");
     background-position: center center;
 }
-/*-----------------*/
+
+/* Fondo específico: faq.html */
 .header-faq {
     background-image: url("images/faq.jpg");
     background-position: center center;
 }
 
-
+/* Título principal del hero */
 .subpagina-header h1 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
@@ -80,6 +128,7 @@
     text-shadow: 0 2px 24px rgba(0,0,0,0.18);
 }
 
+/* Texto secundario / subtítulo del hero */
 .subpagina-header p {
     color: rgba(255,255,255,0.82);
     font-weight: 500;
@@ -87,11 +136,27 @@
     font-size: 1.05rem;
 }
 
+
+
+/* ============================================================
+   2. QUIÉNES SOMOS — ESTRUCTURA PRINCIPAL
+   ============================================================
+   USADO EN:
+   - quienesSomos.html
+
+   NOTA:
+   Todo lo que empieza con qs- está pensado para esta página.
+   Puede reutilizarse, pero originalmente pertenece a la
+   composición visual de "Quiénes somos".
+   ============================================================ */
+
+/* Fondo general del body de la página */
 .qs-body {
     background: var(--fondo);
     padding: 0 0 4rem;
 }
 
+/* Panel principal flotante que se monta sobre el hero */
 .qs-panel-principal {
     background: var(--crema);
     border-radius: var(--radio-xl);
@@ -103,6 +168,7 @@
     border: 1px solid rgba(0,153,51,0.08);
 }
 
+/* Grid principal de contenido */
 .qs-grid-info {
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
@@ -110,6 +176,7 @@
     margin-top: 2.5rem;
 }
 
+/* Tarjetas internas compartidas de esta sección */
 .qs-card-destacada,
 .qs-mini-card {
     background: var(--blanco);
@@ -118,19 +185,23 @@
     border: 1px solid rgba(0,153,51,0.07);
 }
 
+/* Tarjeta principal del bloque */
 .qs-card-destacada {
     padding: 2rem;
 }
 
+/* Wrapper de mini tarjetas */
 .qs-mini-wrap {
     display: grid;
     gap: 20px;
 }
 
+/* Tarjetas pequeñas de apoyo */
 .qs-mini-card {
     padding: 1.5rem;
 }
 
+/* Encabezados internos de tarjetas */
 .qs-card-destacada h3,
 .qs-mini-card h3 {
     color: var(--verde-oscuro);
@@ -139,6 +210,7 @@
     margin-bottom: 0.7rem;
 }
 
+/* Texto interno de tarjetas */
 .qs-card-destacada p,
 .qs-mini-card p {
     color: var(--gris-texto);
@@ -146,6 +218,7 @@
     font-size: 0.96rem;
 }
 
+/* Bloque final de cierre */
 .qs-seccion-final {
     margin-top: 3rem;
     background: var(--blanco);
@@ -155,11 +228,26 @@
     border: 1px solid rgba(0,153,51,0.08);
 }
 
+/* Texto del bloque final */
 .qs-seccion-final p {
     color: var(--gris-texto);
     line-height: 1.85;
     font-size: 1rem;
 }
+
+
+
+/* ============================================================
+   3. RESPONSIVE — HERO + QUIÉNES SOMOS
+   ============================================================
+   USADO EN:
+   - Subpáginas con .subpagina-header
+   - quienesSomos.html
+
+   NOTA:
+   Aquí se concentran ajustes de tablet y móvil para estas vistas.
+   Si algo “se rompe” en responsive arriba, probablemente está aquí.
+   ============================================================ */
 
 @media (max-width: 900px) {
     .qs-grid-info {
@@ -252,7 +340,20 @@
     }
 }
 
-/* Badge decorativa */
+
+
+/* ============================================================
+   4. ELEMENTOS REUTILIZABLES DEL HERO
+   ============================================================
+   USADO EN:
+   - Subpáginas con hero
+   - Posibles botones de regreso / marca de sección
+
+   NOTA:
+   Son utilitarios visuales. No dependen de una sola página.
+   ============================================================ */
+
+/* Badge decorativa del hero */
 .info-badge {
     display: inline-block;
     background: rgba(255,255,255,0.18);
@@ -267,7 +368,7 @@
     margin-bottom: 0.9rem;
 }
 
-/* Botón casa */
+/* Botón redondo tipo home */
 .btn-home {
     position: absolute;
     top: 16px; right: 1.5rem;
@@ -282,9 +383,25 @@
     transition: background 0.2s;
     text-decoration: none;
 }
+
+/* Hover del botón home */
 .btn-home:hover { background: rgba(255,255,255,0.32); }
 
-/* ── HEADER DONACIÓN (donacionEconomica, voluntariado, talleres, vinculaciones) ── */
+
+
+/* ============================================================
+   5. HEADER DONACIÓN / VOLUNTARIADO
+   ============================================================
+   USADO EN:
+   - donacionEconomica.html
+   - voluntariado.html
+   - posiblemente otras páginas derivadas del flujo de apoyo
+
+   NOTA:
+   Este header NO es el mismo hero de subpáginas.
+   Tiene estructura y estilos propios.
+   ============================================================ */
+
 .header-donacion {
     position: relative;
     z-index: 10;
@@ -303,9 +420,13 @@
     gap: 6px;
 }
 
+/* Oculta el logo solo en estos headers específicos */
 #economica-nav .header-logo,
-#voluntariado-nav .header-logo { display: none; }
+#voluntariado-nav .header-logo {
+    display: none;
+}
 
+/* Títulos principales */
 .economicaTitulo,
 .voluntariadoTitulo {
     font-family: 'Montserrat', sans-serif;
@@ -319,6 +440,7 @@
     text-shadow: 0 2px 20px rgba(0,0,0,0.20);
 }
 
+/* Subtítulo decorativo */
 .economicaSub,
 .voluntariadoSub {
     font-size: 13px;
@@ -330,13 +452,29 @@
     margin: 0;
 }
 
+/* Posición del botón volver al inicio dentro del header */
 .header-top-donacion .boton-inicio {
     position: absolute;
     top: 20px;
     right: 24px;
 }
 
-/* ── HEADER OTROS (migrado de styleOtros.css) ── */
+
+
+/* ============================================================
+   6. HEADER DE PÁGINAS "OTROS"
+   ============================================================
+   USADO EN:
+   - talleres
+   - vinculaciones
+   - páginas heredadas de styleOtros.css
+
+   NOTA:
+   Este bloque fue migrado desde otro archivo.
+   Conviene tocarlo con cuidado si todavía hay vistas que usan
+   la estructura vieja o nombres heredados.
+   ============================================================ */
+
 .header-otros {
     position: relative;
     z-index: 10;
@@ -344,22 +482,28 @@
     border-bottom: 3px solid var(--naranja);
 }
 
+/* Listas ordenadas dentro de tarjetas reutilizables */
 .tarjeta ol {
     text-align: left;
     padding-left: 1.5rem;
     margin: 1.5rem 0;
     line-height: 1.7;
 }
+
+/* Botones dentro de tarjetas */
 .tarjeta .btn {
     width: 100%;
     max-width: 260px;
 }
+
+/* Ajuste móvil de modales compartidos */
 @media (max-width: 600px) {
     .modal-caja {
         padding: 1.5rem 1.2rem;
     }
 }
 
+/* Wrapper superior del header de páginas "otros" */
 #header-top-otros {
     display: flex;
     flex-direction: column;
@@ -371,6 +515,7 @@
     position: relative;
 }
 
+/* Texto secundario del header */
 #header-top-otros p {
     font-size: 13px;
     font-weight: 500;
@@ -380,7 +525,21 @@
     font-style: normal;
 }
 
-/* ── BOTÓN INICIO (compartido: donación + otros) ── */
+
+
+/* ============================================================
+   7. BOTÓN INICIO REUTILIZABLE
+   ============================================================
+   USADO EN:
+   - header-donacion
+   - header-otros
+   - cualquier página que quiera CTA de regreso
+
+   NOTA:
+   Clase compartida. Cambiar aquí modifica todos los botones
+   que reutilicen este estilo.
+   ============================================================ */
+
 .boton-inicio {
     background-color: var(--azul);
     color: white;
@@ -394,17 +553,32 @@
     transition: all 0.20s ease;
     box-shadow: 0 4px 14px rgba(28,54,97,0.20);
 }
+
 .boton-inicio:hover {
     background-color: #163050;
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(28,54,97,0.30);
 }
 
-/* ── SECCIONES ── */
+
+
+/* ============================================================
+   8. SECCIONES GENÉRICAS REUTILIZABLES
+   ============================================================
+   USADO EN:
+   - múltiples páginas
+
+   NOTA:
+   Son clases base del layout. Si cambian padding, anchura
+   o fondos alternados, puede moverse visualmente medio sitio.
+   Literal efecto dominó mode on.
+   ============================================================ */
+
 .seccion {
     padding: 4.5rem 1.5rem;
     background: var(--blanco);
 }
+
 .seccion:nth-child(even) {
     background: var(--fondo);
 }
@@ -437,7 +611,19 @@
     margin-bottom: 1rem;
 }
 
-/* ── TARJETA CENTRAL DONACIÓN ── */
+
+
+/* ============================================================
+   9. TARJETA CENTRAL DE DONACIÓN
+   ============================================================
+   USADO EN:
+   - donacionEconomica.html
+
+   NOTA:
+   Todo este bloque es bastante específico de esa vista.
+   Los IDs aquí sugieren contenido único de esa página.
+   ============================================================ */
+
 .container-donacion {
     min-height: 55vh;
     display: flex;
@@ -462,6 +648,7 @@
     align-items: flex-start;
 }
 
+/* Línea decorativa superior */
 .donacion-card::before {
     content: '';
     position: absolute;
@@ -471,6 +658,7 @@
     border-radius: 44px 44px 0 0;
 }
 
+/* Título único del contenido de donación */
 #titulo-donacion {
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
@@ -481,6 +669,7 @@
     letter-spacing: -0.3px;
 }
 
+/* Descripción única del contenido de donación */
 #descripción-donacion {
     font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
@@ -490,6 +679,7 @@
     margin-bottom: 32px;
 }
 
+/* Botón principal dentro de la tarjeta */
 .container-donacion .btn-verde {
     background: var(--naranja);
     color: white;
@@ -502,13 +692,14 @@
     transition: all 0.22s ease;
     display: inline-block;
 }
+
 .container-donacion .btn-verde:hover {
     background: #d45a15;
     transform: translateY(-2px);
     box-shadow: 0 10px 28px rgba(236,103,27,0.40);
 }
 
-/* Botón Atrás en footer de donación */
+/* Botón "atrás" en footer de donación */
 .footer-accion .btn.btn-atras {
     background: transparent;
     color: rgba(255,255,255,0.85);
@@ -525,6 +716,7 @@
     letter-spacing: 0.3px;
     margin-bottom: 6px;
 }
+
 .footer-accion .btn.btn-atras:hover {
     background: rgba(255,255,255,0.15);
     border-color: rgba(255,255,255,0.6);
@@ -532,7 +724,20 @@
     box-shadow: none;
 }
 
-/* ── TARJETA OTROS (migrado de styleOtros.css) ── */
+
+
+/* ============================================================
+   10. TARJETA DE PÁGINAS "OTROS"
+   ============================================================
+   USADO EN:
+   - talleres
+   - vinculaciones
+   - páginas heredadas de styleOtros.css
+
+   NOTA:
+   Similar a donación, pero más genérico para páginas informativas.
+   ============================================================ */
+
 .main-otros {
     min-height: 60vh;
     display: flex;
@@ -553,6 +758,7 @@
     overflow: hidden;
 }
 
+/* Línea decorativa superior */
 .otros-card::before {
     content: '';
     position: absolute;
@@ -562,6 +768,7 @@
     border-radius: var(--radio-xl) var(--radio-xl) 0 0;
 }
 
+/* Título de la tarjeta */
 .otros-card h2 {
     font-size: clamp(1.5rem, 3vw, 2rem);
     font-weight: 800;
@@ -571,6 +778,7 @@
     letter-spacing: -0.3px;
 }
 
+/* Párrafo principal */
 .otros-card p {
     font-size: 1rem;
     color: var(--gris-medio);
@@ -578,11 +786,14 @@
     font-weight: 400;
     margin-bottom: 28px;
 }
+
+/* Énfasis en texto */
 .otros-card p em {
     font-style: italic;
     color: var(--gris-texto);
 }
 
+/* Footer interno de la tarjeta */
 .otros-card-footer {
     display: flex;
     align-items: center;
@@ -593,8 +804,13 @@
     border-top: 1px solid var(--gris-claro);
 }
 
-.otros-logo { width: 64px; height: auto; }
+/* Logo mostrado en footer */
+.otros-logo {
+    width: 64px;
+    height: auto;
+}
 
+/* Botón principal */
 .btn-contacto {
     background: var(--naranja);
     color: white;
@@ -609,13 +825,14 @@
     box-shadow: 0 6px 20px rgba(236,103,27,0.28);
     letter-spacing: 0.3px;
 }
+
 .btn-contacto:hover {
     background: #d45a15;
     transform: translateY(-2px);
     box-shadow: 0 10px 28px rgba(236,103,27,0.40);
 }
 
-/* Botón Atrás de otros (footer) */
+/* Botón atrás para el footer de estas páginas */
 .footer-accion .btn-atras {
     background: var(--azul);
     color: white;
@@ -632,6 +849,7 @@
     box-shadow: 0 4px 14px rgba(0,0,0,0.20);
     letter-spacing: 0.3px;
 }
+
 .footer-accion .btn-atras:hover {
     background: #163050;
     border-color: rgba(255,255,255,0.45);
@@ -639,7 +857,20 @@
     box-shadow: 0 8px 20px rgba(0,0,0,0.28);
 }
 
-/* ── TARJETA GENÉRICA ── */
+
+
+/* ============================================================
+   11. TARJETA GENÉRICA REUTILIZABLE
+   ============================================================
+   USADO EN:
+   - contacto
+   - otros bloques informativos
+   - posiblemente modales o páginas internas
+
+   NOTA:
+   Clase muy reusable. Ojo al tocar padding, max-width o tipografía.
+   ============================================================ */
+
 .tarjeta {
     background: white;
     border-radius: 20px;
@@ -649,11 +880,40 @@
     margin: 2rem auto;
     text-align: center;
 }
-.tarjeta h2 { font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--verde-oscuro); font-size: 1.65rem; margin-bottom: 1rem; }
-.tarjeta p { color: var(--texto-suave); line-height: 1.75; font-weight: 300; font-size: 0.95rem; }
-.tarjeta-icono { font-size: 3rem; margin-bottom: 0.8rem; }
 
-/* ── QUIÉNES SOMOS ── */
+.tarjeta h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: var(--verde-oscuro);
+    font-size: 1.65rem;
+    margin-bottom: 1rem;
+}
+
+.tarjeta p {
+    color: var(--texto-suave);
+    line-height: 1.75;
+    font-weight: 300;
+    font-size: 0.95rem;
+}
+
+.tarjeta-icono {
+    font-size: 3rem;
+    margin-bottom: 0.8rem;
+}
+
+
+
+/* ============================================================
+   12. QUIÉNES SOMOS — TEXTO Y VALORES
+   ============================================================
+   USADO EN:
+   - quienesSomos.html
+
+   NOTA:
+   Este bloque complementa la sección qs- con párrafos, separadores,
+   cards de valores y pequeñas variaciones internas.
+   ============================================================ */
+
 .quienes-texto p {
     color: var(--texto-suave);
     line-height: 1.75;
@@ -670,7 +930,10 @@
     font-size: 0.95rem;
 }
 
-.qs-bloque { margin-bottom: 1rem; }
+.qs-bloque {
+    margin-bottom: 1rem;
+}
+
 .qs-bloque p {
     color: var(--texto-suave);
     line-height: 1.8;
@@ -679,8 +942,14 @@
     font-size: 0.95rem;
 }
 
-.qs-separador { border: none; border-top: 1px solid #e0ece0; margin: 2.5rem 0; }
+/* Línea divisora suave entre bloques */
+.qs-separador {
+    border: none;
+    border-top: 1px solid #e0ece0;
+    margin: 2.5rem 0;
+}
 
+/* Grid de valores */
 .qs-valores {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -688,6 +957,7 @@
     margin-top: 2.5rem;
 }
 
+/* Card individual de valor institucional */
 .valor-card {
     background: var(--gris-claro);
     border-radius: 16px;
@@ -698,6 +968,7 @@
     overflow: hidden;
 }
 
+/* Línea superior decorativa */
 .valor-card::before {
     content: "";
     position: absolute;
@@ -708,12 +979,37 @@
     background: linear-gradient(90deg, var(--verde), var(--amarillo), var(--naranja));
 }
 
-.valor-card:hover { transform: translateY(-3px); box-shadow: var(--sombra); }
-.valor-icono { font-size: 1.8rem; margin-bottom: 0.5rem; }
-.valor-card h3 { font-weight: 700; font-size: 1rem; color: var(--verde-oscuro); margin-bottom: 0.4rem; }
-.valor-card p { font-size: 0.85rem; color: var(--texto-suave); font-weight: 300; line-height: 1.6; }
+.valor-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sombra);
+}
 
-.qs-body .seccion        { background: var(--blanco); }
+.valor-icono {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: var(--verde-oscuro);
+    line-height: 1;
+}
+.valor-icono i {
+    display: inline-block;
+}
+
+.valor-card h3 {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--verde-oscuro);
+    margin-bottom: 0.4rem;
+}
+
+.valor-card p {
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+/* Variantes internas cuando la página usa .qs-body */
+.qs-body .seccion { background: var(--blanco); }
 .qs-body .seccion:nth-child(even) { background: var(--gris-claro); }
 
 .qs-body .valor-card {
@@ -724,13 +1020,30 @@
     box-shadow: 0 2px 12px rgba(0,100,40,0.06);
     transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
+
 .qs-body .valor-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 24px rgba(0,100,40,0.11);
 }
 
-.qs-btn-wrap { text-align: center; padding: 0 0 2.5rem; }
+/* Contenedor de botones o CTA de cierre */
+.qs-btn-wrap {
+    text-align: center;
+    padding: 0 0 2.5rem;
+}
 
+
+
+/* ============================================================
+   13. ICONOS SOCIALES + MENÚ HAMBURGUESA
+   ============================================================
+   USADO EN:
+   - navegación / menú desplegable
+   - footer / contacto social
+
+   NOTA:
+   Bastante compartido. No pertenece a una sola página.
+   ============================================================ */
 
 .whatsappIcon,
 .facebookIcon,
@@ -741,10 +1054,15 @@
     transition: opacity 0.2s, transform 0.2s;
     filter: brightness(0) saturate(100%) invert(22%) sepia(83%) saturate(500%) hue-rotate(103deg) brightness(85%);
 }
+
 .whatsappIcon:hover,
 .facebookIcon:hover,
-.instagramIcon:hover { opacity: 0.7; transform: scale(1.1); }
+.instagramIcon:hover {
+    opacity: 0.7;
+    transform: scale(1.1);
+}
 
+/* Botón hamburguesa */
 .lineas {
     background: none;
     border: none;
@@ -754,6 +1072,8 @@
     gap: 5px;
     padding: 4px;
 }
+
+/* Cada línea del ícono hamburguesa */
 .lineas span {
     display: block;
     width: 26px;
@@ -763,10 +1083,12 @@
     transition: all 0.3s ease;
 }
 
+/* Estado abierto: animación a X */
 .lineas.abierto span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
 .lineas.abierto span:nth-child(2) { opacity: 0; }
 .lineas.abierto span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
+/* Menú desplegable móvil */
 .menu-desplegable {
     position: fixed;
     top: 64px;
@@ -778,9 +1100,17 @@
     transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
-.menu-desplegable.abierto { max-height: 320px; }
 
-.menu-desplegable ul { list-style: none; padding: 0.5rem 0 1rem; }
+.menu-desplegable.abierto {
+    max-height: 320px;
+}
+
+.menu-desplegable ul {
+    list-style: none;
+    padding: 0.5rem 0 1rem;
+}
+
+/* Links internos del menú */
 .menu-desplegable ul li a {
     display: block;
     padding: 0.9rem 2rem;
@@ -792,15 +1122,38 @@
     transition: background 0.2s, padding-left 0.2s;
     cursor: pointer;
 }
+
 .menu-desplegable ul li a:hover {
     background: rgba(255,255,255,0.1);
     padding-left: 2.5rem;
 }
 
-/* ── FAQ ── */
-.faq-seccion { background: var(--verde-oscuro); padding: 3rem 1.5rem; }
-.faq-contenedor { display: flex; flex-direction: column; gap: 0.8rem; }
 
+
+/* ============================================================
+   14. FAQ — ESTILO BASE
+   ============================================================
+   USADO EN:
+   - bloques FAQ tipo acordeón
+   - versión oscura / base del componente
+
+   NOTA:
+   Este es el estilo general del acordeón.
+   Luego FAQ tiene una versión más específica dentro de .faq-area
+   ============================================================ */
+
+.faq-seccion {
+    background: var(--verde-oscuro);
+    padding: 3rem 1.5rem;
+}
+
+.faq-contenedor {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+/* Item individual del acordeón FAQ */
 .faq-item {
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.12);
@@ -808,8 +1161,12 @@
     overflow: hidden;
     transition: background 0.2s;
 }
-.faq-item:hover { background: rgba(255,255,255,0.11); }
 
+.faq-item:hover {
+    background: rgba(255,255,255,0.11);
+}
+
+/* Botón/cabecera clickeable */
 .faq-pregunta {
     width: 100%;
     background: none;
@@ -827,28 +1184,67 @@
     gap: 1rem;
 }
 
-.faq-icono { font-size: 1.3rem; flex-shrink: 0; transition: transform 0.3s; color: rgba(255,255,255,0.7); }
-.faq-item.abierto .faq-icono { transform: rotate(45deg); color: #69F0AE; }
+/* Ícono del acordeón */
+.faq-icono {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    transition: transform 0.3s;
+    color: rgba(255,255,255,0.7);
+}
 
+/* Estado abierto */
+.faq-item.abierto .faq-icono {
+    transform: rotate(45deg);
+    color: #69F0AE;
+}
+
+/* Contenedor de respuesta, cerrado por default */
 .faq-respuesta {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.45s ease, padding 0.28s ease;
 }
 
+/* Estado abierto de respuesta */
 .faq-respuesta.abierto {
     max-height: 500px;
     padding: 0 1.4rem 1.2rem;
 }
 
-.faq-respuesta p { color: rgba(255,255,255,0.78); font-size: 0.88rem; line-height: 1.75; font-weight: 300; }
-.faq-link { color: #69F0AE; font-weight: 700; text-decoration: underline; }
+/* Texto de respuesta */
+.faq-respuesta p {
+    color: rgba(255,255,255,0.78);
+    font-size: 0.88rem;
+    line-height: 1.75;
+    font-weight: 300;
+}
 
-/* FAQ área (estilo alternativo faq.html) */
+/* Links dentro del FAQ */
+.faq-link {
+    color: #69F0AE;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+
+
+/* ============================================================
+   15. FAQ — ESTILO ESPECÍFICO DE faq.html
+   ============================================================
+   USADO EN:
+   - faq.html
+
+   NOTA:
+   Esta versión adapta el componente FAQ para la caja clara
+   montada sobre el hero principal.
+   ============================================================ */
+
 .faq-area {
     background: var(--fondo);
     padding: 0 1.5rem 4rem;
 }
+
+/* Caja principal donde vive el FAQ */
 .faq-area .contenedor-faq {
     max-width: 1000px;
     margin: -90px auto 0;
@@ -861,6 +1257,7 @@
     border: 1px solid rgba(0,153,51,0.08);
 }
 
+/* Item FAQ estilo claro */
 .faq-area .faq-item {
     background: var(--blanco);
     border: 1px solid rgba(0,153,51,0.10);
@@ -876,12 +1273,14 @@
     transform: translateY(-2px);
     box-shadow: var(--sombra-m);
 }
+
 .faq-area .faq-item.abierto {
     border-color: rgba(0,153,51,0.30);
     background: white;
     box-shadow: var(--sombra-m);
 }
 
+/* Título/pregunta del FAQ */
 .faq-area .faq-pregunta {
     color: var(--verde-oscuro);
     font-size: 0.98rem;
@@ -889,26 +1288,64 @@
     padding: 1.2rem 1.4rem;
 }
 
-.faq-area .faq-icono { color: var(--verde); font-size: 1.3rem; flex-shrink: 0; transition: transform 0.3s, color 0.25s; }
-.faq-area .faq-item.abierto .faq-icono { transform: rotate(45deg); color: var(--verde-oscuro); }
+/* Ícono del FAQ en la versión clara */
+.faq-area .faq-icono {
+    color: var(--verde);
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    transition: transform 0.3s, color 0.25s;
+}
 
-.faq-area .faq-respuesta { background: transparent; }
+.faq-area .faq-item.abierto .faq-icono {
+    transform: rotate(45deg);
+    color: var(--verde-oscuro);
+}
+
+.faq-area .faq-respuesta {
+    background: transparent;
+}
+
+/* Texto de la respuesta */
 .faq-area .faq-respuesta p {
     color: var(--gris-texto);
     font-size: 0.94rem;
     line-height: 1.85;
     font-weight: 400;
 }
-.faq-area .faq-link { color: var(--verde-oscuro); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
 
-.faq-btn-wrap { text-align: center; padding: 0 0 2.5rem; background: var(--blanco); }
+.faq-area .faq-link {
+    color: var(--verde-oscuro);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
 
-/* ── CONTACTO ── */
+/* Contenedor para botón o CTA al final */
+.faq-btn-wrap {
+    text-align: center;
+    padding: 0 0 2.5rem;
+    background: var(--blanco);
+}
+
+
+
+/* ============================================================
+   16. CONTACTO — BASE GENERAL
+   ============================================================
+   USADO EN:
+   - contacto.html
+
+   NOTA:
+   Esta es la base visual de la página de contacto.
+   Luego abajo viene la parte del layout específico.
+   ============================================================ */
+
 .contacto-body {
     background: var(--fondo);
     padding: 0 1.5rem 0;
 }
 
+/* Variante de .tarjeta para contacto */
 .contacto-body .tarjeta {
     background: white;
     border-radius: 20px;
@@ -920,6 +1357,8 @@
     position: relative;
     overflow: hidden;
 }
+
+/* Línea decorativa superior */
 .contacto-body .tarjeta::before {
     content: '';
     position: absolute;
@@ -929,6 +1368,7 @@
     border-radius: 20px 20px 0 0;
 }
 
+/* Frase destacada dentro de contacto */
 .contacto-frase {
     font-style: italic;
     font-size: 1.05rem;
@@ -941,6 +1381,7 @@
     text-align: left;
 }
 
+/* Variante específica dentro de contacto-body */
 .contacto-body .contacto-frase {
     border-left: 4px solid var(--verde);
     color: var(--verde-oscuro);
@@ -948,9 +1389,17 @@
     font-size: 1rem;
 }
 
-.contacto-body .btn-verde { background: var(--verde); color: white; }
-.contacto-body .btn-verde:hover { background: var(--verde-oscuro); }
+/* Botón verde dentro de la página de contacto */
+.contacto-body .btn-verde {
+    background: var(--verde);
+    color: white;
+}
 
+.contacto-body .btn-verde:hover {
+    background: var(--verde-oscuro);
+}
+
+/* Bloque de datos de contacto */
 .contacto-datos {
     text-align: center;
     font-size: 0.88rem;
@@ -959,21 +1408,49 @@
     border-top: 1px solid var(--verde-suave);
     padding-top: 1.2rem;
 }
-.contacto-datos strong { color: var(--texto); font-size: 1rem; font-weight: 700; display: block; }
-.contacto-datos a { color: var(--verde); }
 
-.contacto-btn-wrap { text-align: center; padding: 0.5rem 0 2rem; background: var(--blanco); }
+.contacto-datos strong {
+    color: var(--texto);
+    font-size: 1rem;
+    font-weight: 700;
+    display: block;
+}
+
+.contacto-datos a {
+    color: var(--verde);
+}
+
+/* Wrapper de botones al final */
+.contacto-btn-wrap {
+    text-align: center;
+    padding: 0.5rem 0 2rem;
+    background: var(--blanco);
+}
 
 
-/*Contacto*/
+
+/* ============================================================
+   17. CONTACTO — LAYOUT ESPECÍFICO
+   ============================================================
+   USADO EN:
+   - contacto.html
+
+   NOTA:
+   Aquí vive la estructura de columnas, info, logo y mapa.
+   Si contacto deja de verse parejo, probablemente fue aquí.
+   ============================================================ */
+
+/* Sección general de contacto */
 .contacto-seccion {
     padding-bottom: 4rem;
 }
 
+/* Contenedor más ancho que el genérico */
 .contacto-contenedor {
     max-width: 1180px;
 }
 
+/* Grid de dos columnas: información + mapa */
 .contacto-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -981,6 +1458,7 @@
     align-items: stretch;
 }
 
+/* Ambas tarjetas comparten altura y alineación base */
 .contacto-card-info,
 .contacto-card-mapa {
     max-width: none;
@@ -989,22 +1467,26 @@
     text-align: left;
 }
 
+/* Columna izquierda / info */
 .contacto-card-info {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
+/* Wrapper del logo */
 .contacto-logo-wrap {
     text-align: center;
     margin-bottom: 1.4rem;
 }
 
+/* Imagen del logo */
 .contacto-logo-img {
     height: 72px;
     object-fit: contain;
 }
 
+/* Texto descriptivo */
 .contacto-card-texto {
     text-align: center;
     margin-bottom: 1.6rem;
@@ -1012,27 +1494,32 @@
     line-height: 1.75;
 }
 
+/* Wrapper del botón */
 .contacto-boton-wrap {
     text-align: center;
     margin-bottom: 2rem;
 }
 
+/* Columna derecha / mapa */
 .contacto-card-mapa {
     display: flex;
     flex-direction: column;
 }
 
+/* Título del mapa */
 .contacto-mapa-titulo {
     text-align: center;
     margin-bottom: 0.8rem;
 }
 
+/* Texto auxiliar del mapa */
 .contacto-mapa-texto {
     text-align: center;
     margin-bottom: 1rem;
     color: var(--texto-suave);
 }
 
+/* Iframe / mapa embebido */
 .contacto-mapa-frame {
     width: 100%;
     min-height: 320px;
@@ -1041,12 +1528,31 @@
     box-shadow: var(--sombra-s);
 }
 
+/* Utilidad para títulos centrados dentro de modales */
 .modal-titulo-centrado {
     text-align: center;
 }
 
-/* ── FORMULARIO ── */
-.form-grupo { margin-bottom: 1.2rem; text-align: left; }
+
+
+/* ============================================================
+   18. FORMULARIOS
+   ============================================================
+   USADO EN:
+   - contacto
+   - pasos
+   - posibles modales con inputs
+
+   NOTA:
+   Este bloque es compartido. Si cambias bordes, padding o focus,
+   probablemente cambias todos los formularios del flujo.
+   ============================================================ */
+
+.form-grupo {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+
 .form-grupo label {
     display: block;
     font-size: 0.83rem;
@@ -1056,6 +1562,7 @@
     text-transform: uppercase;
     letter-spacing: 0.4px;
 }
+
 .form-grupo input,
 .form-grupo textarea,
 .form-grupo select {
@@ -1070,12 +1577,34 @@
     color: var(--texto);
     transition: border-color 0.2s;
 }
+
 .form-grupo input:focus,
 .form-grupo textarea:focus,
-.form-grupo select:focus { outline: none; border-color: var(--verde); }
-.form-grupo textarea { resize: vertical; min-height: 100px; }
+.form-grupo select:focus {
+    outline: none;
+    border-color: var(--verde);
+}
 
-/* ── MODALES ── */
+.form-grupo textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+
+
+/* ============================================================
+   19. MODALES
+   ============================================================
+   USADO EN:
+   - términos y condiciones
+   - formularios emergentes
+   - overlays reutilizables
+
+   NOTA:
+   Este bloque mezcla layout de modal + botones + términos expandibles.
+   Conviene tocarlo sabiendo qué JS lo controla.
+   ============================================================ */
+
 .modal-overlay {
     display: none;
     position: fixed;
@@ -1087,8 +1616,12 @@
     justify-content: center;
     padding: 1rem;
 }
-.modal-overlay.activo { display: flex; }
 
+.modal-overlay.activo {
+    display: flex;
+}
+
+/* Caja del modal */
 .modal-caja {
     background: white;
     border-radius: 20px;
@@ -1100,9 +1633,25 @@
     box-shadow: 0 20px 60px rgba(0,0,0,0.25);
     animation: subirFadeIn 0.3s ease both;
 }
-.modal-caja h2 { font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--verde-oscuro); margin-bottom: 1rem; font-size: 1.35rem; }
-.modal-intro { color: var(--texto-suave); font-size: 0.87rem; margin-bottom: 1rem; font-weight: 300; }
 
+/* Título del modal */
+.modal-caja h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: var(--verde-oscuro);
+    margin-bottom: 1rem;
+    font-size: 1.35rem;
+}
+
+/* Texto introductorio del modal */
+.modal-intro {
+    color: var(--texto-suave);
+    font-size: 0.87rem;
+    margin-bottom: 1rem;
+    font-weight: 300;
+}
+
+/* Botón/trigger para mostrar más contenido */
 .btn-ver-mas {
     background: none;
     border: none;
@@ -1116,8 +1665,12 @@
     align-items: center;
     gap: 0.3rem;
 }
-.btn-ver-mas:hover { color: var(--verde-oscuro); }
 
+.btn-ver-mas:hover {
+    color: var(--verde-oscuro);
+}
+
+/* Contenido expandible de términos */
 .terminos-cuerpo {
     max-height: 0;
     overflow: hidden;
@@ -1128,14 +1681,45 @@
     font-weight: 300;
     margin-bottom: 0.5rem;
 }
-.terminos-cuerpo.expandido { max-height: 600px; }
-.terminos-cuerpo p { margin-bottom: 0.7rem; }
-.terminos-cuerpo strong { color: var(--texto); font-weight: 700; }
 
-.terminos-check { display: flex; align-items: flex-start; gap: 0.75rem; margin: 1.2rem 0; cursor: pointer; }
-.terminos-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--verde); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
-.terminos-check span { font-size: 0.87rem; color: var(--texto); line-height: 1.5; }
+.terminos-cuerpo.expandido {
+    max-height: 600px;
+}
 
+.terminos-cuerpo p {
+    margin-bottom: 0.7rem;
+}
+
+.terminos-cuerpo strong {
+    color: var(--texto);
+    font-weight: 700;
+}
+
+/* Checkbox de aceptación */
+.terminos-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin: 1.2rem 0;
+    cursor: pointer;
+}
+
+.terminos-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--verde);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.terminos-check span {
+    font-size: 0.87rem;
+    color: var(--texto);
+    line-height: 1.5;
+}
+
+/* Botón principal del modal */
 .btn-aceptar {
     width: 100%;
     padding: 0.9rem;
@@ -1150,9 +1734,17 @@
     transition: background 0.2s, opacity 0.2s;
     margin-bottom: 0.6rem;
 }
-.btn-aceptar:disabled { opacity: 0.38; cursor: not-allowed; }
-.btn-aceptar:not(:disabled):hover { background: var(--verde-oscuro); }
 
+.btn-aceptar:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+}
+
+.btn-aceptar:not(:disabled):hover {
+    background: var(--verde-oscuro);
+}
+
+/* Botón secundario */
 .btn-cancelar-modal {
     width: 100%;
     padding: 0.7rem;
@@ -1164,13 +1756,31 @@
     font-size: 0.85rem;
     transition: color 0.2s;
 }
-.btn-cancelar-modal:hover { color: var(--texto); }
 
-/* ── RESPONSIVE ── */
+.btn-cancelar-modal:hover {
+    color: var(--texto);
+}
+
+
+
+/* ============================================================
+   20. RESPONSIVE GENERAL COMPARTIDO
+   ============================================================
+   USADO EN:
+   - faq
+   - contacto
+   - otros bloques compartidos
+
+   NOTA:
+   Ajustes globales de responsive para varias páginas.
+   Si algo cambia "solo en móvil", casi seguro está aquí.
+   ============================================================ */
+
 @media (max-width: 700px) {
     .faq-area { padding: 2.5rem 1rem 2rem; }
     .contacto-body { padding: 0 1rem; }
-    .faq-btn-wrap, .contacto-btn-wrap { padding-bottom: 1.5rem; }
+    .faq-btn-wrap,
+    .contacto-btn-wrap { padding-bottom: 1.5rem; }
 }
 
 @media (max-width: 600px) {
@@ -1214,11 +1824,25 @@
 }
 
 
+
+/* ============================================================
+   21. PASOS — BARRA DE PROGRESO
+   ============================================================
+   USADO EN:
+   - pasos.html
+
+   NOTA:
+   Bloque específico del flujo visual de pasos.
+   Aquí se controla la barra, círculos, estados activo/actual
+   y comportamiento responsive.
+   ============================================================ */
+
 .pasos-titulo {
     text-align: center;
     margin-bottom: 2rem;
 }
 
+/* Wrapper general de los pasos */
 .pasos-barra-wrap {
     position: relative;
     display: grid;
@@ -1230,6 +1854,7 @@
     padding: 0 0.5rem;
 }
 
+/* Línea base y línea de progreso */
 .pasos-linea,
 .pasos-linea-progreso {
     position: absolute;
@@ -1245,18 +1870,21 @@
     background: #dfe5df;
 }
 
+/* Progreso actual visible */
 .pasos-linea-progreso {
     width: 51%;
     background: linear-gradient(90deg, #f97316 0%, #22c55e 55%, #16a34a 100%);
     box-shadow: 0 0 12px rgba(34, 197, 94, 0.22);
 }
 
+/* Cada paso individual */
 .paso {
     position: relative;
     z-index: 1;
     text-align: center;
 }
 
+/* Círculo del paso */
 .paso-circulo {
     width: 48px;
     height: 48px;
@@ -1273,6 +1901,7 @@
     transition: all 0.25s ease;
 }
 
+/* Texto del paso */
 .paso p {
     font-size: 0.9rem;
     color: var(--texto-suave);
@@ -1281,6 +1910,7 @@
     font-weight: 600;
 }
 
+/* Paso ya completado */
 .paso.activo .paso-circulo {
     background: linear-gradient(135deg, #22c55e, #16a34a);
     color: white;
@@ -1288,6 +1918,7 @@
     box-shadow: 0 0 14px rgba(34, 197, 94, 0.35);
 }
 
+/* Paso actual */
 .paso.actual .paso-circulo {
     background: linear-gradient(135deg, #2563eb, #3b82f6);
     color: white;
@@ -1296,11 +1927,13 @@
     transform: scale(1.08);
 }
 
+/* Texto destacado del paso activo o actual */
 .paso.activo p,
 .paso.actual p {
     color: var(--verde-oscuro);
 }
 
+/* Texto de apoyo inferior */
 .pasos-texto-ayuda {
     text-align: center;
     max-width: 620px;
@@ -1328,6 +1961,17 @@
     }
 }
 
+
+
+/* ============================================================
+   22. CONTACTO — RESPONSIVE
+   ============================================================
+   USADO EN:
+   - contacto.html
+
+   NOTA:
+   Ajustes de columnas, logo, textos y mapa en responsive.
+   ============================================================ */
 
 @media (max-width: 900px) {
     .contacto-grid {
@@ -1360,6 +2004,19 @@
     }
 }
 
+
+
+/* ============================================================
+   23. RESUMEN DE CARRITO / DONACIÓN
+   ============================================================
+   USADO EN:
+   - pasos.html
+   - flujo de donación de materiales (si aplica)
+
+   NOTA:
+   Bloque visual para renderizar resumen del carrito o selección.
+   ============================================================ */
+
 .resumen-carrito {
     margin: 1.75rem 0 2rem;
     text-align: left;
@@ -1370,6 +2027,7 @@
     box-shadow: 0 10px 28px rgba(0, 100, 40, 0.08);
 }
 
+/* Título del resumen */
 .resumen-titulo {
     margin: 0 0 1rem;
     color: var(--verde-oscuro);
@@ -1378,12 +2036,14 @@
     letter-spacing: -0.3px;
 }
 
+/* Lista vertical de productos/materiales */
 .resumen-lista {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
+/* Item individual del resumen */
 .resumen-item {
     background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(3px);
@@ -1399,6 +2059,7 @@
     box-shadow: 0 10px 22px rgba(0, 100, 40, 0.08);
 }
 
+/* Nombre de escuela */
 .resumen-escuela {
     margin: 0 0 0.35rem;
     font-size: 0.95rem;
@@ -1406,6 +2067,7 @@
     color: var(--verde-oscuro);
 }
 
+/* Nombre del material */
 .resumen-material {
     margin: 0 0 0.45rem;
     font-size: 1.15rem;
@@ -1414,6 +2076,7 @@
     line-height: 1.4;
 }
 
+/* Cantidad o metadato secundario */
 .resumen-cantidad {
     margin: 0;
     font-size: 0.92rem;
@@ -1421,11 +2084,13 @@
     font-weight: 500;
 }
 
+/* Estado vacío */
 .resumen-vacio {
     text-align: center;
     color: var(--texto-suave);
     padding: 0.5rem 0;
 }
+
 @media (max-width: 600px) {
     .resumen-carrito {
         padding: 1rem;
@@ -1450,6 +2115,20 @@
         font-size: 0.88rem;
     }
 }
+
+
+
+/* ============================================================
+   24. CAMPOS ESPECÍFICOS DEL TIPO DE DONACIÓN
+   ============================================================
+   USADO EN:
+   - formularios donde se selecciona tipo de donación
+
+   NOTA:
+   Esto ya es más puntual y depende del HTML/JS del formulario.
+   Si cambian IDs en el HTML, esto deja de aplicar.
+   ============================================================ */
+
 #grupo-tipo-donacion {
     margin-top: 0.2rem;
 }
