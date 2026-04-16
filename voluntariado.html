@@ -35,21 +35,21 @@
         </p>
 
         <div>
-          <a href="contacto.html" class="btn btn-verde">Contáctanos</a>
+            /*estaba: href="contacto.html" class="btn btn-verde">Contáctanos*/
+            /* y lo cambie a esa linea*/ 
+            
+          <a href="contacto.html" class="btn btn-verde" onclick="guardarTipoApoyo('Voluntariado')">Contáctanos</a>
         </div>
         </div><!-- /donacion-card -->
     </div><!-- /container-donacion -->
 
-
-    <!-- ── FOOTER ── -->
-    <footer>
-        <div class="footer-accion">
-            <button class="btn btn-atras" onclick="history.back()">← Atrás</button>
-            <p class="derechos">© 2026 Mexicanos Primero Jalisco A.C. Todos los derechos reservados.</p>
-        </div>
-        <div class="footer-contacto">
-            <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
-            <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
-            <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
-            <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad</a></p>
-        </div>
+    /* COMMENT ITZIA: agregue todo este script*/
+    <script>
+    function guardarTipoApoyo(tipo) {
+        sessionStorage.setItem("origen_formulario", "tipo_apoyo");
+        sessionStorage.setItem("tipo_donacion", tipo);
+        sessionStorage.removeItem("carrito_donacion");
+    }
+    </script>
+    /* aqui acaba*/
+</body>
