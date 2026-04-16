@@ -5,43 +5,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voluntariado</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="paginas.css">
-
-    
 </head>
-<body>
 
-    <header class="header-donacion">
-        <div class="header-top-donacion">
-            <div id="voluntariado-nav">
-                <img class="header-logo" src="images/Logo Mi Escuela Primero.png" alt="Logo Mi Escuela Primero">
-            </div>
+<body class="support-body">
+    <nav class="navbar support-navbar">
+        <button class="lineas support-nav-toggle" id="lineas" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
 
-           <h1 class="voluntariadoTitulo">Voluntariado</h1>
-            <p class="voluntariadoSub">Con cada gesto, podemos transformar la educación.
-           </p>
+        <div class="navbar-logo">
+            <a href="index.html">
+                <img src="images/mexipri_logo.png" alt="Mexicanos Primero Jalisco" class="logo-img">
+            </a>
+        </div>
 
-            <a href="index.html" class="boton-inicio">🏠︎  Inicio</a>
+        <div class="navbar-menu support-navbar-menu">
+            <a href="donacionEconomica.html">Donación económica</a>
+            <a href="voluntariado.html" class="active">Voluntariado</a>
+            <a href="talleres.html">Brindar talleres</a>
+            <a href="vinculaciones.html">Vinculaciones</a>
+            <a href="catalogo.html">Catálogo</a>
+        </div>
+
+        <div class="navbar-acciones support-navbar-actions">
+            <a href="admin-login.html" class="btn-iniciar-sesion support-login">Iniciar sesión</a>
+            <a href="catalogo.html" class="btn-ayudar-flotante support-help-cta">♡ ¡Quiero ayudar!</a>
+        </div>
+    </nav>
+
+    <div class="menu-desplegable support-menu" id="menuDesplegable">
+        <ul>
+            <li><a href="donacionEconomica.html">Donación económica</a></li>
+            <li><a href="voluntariado.html">Voluntariado</a></li>
+            <li><a href="talleres.html">Brindar talleres</a></li>
+            <li><a href="vinculaciones.html">Vinculaciones</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
+        </ul>
+    </div>
+
+    <header class="support-hero support-hero--voluntariado">
+        <div class="support-hero-overlay"></div>
+        <div class="support-hero-content">
+            <a href="index.html" class="support-home-pill">Inicio</a>
+            <h1>Voluntariado</h1>
+            <p>Tu tiempo y tu energía también pueden transformar la educación.</p>
         </div>
     </header>
 
-    <div class="container-donacion">
-        <div class="donacion-card">
-        <p id="titulo-donacion">¿Quieres ser voluntario?</p>
-        <p id="descripción-donacion">
-        Únete a nuestra red de voluntarios y contribuye con tu tiempo y talento al desarrollo de las escuelas en contextos vulnerables.
-        Tu participación puede ser en actividades de apoyo escolar, logística, eventos o lo que mejor se adapte a tus habilidades.
-        </p>
+    <main class="support-page">
+        <section class="support-section">
+            <div class="support-split-card">
+                <div class="support-split-copy">
+                    <h2>¿Quieres ser voluntario?</h2>
+                    <p>
+                        Únete a nuestra red de voluntariado y contribuye con tu tiempo y talento al
+                        desarrollo de escuelas en contextos vulnerables. Tu participación puede darse
+                        en actividades de apoyo escolar, logística, acompañamiento o eventos.
+                    </p>
+                    <div class="support-inline-actions">
+                        <a href="contacto.html?tipo=Voluntariado" class="support-btn support-btn--orange">Súmate</a>
+                        <a href="https://www.mexicanosprimerojalisco.org/voluntariado" target="_blank" rel="noopener noreferrer" class="support-btn support-btn--ghost">Ver voluntariado institucional</a>
+                    </div>
+                </div>
 
-        <div>
-          <a href="contacto.html" class="btn btn-verde">Contáctanos</a>
-        </div>
-        </div><!-- /donacion-card -->
-    </div><!-- /container-donacion -->
+                <div class="support-split-media support-split-media--video">
+                    <div class="support-video-frame">
+                        <iframe
+                            src="https://www.youtube.com/embed/3TQR-aQXiTk"
+                            title="Video Mi Escuela Primero"
+                            loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <section class="support-section">
+            <div class="support-gallery-header">
+                <h2>Imágenes</h2>
+                <p>Momentos que reflejan el trabajo en comunidad.</p>
+            </div>
 
-    <!-- ── FOOTER ── -->
+            <div class="support-gallery-carousel">
+                <button class="support-gallery-arrow support-gallery-arrow--prev" id="galleryPrev" aria-label="Imagen anterior">‹</button>
+
+                <div class="support-gallery-viewport">
+                    <div class="support-gallery-track" id="supportGalleryTrack">
+                        <article class="support-gallery-card">
+                            <img src="images/fotocarr1.jpg" alt="Actividad de voluntariado 1">
+                        </article>
+                        <article class="support-gallery-card">
+                            <img src="images/fotocarr2.JPG" alt="Actividad de voluntariado 2">
+                        </article>
+                        <article class="support-gallery-card">
+                            <img src="images/fotocarr3.jpg" alt="Actividad de voluntariado 3">
+                        </article>
+                        <article class="support-gallery-card">
+                            <img src="images/fotocarr4.png" alt="Actividad de voluntariado 4">
+                        </article>
+                        <article class="support-gallery-card">
+                            <img src="images/fotocarr5.jpg" alt="Actividad de voluntariado 5">
+                        </article>
+                    </div>
+                </div>
+
+                <button class="support-gallery-arrow support-gallery-arrow--next" id="galleryNext" aria-label="Siguiente imagen">›</button>
+            </div>
+        </section>
+    </main>
+
     <footer>
         <div class="footer-accion">
             <button class="btn btn-atras" onclick="history.back()">← Atrás</button>
@@ -53,3 +129,66 @@
             <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
             <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad</a></p>
         </div>
+    </footer>
+
+    <script>
+        const navbar = document.querySelector('.navbar');
+        const lineas = document.getElementById('lineas');
+        const menuDesplegable = document.getElementById('menuDesplegable');
+        const galleryTrack = document.getElementById('supportGalleryTrack');
+        const galleryPrev = document.getElementById('galleryPrev');
+        const galleryNext = document.getElementById('galleryNext');
+
+        window.addEventListener('scroll', function () {
+            if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        if (lineas && menuDesplegable) {
+            lineas.addEventListener('click', function () {
+                lineas.classList.toggle('abierto');
+                menuDesplegable.classList.toggle('abierto');
+            });
+        }
+
+        if (galleryTrack && galleryPrev && galleryNext) {
+            const galleryCards = Array.from(galleryTrack.querySelectorAll('.support-gallery-card'));
+            let currentIndex = 0;
+
+            function renderGallery() {
+                galleryCards.forEach(function (card, index) {
+                    card.classList.toggle('is-active', index === currentIndex);
+                    card.classList.toggle('is-left', index === (currentIndex - 1 + galleryCards.length) % galleryCards.length);
+                    card.classList.toggle('is-right', index === (currentIndex + 1) % galleryCards.length);
+                });
+
+                if (window.innerWidth <= 700) {
+                    const activeCard = galleryCards[currentIndex];
+                    activeCard.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    return;
+                }
+
+                const cardWidth = galleryCards[0].offsetWidth;
+                const gap = 20;
+                const viewport = galleryTrack.parentElement;
+                const viewportWidth = viewport.offsetWidth;
+                const offset = (viewportWidth / 2) - (cardWidth / 2) - (currentIndex * (cardWidth + gap));
+                galleryTrack.style.transform = 'translateX(' + offset + 'px)';
+            }
+
+            galleryPrev.addEventListener('click', function () {
+                currentIndex = (currentIndex - 1 + galleryCards.length) % galleryCards.length;
+                renderGallery();
+            });
+
+            galleryNext.addEventListener('click', function () {
+                currentIndex = (currentIndex + 1) % galleryCards.length;
+                renderGallery();
+            });
+
+            window.addEventListener('resize', renderGallery);
+            renderGallery();
+        }
+    </script>
+</body>
+
+</html>

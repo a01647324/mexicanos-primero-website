@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contacto</title>
-    <link rel="icon" type="image/png" href="img/logo.png"/>
+    <link rel="icon" type="image/png" href="images/logo.png"/>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="paginas.css">
  
@@ -36,7 +36,7 @@
             <!-- Logo dentro de la tarjeta -->
             <div style="text-align:center; margin-bottom: 1.2rem;">
             <div style="font-size: 2rem; margin-bottom: 0.3rem;">🤍</div>
-            <img src="img/logo.png" alt="Mi Escuela Primero" style="height: 40px; object-fit: contain;"/>
+            <img src="images/logo.png" alt="Mi Escuela Primero" style="height: 40px; object-fit: contain;"/>
             </div>
  
             <p style="text-align:center; margin-bottom: 1.5rem;">
@@ -102,7 +102,7 @@
         <form id="contacto-donor">
             <div class="form-grupo">
                 <label for="nombre">Nombre completo: </label>
-                <input type="text" placeholder="Tu nombre completo" required/>
+                <input id="nombre" type="text" placeholder="Tu nombre completo" required/>
             </div>
             <div class="form-group">
                     <label for="instancia">Tipo de instancia desde la que nos contactas:</label>
@@ -121,32 +121,33 @@
  
                 <div class="form-grupo">
                     <label for="nombreInstancia">Nombre de la instancia de la que nos contactas (si aplica):</label>
-                    <input type="text" placeholder="Nombre de la instancia"/>
+                    <input id="nombreInstancia" type="text" placeholder="Nombre de la instancia"/>
                 </div>
                 <div class="form-grupo">
                     <label>Correo electrónico: </label>
-                    <input type="email" placeholder="tucorreo@ejemplo.com" required/>
+                    <input id="correo" type="email" placeholder="tucorreo@ejemplo.com" required/>
                 </div>
  
                 <div class="form-grupo">
                     <label>Teléfono</label>
-                    <input type="tel" placeholder="33 1234 5678" required/>
+                    <input id="telefono" type="tel" placeholder="33 1234 5678" required/>
                 </div>
  
                 <div class="form-grupo">
                     <label>Tipo de donación</label>
-                    <select>
+                    <select id="tipoDonacion">
                     <option value="">Selecciona una opción</option>
-                    <option>Donación económica</option>
-                    <option>Donación en especie</option>
-                    <option>Voluntariado</option>
-                    <option>Brindar talleres</option>
-                    <option>Otro</option>
+                    <option value="Donación económica">Donación económica</option>
+                    <option value="Donación en especie">Donación en especie</option>
+                    <option value="Voluntariado">Voluntariado</option>
+                    <option value="Brindar talleres">Brindar talleres</option>
+                    <option value="Vinculaciones">Vinculaciones</option>
+                    <option value="Otro">Otro</option>
                     </select>
                 </div>
                 <div class="form-grupo">
                     <label>Mensaje adicional</label>
-                    <textarea placeholder="Cuéntanos cómo deseas apoyar..."></textarea>
+                    <textarea id="mensajeAdicional" placeholder="Cuéntanos cómo deseas apoyar..."></textarea>
                 </div>
         </form>
  
@@ -216,6 +217,20 @@
         modalFormulario.addEventListener('click', function(e) {
             if (e.target === modalFormulario) cerrarFormulario();
         });
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const tipoDonacion = document.getElementById('tipoDonacion');
+        const mensajeAdicional = document.getElementById('mensajeAdicional');
+        const tipo = params.get('tipo');
+        const monto = params.get('monto');
+
+        if (tipo && tipoDonacion) {
+            tipoDonacion.value = tipo;
+        }
+
+        if (monto && mensajeAdicional) {
+            mensajeAdicional.value = 'Me interesa realizar una aportación aproximada de $' + monto + '.';
         }
 
         window.enviarFormulario = function() {
