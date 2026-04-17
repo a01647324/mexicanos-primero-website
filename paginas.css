@@ -44,7 +44,7 @@
 
 /* Contenedor principal del header visual */
 .subpagina-header {
-    margin-top: 96px;
+    margin-top: 0px;
     min-height: 460px;
     border-bottom: 3px solid var(--naranja);
     padding: 7rem 1.5rem 6rem;
@@ -300,7 +300,7 @@
     .subpagina-header {
         min-height: 340px;
         padding: 4.8rem 1rem 3.8rem;
-        margin-top: 96px;
+        margin-top: 0px;
     }
 
     .hero-contenido {
@@ -2249,7 +2249,7 @@
 
 .support-hero {
     position: relative;
-    margin-top: 96px;
+    margin-top: 0px;
     min-height: 380px;
     display: flex;
     align-items: center;
@@ -2869,3 +2869,27 @@
         top: 21px;
     }
 }
+/* HERO ANIMATION */
+.hero-contenido .info-badge {
+    animation: subirFadeIn 0.6s ease both;
+  }
+  
+  .hero-contenido h1 {
+    animation: subirFadeIn 0.7s 0.1s ease both;
+  }
+  
+  .hero-contenido p {
+    animation: subirFadeIn 0.7s 0.2s ease both;
+  }
+
+  .support-info-badge {
+    animation: subirFadeIn 0.6s ease both;
+  }
+  
+  .support-hero-content h1 {
+    animation: subirFadeIn 0.7s 0.1s ease both;
+  }
+  
+  .support-hero-content p {
+    animation: subirFadeIn 0.7s 0.2s ease both;
+  }

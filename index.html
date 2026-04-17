@@ -10,45 +10,24 @@
     <link rel="stylesheet" href="index.css">
 </head>
 
-<body>
+<body data-page="inicio">
 
     <!-- ── NAVBAR ── -->
-    <nav class="navbar">
-        <div class="navbar-logo">
-            <a href="index.html">
-                <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
-            </a>
-        </div>
+    <div id="header-placeholder"></div>
     
-        <div class="navbar-menu">
-            <a href="index.html" class="active">Inicio</a>
-            <a href="quienesSomos.html">¿Quiénes somos?</a>
-            <a href="donacionEconomica.html">Donación Económica</a>
-            <a href="voluntariado.html">Voluntariado</a>
-            <a href="talleres.html">Brindar Talleres</a>
-            <a href="vinculaciones.html">Vinculaciones</a>
-            <a href="contacto.html">Contacto</a>
-        </div>
-    
-        <div class="navbar-acciones">
-            <a href="admin-login.html" class="btn-iniciar-sesion">Iniciar sesión</a>
-            <a href="catalogo.html" class="btn-ayudar-flotante">♡ ¡Quiero ayudar!</a>
-        </div>
-    </nav>
-    
-
-
     <!-- ── PORTADA ── -->
     <section class="portada">
-        <span class="portada-banner">Mexicanos Primero Jalisco</span>
-        <h1 class="portada-titulo">Mi Escuela Primero</h1>
-        <p class="portada-sub">Mejorar las condiciones para transformar las vidas</p>
-        <div class="portada-btns">
-            <a class="btn btn-catalogo" href="catalogo.html">Catálogo</a>
-            <a class="btn btn-donacion" href="donacionEconomica.html">Donación Económica</a>
-            <a class="btn btn-donacion" href="voluntariado.html">Voluntariado</a>
-            <a class="btn btn-donacion" href="talleres.html">Brindar Talleres</a>
-            <a class="btn btn-donacion" href="vinculaciones.html">Vinculaciones</a>
+        <div class="portada-contenido">
+            <span class="portada-banner">Mexicanos Primero Jalisco</span>
+            <h1 class="portada-titulo">Mi Escuela Primero</h1>
+            <p class="portada-sub">Mejorar las condiciones para transformar las vidas</p>
+            <div class="portada-btns">
+                <a class="btn btn-catalogo" href="catalogo.html">Catálogo</a>
+                <a class="btn btn-donacion" href="donacionEconomica.html">Donación Económica</a>
+                <a class="btn btn-donacion" href="voluntariado.html">Voluntariado</a>
+                <a class="btn btn-donacion" href="talleres.html">Brindar Talleres</a>
+                <a class="btn btn-donacion" href="vinculaciones.html">Vinculaciones</a>
+            </div>
         </div>
     </section>
 
@@ -156,12 +135,15 @@
         </div>
     </section>
 
-    <!-- ── PASOS PARA DONAR ── -->
+    <!-- ── PASOS PARA DONAR  ── -->
     <section class="pasos-seccion">
-        <div class="contenedor">
+        <div class="contenedor pasos-header">
             <p class="pasos-subtitulo">Camino para ayudar</p>
             <h2 class="seccion-titulo">Pasos para Donar</h2>
             <div class="linea-verde"></div>
+        </div>
+    
+        <div class="pasos-wrap">
             <div class="pasos-lista">
                 <div class="paso">
                     <div class="paso-circulo">🏫</div>
@@ -468,52 +450,11 @@
         </div>
     </section>
 
-    
-
     <!-- ── FOOTER ── -->
-    <footer class="footer">
-
-        <div class="footer-container">
-      
-          <!-- IZQUIERDA -->
-          <div class="footer-left">
-            <div class="footer-logo-box">
-              <img src="images/mi-escuela-logo.png" alt="Mi Escuela Primero">
-            </div>
-      
-            <div class="footer-redes">
-              <a href="#"><img src="images/whatsapp.png"></a>
-              <a href="#"><img src="images/facebook.png"></a>
-              <a href="#"><img src="images/youtube.png"></a>
-              <a href="#"><img src="images/twitter.png"></a>
-              <a href="#"><img src="images/linkedin.png"></a>
-            </div>
-          </div>
-      
-          <!-- DERECHA -->
-          <div class="footer-right">
-            <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
-            <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
-            <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
-            <p><a href="#">Aviso de privacidad</a></p>
-          </div>
-      
-        </div>
-      
-      </footer>
+    <div id="footer-placeholder"></div>
+    <script src="components.js"></script>
 
     <script>
-        /* ── HEADER AL HACER SCROLL ── */
-        const navbar = document.querySelector('.navbar');
-
-        window.addEventListener('scroll', function () {
-            if (window.scrollY > 40) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-
         /* ── BARRA DE PROGRESO PRINCIPAL ── */
         const barraPrincipal = document.getElementById('barra-principal');
         const etiquetaPct    = document.getElementById('pct-label');
