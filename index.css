@@ -15,7 +15,7 @@
     ),
     url('images/hero.jpg') center / cover no-repeat;
   min-height: 100vh;
-  padding: 170px 1.5rem 3rem;
+  padding: 110px 1.5rem 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,7 +24,9 @@
   position: relative;
   z-index: 0;
 }
-
+.portada-contenido {
+  transform: translateY(-90px);
+}
 .portada::after {
   content: '';
   position: absolute;
