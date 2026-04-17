@@ -1232,7 +1232,7 @@ app.post("/api/auth/login-donador", async (req, res) => {
       { expiresIn: "2h" }
     );
 
-    res.json({ message: "Bienvenido", token, rol: "donador" });
+    res.json({ message: "Bienvenido", token, rol: "donador", nombre: user.nombre_completo, correo: user.correo })
   } catch (err) {
     console.error("Error en login-donador:", err);
     res.status(500).json({ error: "Error en servidor." });
