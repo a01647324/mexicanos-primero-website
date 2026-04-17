@@ -1366,15 +1366,15 @@
 
 /* Frase destacada dentro de contacto */
 .contacto-frase {
-    font-style: italic;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     color: var(--verde-oscuro);
-    font-weight: 400;
-    max-width: 500px;
+    font-weight: 500;
+    line-height: 1.6;
+    max-width: 680px;
     margin: 0 auto;
-    border-left: 4px solid var(--verde);
-    padding-left: 1rem;
-    text-align: left;
+    text-align: center;
+    letter-spacing: 0.2px;
+    opacity: 0.9;
 }
 
 /* Variante específica dentro de contacto-body */
@@ -1478,8 +1478,10 @@
 
 /* Imagen del logo */
 .contacto-logo-img {
-    height: 72px;
-    object-fit: contain;
+    height: 140px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 /* Texto descriptivo */
@@ -2031,7 +2033,8 @@
     }
 
     .contacto-logo-img {
-        height: 60px;
+        height: 100px;
+        width: auto;
     }
 
     .contacto-card-texto,
