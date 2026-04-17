@@ -1,0 +1,60 @@
+<nav class="navbar">
+    <div class="navbar-logo">
+      <a href="index.html">
+        <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
+      </a>
+    </div>
+  
+    <a href="catalogo.html" class="btn-ayudar-fixed">♡ ¡Quiero ayudar!</a>
+  
+    <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  
+    <div class="navbar-panel" id="navbar-panel">
+      <div class="navbar-menu">
+        <a href="index.html" data-page="inicio">Inicio</a>
+        <a href="quienesSomos.html" data-page="quienes">¿Quiénes somos?</a>
+        <a href="donacionEconomica.html" data-page="donacion">Donación Económica</a>
+        <a href="voluntariado.html" data-page="voluntariado">Voluntariado</a>
+        <a href="talleres.html" data-page="talleres">Brindar Talleres</a>
+        <a href="vinculaciones.html" data-page="vinculaciones">Vinculaciones</a>
+        <a href="contacto.html" data-page="contacto">Contacto</a>
+      </div>
+  
+      <div class="navbar-acciones">
+        <button type="button" class="btn-iniciar-sesion btn-login-modal" id="open-login-modal">
+            Iniciar sesión
+        </button>
+      </div>
+    </div>
+    <div class="login-modal-overlay" id="login-modal-overlay" aria-hidden="true">
+        <div class="login-modal-card" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
+          <button type="button" class="login-modal-close" id="close-login-modal" aria-label="Cerrar modal">
+            ×
+          </button>
+      
+          <p class="login-modal-kicker">Acceso</p>
+          <h2 class="login-modal-title" id="login-modal-title">Selecciona tu perfil</h2>
+          <p class="login-modal-subtitle">
+            Elige cómo deseas ingresar a la plataforma.
+          </p>
+      
+          <div class="login-role-options">
+            <a href="login-donador.html" class="login-role-card">
+              <div class="login-role-icon">♡</div>
+              <h3>Donador</h3>
+              <p>Accede para dar seguimiento a tus apoyos y acciones.</p>
+            </a>
+      
+            <a href="admin-login.html" class="login-role-card">
+              <div class="login-role-icon">⚙</div>
+              <h3>Administrador</h3>
+              <p>Ingresa para gestionar la plataforma y la información.</p>
+            </a>
+          </div>
+        </div>
+      </div>
+  </nav>

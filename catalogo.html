@@ -5,34 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Necesidades Escolares — Mexicanos Primero Jalisco</title>
     <link rel="icon" type="image/png" href="img/logo.png"/>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="catalogo.css">
+    
 </head>
-<body>
-
-    <!-- ── NAVBAR ── -->
-     
-     
-  
-        <nav class="navbar">
-        <div class="navbar-logo">
-            <a href="index.html">
-                <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
-            </a>
-        </div>
-    
-        <div class="navbar-menu">
-            <a href="index.html" >Inicio</a>
-            <nav id="header-categorias">
-                
-            </nav>
-        </div>
-    
-        <div class="navbar-acciones">
-            <a href="admin-login.html" class="btn-iniciar-sesion">Iniciar sesión</a>
-            <a href="#" id="btn-ayudar-flotante" class="btn-ayudar-flotante">♡ ¡Quiero ayudar!</a>
-        </div>
-    </nav>
-
+<body data-page="">
+    <div id="header-placeholder"></div>
 
     <!-- ── HERO ── -->
     <div id="header-texto">
@@ -53,36 +31,8 @@
    
 
     <!-- ── FOOTER ── -->
-    <footer class="footer">
-
-        <div class="footer-container">
-      
-          <!-- IZQUIERDA -->
-          <div class="footer-left">
-            <div class="footer-logo-box">
-              <img src="images/mi-escuela-logo.png" alt="Mi Escuela Primero">
-            </div>
-      
-            <div class="footer-redes">
-              <a href="#"><img src="images/whatsapp.png"></a>
-              <a href="#"><img src="images/facebook.png"></a>
-              <a href="#"><img src="images/youtube.png"></a>
-              <a href="#"><img src="images/twitter.png"></a>
-              <a href="#"><img src="images/linkedin.png"></a>
-            </div>
-          </div>
-      
-          <!-- DERECHA -->
-          <div class="footer-right">
-            <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
-            <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
-            <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
-            <p><a href="#">Aviso de privacidad</a></p>
-          </div>
-      
-        </div>
-      
-      </footer>
+    <div id="footer-placeholder"></div>
+    <script src="components.js"></script>
 
     <script>
         const API_URL = "http://localhost:3000/api";
@@ -103,14 +53,6 @@
  
             loading.style.display = 'none';
  
-            // Navbar: primeras 5 con link
-            data.filter(c => c.link).slice(0, 5).forEach(cat => {
-                const a = document.createElement('a');
-                a.href = `categoria.html?id=${cat.id}`;
-                a.textContent = cat.nombre;
-                a.onclick = (e) => { e.preventDefault(); irACategoria(cat.id); };
-                navCats.appendChild(a);
-            });
  
             // Tarjetas
             data.forEach((cat, i) => {

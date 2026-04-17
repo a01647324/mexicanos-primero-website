@@ -7,15 +7,36 @@
         <link rel="icon" type="image/png" href="img/logo.png"/>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="paginas.css">
+    <link rel="stylesheet" href="catalogo.css">
 </head>
 <body>
-    <header class="header-otros">
-        <div id="header-top-otros">
+    <!-- ── NAVBAR ── -->
+   
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <a href="index.html">
+                <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <a href="index.html">Inicio</a>
+            <div id="header-categorias"></div>
+        </div>
+        <div class="navbar-acciones">
+            <a href="admin-login.html" class="btn-iniciar-sesion">Iniciar sesión</a>
+            <a href="#" id="btn-ayudar-flotante" class="btn-ayudar-flotante">♡ ¡Quiero ayudar!</a>
+        </div>
+    </nav>
+
+    <header class="support-hero support-hero--economica">
+        <div class="support-hero-overlay"></div>
+        <div class="support-hero-content">
+            <span class="support-info-badge">♡ Mexicanos Primero Jalisco</span>
             <h1>Otros</h1>
-            <p><em>Con cada gesto, podemos transformar la educación.</em></p>
-            <a href="index.html" class="boton-inicio">🏠︎ Inicio</a>
+            <p>Una pequeña diferencia puede abrir grandes oportunidades para una escuela.</p>
         </div>
     </header>
+    
 
     <main class="main-otros">
         <div class="otros-card">
@@ -32,14 +53,28 @@
         </div>
     </main>
 
-    <footer>
-        <div class="footer-accion">
-            <button class="btn-atras" onclick="location.href='catalogo.html'">← Atrás</button>
-            <p class="derechos">© 2026 Mexicanos Primero Jalisco A.C. Todos los derechos reservados.</p>
+    
+    <!-- ── FOOTER ── -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <div class="footer-logo-box">
+                    <img src="images/mi-escuela-logo.png" alt="Mi Escuela Primero">
+                </div>
+                <div class="footer-redes">
+                    <a href="#"><img src="images/whatsapp.png" alt="WhatsApp"></a>
+                    <a href="#"><img src="images/facebook.png" alt="Facebook"></a>
+                    <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
+                    <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
+                    <a href="#"><img src="images/linkedin.png" alt="LinkedIn"></a>
+                </div>
+            </div>
+            <div class="footer-right">
+                <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
+                <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
+                <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
+                <p><a href="#">Aviso de privacidad</a></p>
+            </div>
         </div>
-        <div class="footer-contacto">
-            <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
-            <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
-            <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
-            <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad</a></p>
-        </div>
+    </footer>
+</body>

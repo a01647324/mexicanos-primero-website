@@ -11,7 +11,8 @@
  
     
 </head>
-<body>
+<body data-page="">
+  <div id="header-placeholder"></div>
  
     <div class="subpagina-header header-pasos">
         <div class="hero-contenido">
@@ -62,13 +63,16 @@
 <p class="pasos-texto-ayuda">
     Presiona <strong>Finalizar</strong> para aceptar los términos y continuar con el formulario.
 </p>
+
+<div id="resumen-carrito" class="resumen-carrito"></div>
+
  
-            <div>
-                <button class="btn btn-verde" onclick="abrirTerminos()">📋 Finalizar</button>
-            </div>
- 
-        
+        <div>
+            <button class="btn btn-verde" onclick="abrirTerminos()">📋 Finalizar</button>
         </div>
+
+    
+    </div>
  
         
         
@@ -78,7 +82,7 @@
     
  
     <div class="contacto-btn-wrap">
-        <a href="index.html" class="btn btn-borde">← Regresar al Inicio</a>
+        <a href="index.html" class="btn btn-borde">Cancelar solicitud</a>
     </div>
  
     <div class="modal-overlay" id="modal-terminos">
@@ -87,7 +91,8 @@
         <p style="color: var(--texto-suave); font-size: 0.85rem; margin-bottom: 1.2rem;">
             Para llenar el formulario de contacto es necesario que aceptes nuestros términos y condiciones de privacidad.
         </p>
- 
+        
+
  
         <a class="btn-ver-mas" href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf" target="_blank">
             Aviso de Privacidad completo →
@@ -107,13 +112,15 @@
         </div>
     </div>
  
-    <div id="resumen-carrito" class="resumen-carrito"></div>
+    
     <div class="modal-overlay" id="modal-formulario">
         <div class="modal-caja">
         <h2>✉️ Formulario de Contacto</h2>
         <p style="color: var(--texto-suave); font-size: 0.85rem; margin-bottom: 1.2rem;">
             Completa tus datos y nuestro equipo se pondrá en contacto contigo a la brevedad.
         </p>
+
+        
  
         <form id="contacto-donor">
     <div class="form-grupo">
@@ -156,6 +163,8 @@
         <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos cómo deseas apoyar..."></textarea>
     </div>
 </form>
+
+
  
         <button class="btn-aceptar" onclick="enviarFormulario()">Enviar mensaje →</button>
         <button class="btn-cancelar-modal" onclick="cerrarFormulario()">Cancelar</button>
@@ -165,6 +174,8 @@
  
  
     <!-- ── FOOTER ── -->
+    <div id="footer-placeholder"></div>
+    <script src="components.js"></script>
    
     <script>
 // ── MODAL TÉRMINOS ─────────────────────────────
@@ -202,24 +213,36 @@ function cerrarFormulario() {
 const carritoGuardado = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
 const resumen = document.getElementById("resumen-carrito");
 
-if (resumen) {
-  if (!carritoGuardado.length) {
-    resumen.innerHTML = "<p>No hay materiales seleccionados todavía.</p>";
-  } else {
-    resumen.innerHTML = `
-      <h3 style="margin-bottom: 1rem;">Resumen de materiales</h3>
-      ${carritoGuardado.map(item => `
-        <div style="padding: .7rem 0; border-bottom: 1px solid #dce8dc;">
-          <strong>${item.escuela}</strong><br>
-          <span>${item.propuesta}</span><br>
-          <small>Cantidad: ${item.cantidad} ${item.unidad || ""}</small>
-        </div>
-      `).join("")}
+
+function generarResumenHTML(items) {
+  if (!items.length) {
+    return `
+      <div class="resumen-vacio">
+        <p>No hay materiales seleccionados todavía.</p>
+      </div>
     `;
   }
+
+  return `
+    <h3 class="resumen-titulo">Materiales seleccionados</h3>
+    <div class="resumen-lista">
+      ${items.map(item => `
+        <div class="resumen-item">
+          <p class="resumen-escuela">${item.escuela}</p>
+          <p class="resumen-material">${item.propuesta}</p>
+          <p class="resumen-cantidad"><strong>Cantidad:</strong> ${item.cantidad} ${item.unidad || ""}</p>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+if (resumen) {
+  resumen.innerHTML = generarResumenHTML(carritoGuardado);
 }
 
 // ── ENVÍO DEL FORMULARIO ───────────────────────
+
 window.enviarFormulario = async function() {
   const materiales = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
 
@@ -236,6 +259,11 @@ window.enviarFormulario = async function() {
 
   if (!payload.nombre_completo || !payload.telefono || !payload.correo) {
     alert("Completa nombre, correo y teléfono.");
+    return;
+  }
+
+  if (!payload.aviso_privacidad_aceptado) {
+    alert("Debes aceptar el aviso de privacidad.");
     return;
   }
 
@@ -256,16 +284,14 @@ window.enviarFormulario = async function() {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.error || "No se pudo enviar la solicitud.");
+      alert(data.error || "Error al crear la solicitud");
       return;
     }
 
     alert("¡Gracias! Tu solicitud fue enviada correctamente.");
-
     sessionStorage.removeItem("carrito_donacion");
     document.getElementById("contacto-donor").reset();
     cerrarFormulario();
-
     window.location.href = "index.html";
 
   } catch (error) {
@@ -274,7 +300,7 @@ window.enviarFormulario = async function() {
   }
 };
 </script>
-    <script src="main.js"></script>
+  <script src="main.js"></script>
 
 </body>
 
