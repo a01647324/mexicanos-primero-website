@@ -297,6 +297,7 @@
     configurarBuscadorEscuela();
     configurarEventosFiltros();
     configurarFormCrear();
+    configurarSincronizacion(); 
   }
 
   // ══════════════════════════════════════════════════════════
@@ -962,6 +963,193 @@
         lista.classList.remove("visible");
       }
     });
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // SINCRONIZACIÓN EXCEL
+  // ══════════════════════════════════════════════════════════
+
+  function configurarSincronizacion() {
+    cargarInfoExcel();
+    configurarDescarga();
+    configurarDropzone();
+  }
+
+  // Carga el contador de registros y el ID máximo para mostrar
+  // en el label "Última actualización en sistema".
+  async function cargarInfoExcel() {
+    try {
+      var res = await fetch(API_URL + "/admin/excel/info");
+      if (!res.ok) throw new Error("Error");
+      var data = await res.json();
+      var el = document.getElementById("ultima-actualizacion");
+      if (el) {
+        el.textContent = data.total + " registros · ID más reciente: #" + data.ultimoId;
+      }
+    } catch (err) {
+      var el = document.getElementById("ultima-actualizacion");
+      if (el) el.textContent = "No disponible";
+    }
+  }
+
+  // Al hacer clic en "Descargar Excel Actual", hace fetch al endpoint
+  // y fuerza la descarga en el navegador usando un <a> temporal.
+  // No abre una pestaña nueva — descarga directamente.
+  function configurarDescarga() {
+    var btn = document.getElementById("btn-descargar");
+    if (!btn) return;
+
+    btn.addEventListener("click", function() {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Generando...';
+
+      fetch(API_URL + "/admin/excel/descargar")
+        .then(function(res) {
+          if (!res.ok) throw new Error("Error generando el archivo");
+          return res.blob(); // Recibir como blob binario
+        })
+        .then(function(blob) {
+          // Crear URL temporal para el blob y simular un clic en <a>
+          var url  = URL.createObjectURL(blob);
+          var link = document.createElement("a");
+          link.href     = url;
+          link.download = "necesidades_" + new Date().toISOString().slice(0,10) + ".xlsx";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url); // Liberar memoria
+        })
+        .catch(function(err) {
+          console.error("Error descargando:", err);
+          alert("Error al generar el archivo Excel");
+        })
+        .finally(function() {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="bi bi-download"></i> Descargar Excel Actual';
+        });
+    });
+  }
+
+  // Maneja la zona de drop y el input de archivo.
+  // - Click en dropzone → abre el selector de archivo
+  // - Drag & drop → carga el archivo
+  // - Muestra el nombre y tamaño del archivo seleccionado
+  // - Habilita el botón "Procesar Archivo" solo cuando hay archivo
+  // - Al procesar, envía el archivo via FormData al endpoint POST
+  function configurarDropzone() {
+    var dropzone   = document.getElementById("dropzone");
+    var inputFile  = document.getElementById("input-excel");
+    var archivoInfo = document.getElementById("archivo-info");
+    var archivoNombre = document.getElementById("archivo-nombre");
+    var archivoMeta   = document.getElementById("archivo-meta");
+    var btnQuitar  = document.getElementById("btn-quitar-archivo");
+    var btnProcesar = document.getElementById("btn-procesar");
+
+    if (!dropzone || !inputFile || !btnProcesar) return;
+
+    var archivoSeleccionado = null;
+
+    // Click en dropzone → abre selector de archivo
+    dropzone.addEventListener("click", function() {
+      inputFile.click();
+    });
+
+    // Drag over → estilo visual
+    dropzone.addEventListener("dragover", function(e) {
+      e.preventDefault();
+      dropzone.classList.add("dropzone-activa");
+    });
+    dropzone.addEventListener("dragleave", function() {
+      dropzone.classList.remove("dropzone-activa");
+    });
+
+    // Drop → cargar archivo
+    dropzone.addEventListener("drop", function(e) {
+      e.preventDefault();
+      dropzone.classList.remove("dropzone-activa");
+      var archivo = e.dataTransfer.files[0];
+      if (archivo) seleccionarArchivo(archivo);
+    });
+
+    // Input file → cargar archivo
+    inputFile.addEventListener("change", function() {
+      if (inputFile.files[0]) seleccionarArchivo(inputFile.files[0]);
+    });
+
+    // Botón quitar archivo
+    btnQuitar.addEventListener("click", function() {
+      limpiarArchivo();
+    });
+
+    // Botón procesar
+    btnProcesar.addEventListener("click", function() {
+      if (!archivoSeleccionado) return;
+      procesarArchivo(archivoSeleccionado);
+    });
+
+    function seleccionarArchivo(archivo) {
+      // Validar extensión
+      if (!archivo.name.match(/\.(xlsx|xls)$/i)) {
+        alert("Solo se aceptan archivos .xlsx o .xls");
+        return;
+      }
+      archivoSeleccionado = archivo;
+      archivoNombre.textContent = archivo.name;
+      archivoMeta.textContent   = (archivo.size / 1024).toFixed(1) + " KB";
+      archivoInfo.hidden = false;
+      dropzone.style.display = "none";
+      btnProcesar.disabled = false;
+    }
+
+    function limpiarArchivo() {
+      archivoSeleccionado = null;
+      inputFile.value     = "";
+      archivoInfo.hidden  = true;
+      dropzone.style.display = "";
+      btnProcesar.disabled = true;
+    }
+
+    // Envía el archivo al servidor usando FormData (multipart/form-data).
+    // multer en el servidor espera el campo llamado "archivo".
+    function procesarArchivo(archivo) {
+      if (!confirm(
+        "¿Confirmas que deseas procesar este archivo?\n\n" +
+        archivo.name + "\n\n" +
+        "Los registros del archivo se agregarán a la base de datos."
+      )) return;
+
+      btnProcesar.disabled = true;
+      btnProcesar.innerHTML = '<i class="bi bi-hourglass-split"></i> Procesando...';
+
+      var formData = new FormData();
+      formData.append("archivo", archivo); // "archivo" debe coincidir con upload.single("archivo") del server
+
+      fetch(API_URL + "/admin/excel/subir", {
+        method: "POST",
+        body: formData
+        // NO pongas Content-Type aquí — el navegador lo pone solo con el boundary correcto
+      })
+      .then(function(res) {
+        return res.json().then(function(data) {
+          if (!res.ok) throw new Error(data.error || "Error del servidor");
+          return data;
+        });
+      })
+      .then(function(data) {
+        alert("✅ " + data.message);
+        limpiarArchivo();
+        cargarInfoExcel();   // Actualizar el contador
+        buscarRegistros();   // Refrescar el Read si hay filtros activos
+      })
+      .catch(function(err) {
+        console.error("Error procesando archivo:", err);
+        alert("❌ Error: " + err.message);
+      })
+      .finally(function() {
+        btnProcesar.disabled = false;
+        btnProcesar.innerHTML = '<i class="bi bi-check2-circle"></i> Procesar Archivo';
+      });
+    }
   }
 
   // ══════════════════════════════════════════════════════════

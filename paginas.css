@@ -44,7 +44,7 @@
 
 /* Contenedor principal del header visual */
 .subpagina-header {
-    margin-top: 96px;
+    margin-top: 0px;
     min-height: 460px;
     border-bottom: 3px solid var(--naranja);
     padding: 7rem 1.5rem 6rem;
@@ -300,7 +300,7 @@
     .subpagina-header {
         min-height: 340px;
         padding: 4.8rem 1rem 3.8rem;
-        margin-top: 96px;
+        margin-top: 0px;
     }
 
     .hero-contenido {
@@ -1347,15 +1347,11 @@
 
 /* Variante de .tarjeta para contacto */
 .contacto-body .tarjeta {
-    background: white;
-    border-radius: 20px;
-    padding: 2.5rem;
-    box-shadow: var(--sombra);
-    max-width: none;
-    margin: 0;
-    border: 1px solid rgba(0,153,51,0.09);
-    position: relative;
-    overflow: hidden;
+  background: var(--crema);
+  border-radius: var(--radio-xl);
+  box-shadow: var(--sombra-xl);
+  padding: 52px 40px;
+  border: none;
 }
 
 /* Línea decorativa superior */
@@ -1370,15 +1366,15 @@
 
 /* Frase destacada dentro de contacto */
 .contacto-frase {
-    font-style: italic;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     color: var(--verde-oscuro);
-    font-weight: 400;
-    max-width: 500px;
+    font-weight: 500;
+    line-height: 1.6;
+    max-width: 680px;
     margin: 0 auto;
-    border-left: 4px solid var(--verde);
-    padding-left: 1rem;
-    text-align: left;
+    text-align: center;
+    letter-spacing: 0.2px;
+    opacity: 0.9;
 }
 
 /* Variante específica dentro de contacto-body */
@@ -1482,8 +1478,10 @@
 
 /* Imagen del logo */
 .contacto-logo-img {
-    height: 72px;
-    object-fit: contain;
+    height: 140px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 /* Texto descriptivo */
@@ -1940,6 +1938,50 @@
     margin: 0 auto 1.8rem;
 }
 
+#school-finder-wrapper {
+  margin: -180px 28px 48px;
+  position: relative;
+  z-index: 3;
+}
+.header-pasos,
+.subpagina-header.header-pasos {
+  min-height: 420px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-pasos::before,
+.subpagina-header.header-pasos::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(27, 107, 53, 0.42);
+  z-index: 1;
+}
+.header-pasos .hero-contenido,
+.subpagina-header.header-pasos .hero-contenido {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 20px;
+}
+
+.header-pasos .hero-contenido h1,
+.subpagina-header.header-pasos .hero-contenido h1 {
+  margin-bottom: 14px;
+}
+
+.header-pasos .hero-contenido p,
+.subpagina-header.header-pasos .hero-contenido p {
+  margin-top: 0;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.95);
+}
+
 @media (max-width: 768px) {
     .pasos-barra-wrap {
         grid-template-columns: repeat(2, 1fr);
@@ -1991,7 +2033,8 @@
     }
 
     .contacto-logo-img {
-        height: 60px;
+        height: 100px;
+        width: auto;
     }
 
     .contacto-card-texto,
@@ -2209,7 +2252,7 @@
 
 .support-hero {
     position: relative;
-    margin-top: 96px;
+    margin-top: 0px;
     min-height: 380px;
     display: flex;
     align-items: center;
@@ -2852,3 +2895,114 @@
         font-size: 0;
     }
 }
+/* HERO ANIMATION */
+.hero-contenido .info-badge {
+    animation: subirFadeIn 0.6s ease both;
+  }
+  
+  .hero-contenido h1 {
+    animation: subirFadeIn 0.7s 0.1s ease both;
+  }
+  
+  .hero-contenido p {
+    animation: subirFadeIn 0.7s 0.2s ease both;
+  }
+
+  .support-info-badge {
+    animation: subirFadeIn 0.6s ease both;
+  }
+  
+  .support-hero-content h1 {
+    animation: subirFadeIn 0.7s 0.1s ease both;
+  }
+  
+  .support-hero-content p {
+    animation: subirFadeIn 0.7s 0.2s ease both;
+  }
+
+  /* ── NAVBAR PERFIL DONADOR ── */
+.navbar-perfil {
+  align-items: center;
+  position: relative;
+}
+
+.navbar-perfil-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 2px solid rgba(0,117,38,0.2);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem 0.4rem 0.4rem;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--verde-oscuro);
+  transition: all 0.2s ease;
+}
+.navbar-perfil-btn:hover {
+  background: var(--verde-oscuro);
+  color: white;
+  border-color: var(--verde-oscuro);
+}
+.navbar-perfil-btn:hover .navbar-avatar {
+  background: rgba(255,255,255,0.25);
+  color: white;
+}
+
+.navbar-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--verde);
+  color: white;
+  font-weight: 700;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-perfil-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  padding: 1rem;
+  min-width: 200px;
+  z-index: 2000;
+}
+.navbar-perfil-dropdown.open { display: block; }
+
+.perfil-dropdown-nombre {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--texto);
+}
+.perfil-dropdown-correo {
+  font-size: 0.78rem;
+  color: var(--texto-suave);
+  margin-top: 0.15rem;
+}
+.perfil-dropdown-sep {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 0.75rem 0;
+}
+.perfil-dropdown-item {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0.4rem 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e74c3c;
+  cursor: pointer;
+}
+.perfil-dropdown-item:hover { text-decoration: underline; }
