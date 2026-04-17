@@ -1,49 +1,113 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donación Económica</title>
-    <link rel="icon" type="image/png" href="img/logo.png"/>
+    <link rel="icon" type="image/png" href="images/logo.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="paginas.css">
-
-    
 </head>
-<body>
+<body class="support-body">
+    <nav class="navbar support-navbar">
+        <button class="lineas support-nav-toggle" id="lineas" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
 
-    <header class="header-donacion">
-        <div class="header-top-donacion">
-            <div id="economica-nav">
-                <img class="header-logo" src="images/Logo Mi Escuela Primero.png" alt="Logo Mi Escuela Primero">
-            </div>
+        <div class="navbar-logo">
+            <a href="index.html">
+                <img src="images/mexipri_logo.png" alt="Mexicanos Primero Jalisco" class="logo-img">
+            </a>
+        </div>
 
-           <h1 class="economicaTitulo">Donación económica</h1>
-            <p class="economicaSub">Con cada gesto, podemos transformar la educación.
-           </p>
+        <div class="navbar-menu support-navbar-menu">
+            <a href="donacionEconomica.html" class="active">Donación económica</a>
+            <a href="voluntariado.html">Voluntariado</a>
+            <a href="talleres.html">Brindar talleres</a>
+            <a href="vinculaciones.html">Vinculaciones</a>
+            <a href="catalogo.html">Catálogo</a>
+        </div>
 
-            <a href="index.html" class="boton-inicio">🏠︎  Inicio</a>
+        <a href="index.html" class="support-home-nav" aria-label="Ir a inicio">⌂</a>
+
+        <div class="navbar-acciones support-navbar-actions">
+            <a href="catalogo.html" class="btn-ayudar-flotante support-help-cta">♡ ¡Quiero ayudar!</a>
+        </div>
+    </nav>
+
+    <div class="menu-desplegable support-menu" id="menuDesplegable">
+        <ul>
+            <li><a href="donacionEconomica.html">Donación económica</a></li>
+            <li><a href="voluntariado.html">Voluntariado</a></li>
+            <li><a href="talleres.html">Brindar talleres</a></li>
+            <li><a href="vinculaciones.html">Vinculaciones</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
+        </ul>
+    </div>
+
+    <header class="support-hero support-hero--economica">
+        <div class="support-hero-overlay"></div>
+        <div class="support-hero-content">
+            <span class="support-info-badge">♡ Mexicanos Primero Jalisco</span>
+            <h1>Donación económica</h1>
+            <p>Una pequeña diferencia puede abrir grandes oportunidades para una escuela.</p>
         </div>
     </header>
 
-    <div class="container-donacion">
-        <div class="donacion-card">
-        <p id="titulo-donacion">¿Deseas realizar un donativo económico?</p>
-        <p id="descripción-donacion">
-        Ponte en contacto con nuestro equipo para más información.
-        Recuerda que cada apoyo, por pequeño que parezca, suma y puede
-        marcar la diferencia en la vida de una escuela.
-        </p>
+    <main class="support-page">
+        <section class="support-section support-section--cards">
+            <div class="support-container">
+                <div class="support-donation-grid">
+                <article class="support-donation-card" onclick="irAContactoConMonto('100')">
+                    <img src="images/libro.jpg" alt="Libros para estudiantes">
+                    <h3>$100</h3>
+                    <p class="support-panel-text">Pueden comprar dos libros para que un niño pueda leer.</p>
+                </article>
 
-        <div>
-          <a href="contacto.html" class="btn btn-verde">Contáctanos</a>
-        </div>
-        </div><!-- /donacion-card -->
-    </div><!-- /container-donacion -->
+                <article class="support-donation-card" onclick="irAContactoConMonto('250')">
+                    <img src="images/materialPapeleria.jpg" alt="Material escolar">
+                    <h3>$250</h3>
+                    <p class="support-panel-text">Ayuda a una escuela a recibir material básico para sus actividades.</p>
+                </article>
 
+                <article class="support-donation-card" onclick="irAContactoConMonto('500')">
+                    <img src="images/salon.jpg" alt="Aula escolar">
+                    <h3>$500</h3>
+                    <p class="support-panel-text">Contribuye a mejorar las condiciones de un aula y su mobiliario.</p>
+                </article>
 
-    <!-- ── FOOTER ── -->
+                <article class="support-donation-card support-donation-card--input">
+                    <img src="images/gracias.jpg" alt="Donación personalizada">
+                    <h3>Otra cantidad</h3>
+                    <p class="support-panel-text">Indica el monto que deseas donar:</p>
+                    <label class="sr-only" for="donacionPersonalizada">Monto de donación</label>
+                    <input type="number" id="donacionPersonalizada" placeholder="$..." min="1">
+                    <button class="support-btn support-btn--orange" type="button" onclick="aceptarDonacion()">Aceptar</button>
+                </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="support-section support-section--contact">
+            <div class="support-container">
+            <div class="support-contact-box">
+                <div class="support-contact-copy">
+                    <p class="support-panel-label">Mexicanos Primero</p>
+                    <h2 class="support-panel-title">Cada apoyo suma</h2>
+                    <div class="support-panel-line"></div>
+                    <p class="support-panel-text">
+                        Ponte en contacto con nuestro equipo para más información. Recuerda que cada apoyo,
+                        por pequeño que parezca, suma y puede marcar la diferencia en la vida de una escuela.
+                    </p>
+                </div>
+                <div class="support-contact-actions support-contact-actions--center">
+                    <a href="contacto.html?tipo=Donación%20económica" class="support-btn support-btn--orange" onclick="prepararContacto('Donación económica')">Contáctanos</a>
+                </div>
+            </div>
+            </div>
+        </section>
+    </main>
+
     <footer>
         <div class="footer-accion">
             <button class="btn btn-atras" onclick="history.back()">← Atrás</button>
@@ -55,3 +119,44 @@
             <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
             <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad</a></p>
         </div>
+    </footer>
+
+    <script>
+        const navbar = document.querySelector('.navbar');
+        const lineas = document.getElementById('lineas');
+        const menuDesplegable = document.getElementById('menuDesplegable');
+
+        function prepararContacto(tipo) {
+            sessionStorage.setItem('origen_formulario', 'tipo_apoyo');
+            sessionStorage.setItem('tipo_donacion', tipo);
+            sessionStorage.removeItem('carrito_donacion');
+        }
+
+        window.addEventListener('scroll', function () {
+            if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        if (lineas && menuDesplegable) {
+            lineas.addEventListener('click', function () {
+                lineas.classList.toggle('abierto');
+                menuDesplegable.classList.toggle('abierto');
+            });
+        }
+
+        function irAContactoConMonto(monto) {
+            prepararContacto('Donación económica');
+            sessionStorage.setItem('monto_donacion_economica', monto);
+            window.location.href = 'contacto.html?tipo=Donación%20económica&monto=' + encodeURIComponent(monto);
+        }
+
+        function aceptarDonacion() {
+            const monto = document.getElementById('donacionPersonalizada').value;
+            if (monto && Number(monto) > 0) {
+                irAContactoConMonto(monto);
+                return;
+            }
+            alert('Por favor ingresa una cantidad válida.');
+        }
+    </script>
+</body>
+</html>

@@ -2180,3 +2180,692 @@
 #tipoDonacionSelect {
     font-weight: 600;
 }
+
+
+/* ============================================================
+   25. SUPPORT PAGES
+   Donación económica, voluntariado, talleres, vinculaciones
+   ============================================================ */
+
+.support-body {
+    background: var(--fondo);
+}
+
+.support-navbar {
+    padding-left: 12rem;
+    padding-right: 2rem;
+}
+
+.support-home-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: #f5f7f8;
+    border: 1px solid rgba(28,54,97,0.10);
+    color: var(--azul);
+    font-size: 0;
+    transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.support-home-nav::before {
+    content: '⌂';
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.82;
+}
+
+.support-home-nav:hover {
+    background: #eef2f5;
+    border-color: rgba(28,54,97,0.18);
+    transform: translateY(-1px);
+}
+
+.support-nav-toggle {
+    display: none;
+}
+
+.support-navbar-actions {
+    gap: 0.85rem;
+    display: flex;
+    align-items: center;
+}
+
+.support-help-cta {
+    background: linear-gradient(180deg, #f7a63a, #e68b21);
+    color: #fff;
+    padding: 0.95rem 1.85rem;
+    border-radius: 18px;
+    font-weight: 800;
+    box-shadow: 0 10px 24px rgba(243,112,33,0.24);
+}
+
+.support-menu {
+    top: 96px;
+}
+
+.support-hero {
+    position: relative;
+    margin-top: 96px;
+    min-height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-bottom: none;
+    overflow: hidden;
+}
+
+.support-hero--economica {
+    background-image: url("images/doneco2.jpg");
+    background-position: center 32%;
+}
+
+.support-hero--voluntariado {
+    background-image: url("images/fotocarr3.jpg");
+    background-position: center 42%;
+}
+
+.support-hero--talleres {
+    background-image: url("images/formacionF.jpg");
+    background-position: center 42%;
+}
+
+.support-hero--vinculaciones {
+    background-image: url("images/otros.jpg");
+    background-position: center 36%;
+}
+
+.support-hero-overlay {
+    background: linear-gradient(
+        90deg,
+        rgba(28,54,97,0.68), 
+        rgba(0,117,38,0.48)  
+    );
+}
+
+.support-hero::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 70px;
+    background: linear-gradient(
+        to bottom,
+        rgba(240,247,241,0) 0%,
+        rgba(240,247,241,0.78) 80%,
+        var(--fondo) 100%
+    );
+}
+
+
+.support-hero-content {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 1240px);
+    padding: 72px 24px 84px;
+    text-align: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.support-info-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.42);
+    color: rgba(255,255,255,0.95);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+    padding: 0.48rem 1.15rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+}
+
+.support-hero-content h1 {
+    font-size: clamp(2.4rem, 5.6vw, 4.5rem);
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 0.98;
+    text-shadow: 0 3px 24px rgba(0,0,0,0.18);
+    max-width: 980px;
+}
+
+.support-hero-content p {
+    margin-top: 16px;
+    font-size: 1rem;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(255,255,255,0.9);
+    max-width: 760px;
+}
+
+.support-page {
+    background: var(--fondo);
+    padding: 0 24px 72px;
+    margin-top: 80px;
+    position: relative;
+    z-index: 3;
+}
+
+.support-section {
+    margin: 0 0 24px;
+}
+
+.support-container {
+    width: min(100%, 1220px);
+    margin: 0 auto;
+}
+
+.support-panel-label {
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+    margin-bottom: 0.7rem;
+}
+
+.support-panel-title {
+    font-size: clamp(1.55rem, 3vw, 2.1rem);
+    color: var(--verde-oscuro);
+    line-height: 1.2;
+    margin-bottom: 0.55rem;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+}
+
+.support-panel-line {
+    width: 46px;
+    height: 4px;
+    background: var(--verde);
+    border-radius: 2px;
+    margin-bottom: 1.2rem;
+}
+
+.support-panel-text {
+    color: var(--texto-suave);
+    line-height: 1.72;
+    font-size: 0.94rem;
+}
+
+.support-donation-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 28px;
+    align-items: stretch;
+}
+
+.support-donation-card {
+    background: var(--blanco);
+    border-radius: 20px;
+    box-shadow: var(--sombra);
+    padding: 0;
+    position: relative;
+    text-align: center;
+    cursor: pointer;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: hidden;
+    border: 1px solid rgba(0,153,51,0.07);
+    transition: box-shadow 0.2s ease;
+}
+
+.support-donation-card:hover {
+    box-shadow: var(--sombra-m);
+}
+
+.support-donation-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(0,117,38,0.88), rgba(0,153,51,0.78));
+    z-index: 2;
+}
+
+.support-donation-card img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 20px 20px 0 0;
+    border-bottom: 2px solid #e6efe7;
+    background: var(--crema);
+    display: block;
+}
+
+.support-donation-card h3 {
+    color: var(--verde-oscuro);
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin: 22px 18px 10px;
+    letter-spacing: -0.15px;
+}
+
+.support-donation-card p {
+    padding: 0 18px 18px;
+    margin-bottom: 0;
+}
+
+.support-donation-card--input {
+    cursor: default;
+    justify-content: flex-start;
+}
+
+.support-donation-card--input:hover {
+    box-shadow: var(--sombra);
+}
+
+.support-donation-card--input input {
+    width: calc(100% - 36px);
+    margin: 0 18px;
+    padding: 0.8rem 0.95rem;
+    border-radius: 12px;
+    border: 1.5px solid #d5ddd4;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.support-donation-card--input input:focus {
+    outline: none;
+    border-color: var(--verde);
+}
+
+.support-donation-card--input .support-btn {
+    margin: 12px 18px 18px;
+}
+
+.support-contact-box {
+    background: var(--crema);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra);
+    padding: 30px 34px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0,153,51,0.07);
+    max-width: none;
+    margin: 0;
+    text-align: left;
+    padding: 30px 34px;
+}
+
+.support-contact-box::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(0,153,51,0.72), rgba(244,152,28,0.64), rgba(236,103,27,0.72));
+}
+
+.support-contact-actions {
+    margin-top: 24px;
+}
+
+.support-contact-actions--center {
+    text-align: center;
+}
+
+.support-split-card,
+.support-feature-card {
+    background: var(--crema);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0,153,51,0.07);
+    max-width: none;
+    margin: 0;
+    text-align: left;
+    padding: 32px;
+}
+
+.support-split-card::before,
+.support-feature-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(0,153,51,0.72), rgba(244,152,28,0.64), rgba(236,103,27,0.72));
+}
+
+.support-split-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 36px;
+    padding: 42px;
+    align-items: center;
+}
+
+.support-inline-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.support-video-frame {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--sombra);
+    background: #0f223c;
+    border: 1px solid rgba(0,153,51,0.08);
+}
+
+.support-video-frame iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+}
+
+.support-gallery-header {
+    margin-bottom: 16px;
+}
+
+.support-gallery-carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.support-gallery-viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    padding: 8px 0 16px;
+}
+
+.support-gallery-track {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+}
+
+.support-gallery-arrow {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    border: none;
+    background: rgba(28,54,97,0.90);
+    color: white;
+    font-size: 1.55rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(28,54,97,0.16);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.support-gallery-arrow:hover {
+    transform: translateY(-1px);
+    background: var(--verde-oscuro);
+}
+
+.support-gallery-card {
+    flex: 0 0 300px;
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 300px;
+    box-shadow: var(--sombra);
+    border: 1px solid rgba(0,153,51,0.07);
+    background: var(--blanco);
+}
+
+.support-gallery-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.support-feature-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    gap: 26px;
+    align-items: center;
+}
+
+.support-feature-copy {
+    max-width: 640px;
+}
+
+.support-feature-copy .support-btn {
+    margin-top: 24px;
+}
+
+.support-feature-media {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.support-feature-media img {
+    width: min(100%, 340px);
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 20px;
+    border: 2px solid #e6efe7;
+    box-shadow: var(--sombra);
+}
+
+.support-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 999px;
+    padding: 0.82rem 1.35rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.support-btn--orange {
+    background: linear-gradient(180deg, #ff851f, #f36c13);
+    color: white;
+    box-shadow: 0 12px 24px rgba(243,108,19,0.26);
+}
+
+.support-btn--orange:hover {
+    box-shadow: 0 14px 26px rgba(243,108,19,0.28);
+}
+
+.support-btn--ghost {
+    background: white;
+    color: var(--verde-oscuro);
+    border: 2px solid rgba(0,117,38,0.18);
+}
+
+.support-btn--ghost:hover {
+    border-color: rgba(0,117,38,0.36);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 1280px) {
+    .support-navbar {
+        padding-right: 1.5rem;
+        padding-left: 10rem;
+    }
+
+    .support-navbar-menu {
+        gap: 0.9rem;
+    }
+
+    .support-navbar-menu a {
+        font-size: 0.92rem;
+    }
+
+    .support-donation-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 980px) {
+    .support-navbar {
+        height: 82px;
+        padding: 0 4.2rem 0 6.3rem;
+    }
+
+    .support-navbar .navbar-logo {
+        left: 0.9rem;
+        top: 8px;
+    }
+
+    .support-navbar .logo-img {
+        width: 86px;
+        height: 86px;
+    }
+
+    .support-navbar-menu,
+    .support-navbar-actions {
+        display: none;
+    }
+
+    .support-nav-toggle {
+        display: flex;
+        position: absolute;
+        right: 1rem;
+        top: 24px;
+        z-index: 1201;
+    }
+
+    .support-menu {
+        top: 82px;
+    }
+
+    .support-hero {
+        margin-top: 82px;
+        min-height: 310px;
+    }
+
+    .support-split-card,
+    .support-feature-card {
+        grid-template-columns: 1fr;
+        padding: 24px;
+    }
+
+    .support-feature-media {
+        justify-content: center;
+    }
+
+    .support-feature-media img {
+        transform: none;
+        width: min(100%, 420px);
+        aspect-ratio: 16 / 11;
+    }
+
+    .support-gallery-card {
+        flex-basis: 260px;
+        min-height: 260px;
+    }
+
+    .support-home-nav {
+        position: absolute;
+        right: 4rem;
+        top: 19px;
+    }
+}
+
+@media (max-width: 700px) {
+    .support-page {
+        padding: 0 16px 48px;
+        margin-top: -18px;
+    }
+
+    .support-section {
+        margin-bottom: 22px;
+    }
+
+    .support-hero-content {
+        padding: 48px 16px 56px;
+    }
+
+    .support-hero-content h1 {
+        font-size: 2.25rem;
+    }
+
+    .support-hero-content p {
+        font-size: 0.92rem;
+        letter-spacing: 0.1px;
+    }
+
+    .support-info-badge {
+        font-size: 0.64rem;
+        letter-spacing: 1px;
+        padding: 0.38rem 0.8rem;
+        margin-bottom: 0.85rem;
+    }
+
+    .support-donation-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .support-contact-box,
+    .support-split-card,
+    .support-feature-card {
+        padding: 22px 18px;
+        border-radius: 24px;
+    }
+
+    .support-gallery-carousel {
+        gap: 8px;
+    }
+
+    .support-gallery-arrow {
+        width: 36px;
+        height: 36px;
+        font-size: 1.35rem;
+    }
+
+    .support-gallery-viewport {
+        padding-bottom: 10px;
+    }
+
+    .support-gallery-track {
+        width: max-content;
+    }
+
+    .support-gallery-card {
+        flex-basis: 78vw;
+        min-height: 220px;
+    }
+
+    .support-home-nav {
+        width: 36px;
+        height: 36px;
+        right: 3.8rem;
+        top: 21px;
+    }
+}

@@ -1,48 +1,83 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brindar Talleres</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="paginas.css">
-
-    
 </head>
-<body>
+<body class="support-body">
+    <nav class="navbar support-navbar">
+        <button class="lineas support-nav-toggle" id="lineas" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
 
-    <header class="header-donacion">
-        <div class="header-top-donacion">
-            <div id="voluntariado-nav">
-                <img class="header-logo" src="images/Logo Mi Escuela Primero.png" alt="Logo Mi Escuela Primero">
-            </div>
+        <div class="navbar-logo">
+            <a href="index.html">
+                <img src="images/mexipri_logo.png" alt="Mexicanos Primero Jalisco" class="logo-img">
+            </a>
+        </div>
 
-           <h1 class="voluntariadoTitulo">Brindar Talleres</h1>
-            <p class="voluntariadoSub">Con cada gesto, podemos transformar la educación.
-           </p>
+        <div class="navbar-menu support-navbar-menu">
+            <a href="donacionEconomica.html">Donación económica</a>
+            <a href="voluntariado.html">Voluntariado</a>
+            <a href="talleres.html" class="active">Brindar talleres</a>
+            <a href="vinculaciones.html">Vinculaciones</a>
+            <a href="catalogo.html">Catálogo</a>
+        </div>
 
-            <a href="index.html" class="boton-inicio">🏠︎  Inicio</a>
+        <a href="index.html" class="support-home-nav" aria-label="Ir a inicio">⌂</a>
+
+        <div class="navbar-acciones support-navbar-actions">
+            <a href="catalogo.html" class="btn-ayudar-flotante support-help-cta">♡ ¡Quiero ayudar!</a>
+        </div>
+    </nav>
+
+    <div class="menu-desplegable support-menu" id="menuDesplegable">
+        <ul>
+            <li><a href="donacionEconomica.html">Donación económica</a></li>
+            <li><a href="voluntariado.html">Voluntariado</a></li>
+            <li><a href="talleres.html">Brindar talleres</a></li>
+            <li><a href="vinculaciones.html">Vinculaciones</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
+        </ul>
+    </div>
+
+    <header class="support-hero support-hero--talleres">
+        <div class="support-hero-overlay"></div>
+        <div class="support-hero-content">
+            <span class="support-info-badge">♡ Mexicanos Primero Jalisco</span>
+            <h1>Brindar talleres</h1>
+            <p>Compartir conocimiento también es una forma de abrir oportunidades.</p>
         </div>
     </header>
 
-    <div class="container-donacion">
-        <div class="donacion-card">
-        <p id="titulo-donacion">¿Quieres impartir un taller?</p>
-        <p id="descripción-donacion">
-        Comparte tu conocimiento con docentes, estudiantes o padres de familia de las escuelas del proyecto.
+    <main class="support-page">
+        <section class="support-section">
+            <div class="support-container">
+            <div class="support-feature-card">
+                <div class="support-feature-copy">
+                    <p class="support-panel-label">Mexicanos Primero</p>
+                    <h2 class="support-panel-title">¿Quieres impartir un taller?</h2>
+                    <div class="support-panel-line"></div>
+                    <p class="support-panel-text">
+                        Comparte tu conocimiento con docentes, estudiantes o familias de las escuelas
+                        participantes. Pueden ser talleres sobre habilidades digitales, arte, deporte,
+                        salud, bienestar o cualquier tema que fortalezca a la comunidad educativa.
+                    </p>
+                    <a href="contacto.html?tipo=Brindar%20talleres" class="support-btn support-btn--orange" onclick="prepararContacto('Brindar talleres')">Contáctanos</a>
+                </div>
 
-Los talleres pueden ser sobre cualquier tema que enriquezca a la comunidad educativa: habilidades digitales, arte, deporte, salud, finanzas personales y más.
-        </p>
+                <div class="support-feature-media">
+                    <img src="images/formacion.jpg" alt="Taller formativo">
+                </div>
+            </div>
+            </div>
+        </section>
+    </main>
 
-        <div>
-          <a href="contacto.html" class="btn btn-verde">Contáctanos</a>
-        </div>
-        </div><!-- /donacion-card -->
-    </div><!-- /container-donacion -->
-
-
-    <!-- ── FOOTER ── -->
     <footer>
         <div class="footer-accion">
             <button class="btn btn-atras" onclick="history.back()">← Atrás</button>
@@ -54,3 +89,29 @@ Los talleres pueden ser sobre cualquier tema que enriquezca a la comunidad educa
             <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
             <p><a href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf">Aviso de privacidad</a></p>
         </div>
+    </footer>
+
+    <script>
+        const navbar = document.querySelector('.navbar');
+        const lineas = document.getElementById('lineas');
+        const menuDesplegable = document.getElementById('menuDesplegable');
+
+        function prepararContacto(tipo) {
+            sessionStorage.setItem('origen_formulario', 'tipo_apoyo');
+            sessionStorage.setItem('tipo_donacion', tipo);
+            sessionStorage.removeItem('carrito_donacion');
+        }
+
+        window.addEventListener('scroll', function () {
+            if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        if (lineas && menuDesplegable) {
+            lineas.addEventListener('click', function () {
+                lineas.classList.toggle('abierto');
+                menuDesplegable.classList.toggle('abierto');
+            });
+        }
+    </script>
+</body>
+</html>
