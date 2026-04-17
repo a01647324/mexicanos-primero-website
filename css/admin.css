@@ -19,8 +19,8 @@
   --texto-suave:  #4A644A;
 
   /* Sombras */
-  --sombra:       0 4px 24px rgba(0, 153, 51, 0.10);
-  --sombra-hover: 0 8px 28px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.05);
+--sombra:       0 2px 12px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.06);
+--sombra-hover: 0 8px 28px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.05);
 
   /* Radios */
   --radio:    16px;
@@ -456,13 +456,19 @@ body {
 
 .panel-card {
   background: var(--blanco);
-  border-radius: 20px;
-  padding: 1.75rem;
-  box-shadow: var(--sombra-hover);
-  border-top: 4px solid;                   /* El color lo define cada panel */
+  border-radius: var(--radio);
+  padding: 1.8rem;
+  box-shadow: var(--sombra);
+  border: 1px solid rgba(0,153,51,0.07);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.4rem;
+  transition: all 0.25s ease;
+}
+
+.panel-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-hover);
 }
 
 /* Color del borde superior por panel */
@@ -525,11 +531,9 @@ body {
 }
 
 .panel-titulo {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--texto);
-  margin: 0 0 0.25rem;
-  letter-spacing: -0.3px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--verde-oscuro);
 }
 
 .panel-descripcion {
@@ -546,15 +550,12 @@ body {
 .panel-input,
 .panel-select {
   width: 100%;
-  padding: 0.7rem 0.95rem;
-  border: 1.5px solid rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.88rem;
-  color: var(--texto);
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--gris-claro);
+  border-radius: 12px;
+  font-size: 0.9rem;
   background: var(--blanco);
   transition: all 0.2s ease;
-  outline: none;
 }
 
 .panel-input::placeholder {
@@ -564,7 +565,7 @@ body {
 .panel-input:focus,
 .panel-select:focus {
   border-color: var(--verde);
-  box-shadow: 0 0 0 3px rgba(0, 153, 51, 0.12);
+  box-shadow: 0 0 0 3px rgba(0,153,51,0.1);
 }
 
 .panel-textarea {
@@ -693,20 +694,19 @@ body {
 .registro-card {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  padding: 0.85rem 1rem;
-  background: var(--gris-claro);
-  border: 1.5px solid transparent;
-  border-radius: 12px;
+  gap: 0.9rem;
+  padding: 1rem;
+  background: var(--blanco);
+  border-radius: 14px;
+  border: 1px solid rgba(0,153,51,0.07);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .registro-card:hover {
-  background: var(--blanco);
-  border-color: var(--verde);
-  transform: translateX(3px);
-  box-shadow: 0 4px 12px rgba(0, 153, 51, 0.1);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: var(--sombra-hover);
+  border-color: rgba(0,153,51,0.18);
 }
 
 .registro-card-info {
@@ -797,15 +797,13 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.85rem 1.25rem;
-  border: none;
-  border-radius: 12px;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  font-size: 0.9rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  text-decoration: none;
+  border: none;
 }
 
 .panel-btn:disabled {
@@ -837,14 +835,17 @@ body {
 }
 
 .panel-btn-naranja {
-  background: var(--naranja);
-  color: white;
-}
-.panel-btn-naranja:not(:disabled):hover {
-  background: #d4570f;
-  box-shadow: 0 6px 14px rgba(236, 103, 27, 0.3);
+  background: transparent;
+  color: var(--naranja);
+  border: 2px solid var(--naranja);
 }
 
+.panel-btn-naranja:hover {
+  background: var(--naranja);
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(236,103,27,0.26);
+}
 /* Variantes outline */
 .panel-btn-outline-naranja {
   background: transparent;
@@ -1020,13 +1021,18 @@ body {
 /* ── DROPZONE ── */
 
 .dropzone {
-  border: 2px dashed rgba(236, 103, 27, 0.3);
-  border-radius: 14px;
-  padding: 1.75rem 1rem;
+  border: 2px dashed rgba(236,103,27,0.25);
+  border-radius: 16px;
+  padding: 2rem 1.2rem;
   text-align: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: rgba(236, 103, 27, 0.03);
+  background: rgba(236,103,27,0.04);
+  transition: all 0.25s ease;
+}
+
+.dropzone:hover {
+  border-color: var(--naranja);
+  background: rgba(236,103,27,0.08);
+  transform: scale(1.02);
 }
 
 .dropzone:hover,
@@ -1319,4 +1325,97 @@ body {
   font-style: italic;
   cursor: default;
   pointer-events: none;
+}
+
+/* ── Dropzone activa (drag over) ──────────────────────────── */
+.dropzone-activa {
+  border-color: var(--color-naranja, #f97316) !important;
+  background:   rgba(249, 115, 22, 0.06) !important;
+}
+
+/* ============================================================
+   MEJORA VISUAL TARJETAS ADMIN (READ / CREATE / UPLOAD)
+   ============================================================ */
+
+/* Hover más elegante */
+.panel-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.panel-card:hover {
+  transform: translateY(-6px);
+}
+
+/* 🔥 Barra superior tipo index */
+.panel-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+}
+
+/* Colores por tipo */
+.panel-consulta::before {
+  background: linear-gradient(90deg, #1f3f77, #3f6edc);
+}
+
+.panel-crear::before {
+  background: linear-gradient(90deg, #178d45, #4dc878);
+}
+
+.panel-carga::before {
+  background: linear-gradient(90deg, #f37021, #f7a63a);
+}
+
+/* 🔥 TITULOS = COLOR DE TARJETA */
+.panel-consulta .panel-titulo {
+  color: #1f3f77;
+}
+
+.panel-crear .panel-titulo {
+  color: #178d45;
+}
+
+.panel-carga .panel-titulo {
+  color: #f37021;
+}
+
+/* Iconos más modernos */
+.panel-icono {
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+/* Botones con estilo más visual */
+.panel-consulta .panel-btn {
+  background: rgba(31,63,119,0.1);
+  color: #1f3f77;
+}
+
+.panel-consulta .panel-btn:hover {
+  background: #1f3f77;
+  color: white;
+}
+
+.panel-crear .panel-btn {
+  background: rgba(23,141,69,0.1);
+  color: #178d45;
+}
+
+.panel-crear .panel-btn:hover {
+  background: #178d45;
+  color: white;
+}
+
+.panel-carga .panel-btn {
+  background: rgba(243,112,33,0.1);
+  color: #f37021;
+}
+
+.panel-carga .panel-btn:hover {
+  background: #f37021;
+  color: white;
 }

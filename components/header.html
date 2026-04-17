@@ -25,11 +25,35 @@
       </div>
   
       <div class="navbar-acciones">
+
+        <!-- Estado: NO logueado -->
         <button type="button" class="btn-iniciar-sesion btn-login-modal" id="open-login-modal">
-            Iniciar sesión
+          Iniciar sesión
         </button>
+
+        <!-- Estado: logueado como donador (oculto por defecto) -->
+        <div class="navbar-perfil" id="navbar-perfil" style="display:none;">
+          <button class="navbar-perfil-btn" id="perfil-toggle" type="button">
+            <div class="navbar-avatar" id="navbar-avatar">D</div>
+            <span class="navbar-perfil-nombre" id="navbar-perfil-nombre">Donador</span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+              <path d="M6 8L1 3h10z"/>
+            </svg>
+          </button>
+          <div class="navbar-perfil-dropdown" id="perfil-dropdown">
+            <div class="perfil-dropdown-nombre" id="perfil-dropdown-nombre">Nombre</div>
+            <div class="perfil-dropdown-correo" id="perfil-dropdown-correo">correo@correo.com</div>
+            <hr class="perfil-dropdown-sep" />
+            <button class="perfil-dropdown-item" onclick="cerrarSesionDonador()">
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
+
+    <!-- Modal de selección de rol -->
     <div class="login-modal-overlay" id="login-modal-overlay" aria-hidden="true">
         <div class="login-modal-card" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
           <button type="button" class="login-modal-close" id="close-login-modal" aria-label="Cerrar modal">
@@ -49,7 +73,7 @@
               <p>Accede para dar seguimiento a tus apoyos y acciones.</p>
             </a>
       
-            <a href="admin-login.html" class="login-role-card">
+            <a href="login-admin.html" class="login-role-card">
               <div class="login-role-icon">⚙</div>
               <h3>Administrador</h3>
               <p>Ingresa para gestionar la plataforma y la información.</p>

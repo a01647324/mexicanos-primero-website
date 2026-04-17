@@ -2896,3 +2896,90 @@
   .support-hero-content p {
     animation: subirFadeIn 0.7s 0.2s ease both;
   }
+
+  /* ── NAVBAR PERFIL DONADOR ── */
+.navbar-perfil {
+  align-items: center;
+  position: relative;
+}
+
+.navbar-perfil-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 2px solid rgba(0,117,38,0.2);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem 0.4rem 0.4rem;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--verde-oscuro);
+  transition: all 0.2s ease;
+}
+.navbar-perfil-btn:hover {
+  background: var(--verde-oscuro);
+  color: white;
+  border-color: var(--verde-oscuro);
+}
+.navbar-perfil-btn:hover .navbar-avatar {
+  background: rgba(255,255,255,0.25);
+  color: white;
+}
+
+.navbar-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--verde);
+  color: white;
+  font-weight: 700;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-perfil-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  padding: 1rem;
+  min-width: 200px;
+  z-index: 2000;
+}
+.navbar-perfil-dropdown.open { display: block; }
+
+.perfil-dropdown-nombre {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--texto);
+}
+.perfil-dropdown-correo {
+  font-size: 0.78rem;
+  color: var(--texto-suave);
+  margin-top: 0.15rem;
+}
+.perfil-dropdown-sep {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 0.75rem 0;
+}
+.perfil-dropdown-item {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0.4rem 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e74c3c;
+  cursor: pointer;
+}
+.perfil-dropdown-item:hover { text-decoration: underline; }

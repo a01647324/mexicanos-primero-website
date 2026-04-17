@@ -42,186 +42,69 @@ body {
     color: var(--gris-texto);
     min-height: 100vh;
 }
-
-/* ====================================================
-   NAVBAR
-/*
-/* ── NAVBAR NUEVO ── */
-/* ====================================================
-   NAVBAR — corregido
-   ==================================================== */
- 
-/* Body necesita padding-top igual a la altura de la navbar
-   para que el hero no quede debajo de ella */
 body {
   padding-top: 96px;
+  background-color: var(--fondo);
+  font-family: "Montserrat", sans-serif;
+  color: var(--gris-texto);
+  min-height: 100vh;
 }
- 
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1100;
-  height: 96px;
-  background: #ffffff;
-  border-bottom: 4px solid #1f3f77;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
- 
+.catalogo-categorias {
+  width: min(100%, 1280px);
+  margin: 0 auto;
+  padding: 1rem 1.5rem 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2.5rem 0 12rem;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
 }
- 
-.navbar-logo {
-  position: absolute;
-  left: 1.8rem;
-  top: 10px;
-  z-index: 1102;
-}
- 
-.logo-img {
-  width: 130px;
-  height: 130px;
-  object-fit: contain;
-  display: block;
-  transition: width 0.25s ease, height 0.25s ease, transform 0.25s ease;
-}
- 
-/* ── Menú central ── */
-.navbar-menu {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  height: 100%;
-  flex-wrap: nowrap;
-  overflow: hidden;         /* evita desbordamiento */
-  min-width: 0;             /* permite que flex achique */
-}
- 
-.navbar-menu a,
-#header-categorias a {
+
+.catalogo-categorias a {
   text-decoration: none;
-  color: #178d45;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  font-size: 0.9rem;        /* un poco más pequeño para que quepan más */
-  transition: color 0.2s ease;
-  position: relative;
-  white-space: nowrap;
-}
- 
-.navbar-menu a:hover,
-.navbar-menu a.active,
-#header-categorias a:hover {
-  color: #f37021;
-}
- 
-.navbar-menu a.active::after,
-.navbar-menu a:hover::after,
-#header-categorias a:hover::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -14px;
-  width: 100%;
-  height: 4px;
-  background: #f37021;
-  border-radius: 4px;
-}
- 
-/* nav dentro del menú hereda el display flex */
-#header-categorias {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  flex-wrap: nowrap;
-  overflow: hidden;
-  min-width: 0;
-}
- 
-/* ── Acciones (botones derecha) ── */
-.navbar-acciones {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  margin-left: 1.5rem;
-  height: 100%;
-  position: relative;
-  flex-shrink: 0;           /* nunca se achica */
-}
- 
-/* ── Botón "Quiero ayudar" colgante ── */
-.btn-ayudar-flotante {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 4px);   /* cuelga debajo de la navbar */
- 
-  background: linear-gradient(180deg, #f7a63a, #e68b21);
-  color: #ffffff;
-  text-decoration: none;
-  font-family: 'Montserrat', sans-serif;
+  color: var(--verde-oscuro);
+  font-family: "Montserrat", sans-serif;
   font-weight: 700;
-  font-size: 1rem;
-  padding: 0.95rem 2.4rem;
-  border-radius: 0 0 20px 20px;
-  box-shadow: 0 10px 24px rgba(243, 112, 33, 0.28);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  white-space: nowrap;
-  z-index: 1200;
-}
- 
-.btn-ayudar-flotante:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(243, 112, 33, 0.35);
-}
- 
-/* ── Botón "Iniciar sesión" ── */
-.btn-iniciar-sesion {
-  background: transparent;
-  color: #1B6B35;
-  text-decoration: none;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  padding: 0.8rem 1.4rem;
+  font-size: 0.9rem;
+  padding: 0.55rem 1rem;
   border-radius: 999px;
-  border: 2px solid rgba(0, 117, 38, 0.25);
-  transition: all 0.2s ease;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(0, 153, 51, 0.14);
   white-space: nowrap;
 }
- 
-.btn-iniciar-sesion:hover {
-  background: #1B6B35;
+
+.catalogo-categorias a:hover {
   color: white;
-  border-color: #1B6B35;
-  transform: translateY(-2px);
+  background: var(--verde);
+  border-color: var(--verde);
 }
- 
-/* ── Scroll: navbar más pequeña ── */
-.navbar.scrolled {
-  height: 72px;
+
+@media (max-width: 768px) {
+  .catalogo-categorias {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 0.65rem;
+    padding: 0.9rem 1rem 0;
+    scrollbar-width: none;
+  }
+
+  .catalogo-categorias::-webkit-scrollbar {
+    display: none;
+  }
+
+  .catalogo-categorias a {
+    flex: 0 0 auto;
+  }
 }
- 
-.navbar.scrolled .logo-img {
-  width: 72px;
-  height: 72px;
-}
- 
-/* ====================================================
-   HERO — corregido (hero no se oculta bajo navbar fixed)
-   ==================================================== */
+
 #header-texto {
-  /* min-height: 100vh ya incluye el padding-top del body,
-     así que el hero se ve completo */
-  min-height: calc(100vh - 96px);
+  min-height: 420px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 50px 48px 80px;
+  padding: 60px 48px 120px;
   position: relative;
   overflow: hidden;
   background-image: url('images/CATA.jpg');
@@ -229,10 +112,13 @@ body {
   background-position: center center;
   background-repeat: no-repeat;
 }
- 
+
 #header-texto h1,
-#header-texto p { position: relative; z-index: 2; }
- 
+#header-texto p {
+  position: relative;
+  z-index: 2;
+}
+
 #header-texto h1 {
   font-weight: 900;
   font-size: clamp(26px, 4.5vw, 58px);
@@ -241,12 +127,11 @@ body {
   line-height: 1.05;
   letter-spacing: -1px;
   text-transform: uppercase;
-  animation: fadeInDown 0.8s ease forwards;
   text-shadow:
     0 2px 24px rgba(0,0,0,0.55),
-    0 1px 4px  rgba(0,0,0,0.70);
+    0 1px 4px rgba(0,0,0,0.70);
 }
- 
+
 #header-texto p {
   background: rgba(255,255,255,0.15);
   border: 1px solid rgba(255,255,255,0.45);
@@ -258,87 +143,16 @@ body {
   padding: 0.4rem 1.4rem;
   border-radius: 50px;
   margin-bottom: 1.4rem;
-  animation: subirFadeIn 0.6s ease both;
   backdrop-filter: blur(8px);
 }
- 
-/* ====================================================
-   RESPONSIVE — 1024px
-   Ocultar categorías del nav para que quepan los botones
-   ==================================================== */
-@media (max-width: 1024px) {
-  .navbar {
-    padding: 0 1.5rem 0 9rem;
-  }
- 
-  #header-categorias {
-    display: none;          /* ocultar en pantallas medianas */
-  }
- 
-  .navbar-menu {
-    gap: 0.8rem;
-  }
-}
- 
-/* ====================================================
-   RESPONSIVE — 768px
-   ==================================================== */
-@media (max-width: 768px) {
-  body {
-    padding-top: 72px;
-  }
- 
-  .navbar {
-    height: 72px;
-    padding: 0 1rem 0 6rem;
-  }
- 
-  .navbar-logo {
-    top: 4px;
-    left: 1rem;
-  }
- 
-  .logo-img {
-    width: 80px;
-    height: 80px;
-  }
- 
-  .navbar-menu > a:not(:first-child) {
-    display: none;          /* ocultar "Inicio" extra si hay */
-  }
- 
-  .btn-iniciar-sesion {
-    display: none;          /* ocultar en móvil */
-  }
- 
-  /* El botón flotante vuelve a ser inline en móvil */
-  .btn-ayudar-flotante {
-    position: static;
-    border-radius: 999px;
-    font-size: 0.85rem;
-    padding: 0.7rem 1.4rem;
-  }
- 
-  #header-texto {
-    min-height: calc(100vh - 72px);
-    padding: 40px 20px 60px;
-  }
- 
-  #header-texto h1 {
-    font-size: clamp(22px, 6vw, 36px);
-  }
-}
- 
-
-
 /* ====================================================
    CONTENEDOR CATÁLOGO + GRID
    ==================================================== */
-#catalog-wrapper {
+   #catalog-wrapper {
     background: var(--crema);
     border-radius: var(--radio-xl);
     box-shadow: var(--sombra-xl);
-    margin: -180px 28px 48px;
+    margin: 32px 28px 48px;
     position: relative;
     z-index: 3;
     padding: 52px 40px;
@@ -701,3 +515,90 @@ body {
     #catalog-wrapper { margin: -44px 8px 0; border-radius: 22px 22px 0 0; }
     #catalog-grid { grid-template-columns: 1fr; gap: 12px; padding: 28px 14px; }
 }
+
+/* ── NAVBAR PERFIL DONADOR ── */
+.navbar-perfil {
+  align-items: center;
+  position: relative;
+}
+
+.navbar-perfil-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 2px solid rgba(0,117,38,0.2);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem 0.4rem 0.4rem;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--verde-oscuro);
+  transition: all 0.2s ease;
+}
+.navbar-perfil-btn:hover {
+  background: var(--verde-oscuro);
+  color: white;
+  border-color: var(--verde-oscuro);
+}
+.navbar-perfil-btn:hover .navbar-avatar {
+  background: rgba(255,255,255,0.25);
+  color: white;
+}
+
+.navbar-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--verde);
+  color: white;
+  font-weight: 700;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-perfil-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  padding: 1rem;
+  min-width: 200px;
+  z-index: 2000;
+}
+.navbar-perfil-dropdown.open { display: block; }
+
+.perfil-dropdown-nombre {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--texto);
+}
+.perfil-dropdown-correo {
+  font-size: 0.78rem;
+  color: var(--texto-suave);
+  margin-top: 0.15rem;
+}
+.perfil-dropdown-sep {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 0.75rem 0;
+}
+.perfil-dropdown-item {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0.4rem 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e74c3c;
+  cursor: pointer;
+}
+.perfil-dropdown-item:hover { text-decoration: underline; }

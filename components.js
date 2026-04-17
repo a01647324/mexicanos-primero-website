@@ -82,6 +82,7 @@ async function loadComponent(selector, filePath) {
     if (!openBtn || !closeBtn || !overlay) return;
   
     function openModal() {
+      localStorage.setItem('loginOrigen', window.location.pathname.split('/').pop() || 'index.html') // ← agrega
       overlay.classList.add("active");
       overlay.setAttribute("aria-hidden", "false");
       document.body.classList.add("menu-open");
@@ -108,6 +109,58 @@ async function loadComponent(selector, filePath) {
       }
     });
   }
+
+  function actualizarHeaderSesion() {
+    const token  = localStorage.getItem('token')
+    const rol    = localStorage.getItem('rol')
+    const nombre = localStorage.getItem('nombreDonador')
+    const correo = localStorage.getItem('correoDonador')
+
+    const btnLogin = document.getElementById('open-login-modal')
+    const perfil   = document.getElementById('navbar-perfil')
+
+    if (!btnLogin || !perfil) return
+
+    if (token && rol === 'donador') {
+      btnLogin.style.display = 'none'
+      perfil.style.display   = 'flex'
+
+      if (nombre) {
+        document.getElementById('navbar-perfil-nombre').textContent  = nombre.split(' ')[0]
+        document.getElementById('navbar-avatar').textContent          = nombre.charAt(0).toUpperCase()
+        document.getElementById('perfil-dropdown-nombre').textContent = nombre
+      }
+      if (correo) {
+        document.getElementById('perfil-dropdown-correo').textContent = correo
+      }
+    } else {
+      btnLogin.style.display = ''
+      perfil.style.display   = 'none'
+    }
+  }
+
+  function cerrarSesionDonador() {
+    localStorage.removeItem('token')
+    localStorage.removeItem('rol')
+    localStorage.removeItem('nombreDonador')
+    localStorage.removeItem('correoDonador')
+    window.location.reload()
+  }
+
+  function initPerfilDropdown() {
+    const toggle   = document.getElementById('perfil-toggle')
+    const dropdown = document.getElementById('perfil-dropdown')
+    if (!toggle || !dropdown) return
+
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation()
+      dropdown.classList.toggle('open')
+    })
+
+    document.addEventListener('click', () => {
+      dropdown.classList.remove('open')
+    })
+  }
   
   document.addEventListener("DOMContentLoaded", async () => {
     await loadComponent("#header-placeholder", "components/header.html");
@@ -117,4 +170,6 @@ async function loadComponent(selector, filePath) {
     initNavbarScroll();
     initHamburgerMenu();
     initLoginModal();
+    actualizarHeaderSesion();
+    initPerfilDropdown();
   });
