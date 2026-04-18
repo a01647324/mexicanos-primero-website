@@ -1,2 +1,498 @@
-<h1>Gestión de Solicitudes</h1>
-<p>Contenido de gestión de solicitudes. Esta sección se cargó con fetch.</p>
+<div class="gs-wrap">
+
+  <!-- ENCABEZADO -->
+  <div class="gs-top">
+    <div>
+      <h1 class="subpagina-titulo">Gestión de Solicitudes</h1>
+      <p class="subpagina-subtitulo">Administra y actualiza el estatus de cada solicitud recibida.</p>
+    </div>
+  </div>
+
+  <!-- MÉTRICAS RÁPIDAS -->
+  <div class="gs-chips" id="gs-chips">
+    <div class="gs-chip gs-chip-skeleton"></div>
+    <div class="gs-chip gs-chip-skeleton"></div>
+    <div class="gs-chip gs-chip-skeleton"></div>
+    <div class="gs-chip gs-chip-skeleton"></div>
+    <div class="gs-chip gs-chip-skeleton"></div>
+  </div>
+
+  <!-- BARRA DE HERRAMIENTAS -->
+  <div class="gs-toolbar">
+    <div class="gs-search-wrap">
+      <i class="bi bi-search gs-search-icon"></i>
+      <input type="text" id="gs-busqueda" class="gs-search" placeholder="Buscar por nombre o correo..." oninput="gsDebounce()">
+    </div>
+    <select class="panel-select gs-filter" id="gs-filtro-tipo" onchange="gsCargar(1)">
+      <option value="">Todos los tipos</option>
+      <option value="Donación material">Donación material</option>
+      <option value="Donación económica">Donación económica</option>
+      <option value="Voluntariado">Voluntariado</option>
+      <option value="Brindar talleres">Brindar talleres</option>
+      <option value="Vinculaciones">Vinculaciones</option>
+    </select>
+    <select class="panel-select gs-filter" id="gs-filtro-estatus" onchange="gsCargar(1)">
+      <option value="">Todos los estatus</option>
+      <option value="nueva">Nueva</option>
+      <option value="en_proceso">En proceso</option>
+      <option value="pendiente">Pendiente</option>
+      <option value="finalizada">Finalizada</option>
+      <option value="cancelada">Cancelada</option>
+    </select>
+  </div>
+
+  <!-- TABLA -->
+  <div class="gs-tabla-wrap">
+    <table class="gs-tabla" id="gs-tabla">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Solicitante</th>
+          <th>Tipo de Donación</th>
+          <th>Instancia</th>
+          <th>Contacto</th>
+          <th>Fecha</th>
+          <th>Estatus</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="gs-tbody">
+        <tr><td colspan="8" class="gs-loading"><i class="bi bi-arrow-repeat spin"></i> Cargando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PAGINACIÓN -->
+  <div class="gs-paginacion" id="gs-paginacion"></div>
+
+</div>
+
+<!-- ══ MODAL EDITAR ══════════════════════════════════════════ -->
+<div id="gs-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:3000;align-items:center;justify-content:center;padding:2rem;" onclick="if(event.target===this)gsCerrarModal()">
+  <div class="modal-caja" style="max-width:640px;width:100%;">
+
+    <div class="modal-header">
+      <div>
+        <p style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--texto-suave);margin:0 0 .2rem">Solicitud <span id="gs-modal-id">#—</span></p>
+        <h2 class="modal-titulo" id="gs-modal-nombre">—</h2>
+      </div>
+      <button class="modal-cerrar" onclick="gsCerrarModal()"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Estatus -->
+      <div class="modal-campo">
+        <span class="modal-label">Estatus de gestión</span>
+        <div class="gs-estatus-opciones" id="gs-estatus-opciones">
+          <button class="gs-estatus-btn" data-val="nueva"      onclick="gsSelEstatus(this)"><i class="bi bi-circle-fill"></i> Nueva</button>
+          <button class="gs-estatus-btn" data-val="en_proceso" onclick="gsSelEstatus(this)"><i class="bi bi-arrow-repeat"></i> En proceso</button>
+          <button class="gs-estatus-btn" data-val="pendiente"  onclick="gsSelEstatus(this)"><i class="bi bi-clock-fill"></i> Pendiente</button>
+          <button class="gs-estatus-btn" data-val="finalizada" onclick="gsSelEstatus(this)"><i class="bi bi-check-circle-fill"></i> Finalizada</button>
+          <button class="gs-estatus-btn" data-val="cancelada"  onclick="gsSelEstatus(this)"><i class="bi bi-x-circle-fill"></i> Cancelada</button>
+        </div>
+      </div>
+
+      <!-- Notas -->
+      <div class="modal-campo">
+        <span class="modal-label">Notas internas</span>
+        <textarea id="gs-modal-notas" class="panel-input panel-textarea" rows="3" placeholder="Escribe notas o comentarios internos sobre esta solicitud..."></textarea>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--gris-claro);margin:.5rem 0">
+
+      <!-- Datos editables -->
+      <p style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--texto-suave);margin-bottom:.75rem">Datos del solicitante</p>
+      <div class="modal-campo-doble">
+        <div class="modal-campo">
+          <span class="modal-label">Nombre completo</span>
+          <input type="text" id="gs-modal-ncompleto" class="panel-input">
+        </div>
+        <div class="modal-campo">
+          <span class="modal-label">Correo</span>
+          <input type="email" id="gs-modal-correo" class="panel-input">
+        </div>
+      </div>
+      <div class="modal-campo-doble">
+        <div class="modal-campo">
+          <span class="modal-label">Teléfono</span>
+          <input type="text" id="gs-modal-tel" class="panel-input">
+        </div>
+        <div class="modal-campo">
+          <span class="modal-label">Tipo de donación</span>
+          <input type="text" id="gs-modal-tipo" class="panel-input" readonly style="opacity:.6;cursor:not-allowed">
+        </div>
+      </div>
+      <div class="modal-campo">
+        <span class="modal-label">Mensaje</span>
+        <textarea id="gs-modal-msg" class="panel-input panel-textarea" rows="2"></textarea>
+      </div>
+
+      <!-- Materiales (si aplica) -->
+      <div id="gs-modal-mat-wrap" style="display:none;">
+        <hr style="border:none;border-top:1px solid var(--gris-claro);margin:.5rem 0">
+        <p style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--texto-suave);margin-bottom:.75rem">Materiales solicitados</p>
+        <div id="gs-modal-mat"></div>
+      </div>
+
+    </div>
+
+    <div class="modal-acciones">
+      <button class="panel-btn panel-btn-outline-gris" onclick="gsCerrarModal()">Cancelar</button>
+      <button class="panel-btn panel-btn-verde" onclick="gsGuardar()"><i class="bi bi-check2"></i> Guardar cambios</button>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.gs-wrap { font-family:'Montserrat',sans-serif; color:var(--texto); display:flex; flex-direction:column; gap:1.25rem; }
+.gs-top  { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:.5rem; }
+
+/* ── CHIPS ── */
+.gs-chips { display:flex; gap:.6rem; flex-wrap:wrap; }
+.gs-chip {
+  display:flex; align-items:center; gap:.5rem;
+  padding:.5rem 1rem; background:var(--blanco);
+  border-radius:50px; border:1.5px solid rgba(0,0,0,.06);
+  font-size:.78rem; font-weight:600; color:var(--texto-suave);
+  box-shadow:var(--sombra); cursor:pointer; transition:all .2s ease;
+}
+.gs-chip:hover, .gs-chip.activo { border-color:var(--verde); color:var(--verde-oscuro); background:var(--verde-suave); }
+.gs-chip-num { font-size:1rem; font-weight:900; color:var(--texto); }
+.gs-chip-skeleton { width:110px; height:40px; border-radius:50px; background:var(--gris-claro); animation:shimmer 1.4s infinite; }
+@keyframes shimmer { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+/* ── TOOLBAR ── */
+.gs-toolbar { display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
+.gs-search-wrap { position:relative; flex:1; min-width:220px; }
+.gs-search-icon { position:absolute; left:.9rem; top:50%; transform:translateY(-50%); color:var(--texto-suave); font-size:.9rem; pointer-events:none; }
+.gs-search { width:100%; padding:.65rem 1rem .65rem 2.4rem; border:1.5px solid var(--gris-claro); border-radius:50px; font-family:'Montserrat',sans-serif; font-size:.85rem; color:var(--texto); background:var(--blanco); outline:none; transition:all .2s ease; }
+.gs-search:focus { border-color:var(--verde); box-shadow:0 0 0 3px rgba(0,153,51,.1); }
+.gs-filter { width:auto; min-width:150px; border-radius:50px; font-size:.82rem; }
+
+/* ── TABLA ── */
+.gs-tabla-wrap { background:var(--blanco); border-radius:var(--radio); box-shadow:var(--sombra); overflow:hidden; border:1px solid rgba(0,0,0,.04); }
+.gs-tabla { width:100%; border-collapse:collapse; font-family:'Montserrat',sans-serif; }
+.gs-tabla thead tr { background:var(--verde-oscuro); }
+.gs-tabla thead th { padding:.85rem 1rem; font-size:.72rem; font-weight:700; color:rgba(255,255,255,.85); text-transform:uppercase; letter-spacing:.5px; white-space:nowrap; }
+.gs-tabla thead th:first-child { border-radius:0; width:50px; text-align:center; }
+.gs-tabla tbody tr { border-bottom:1px solid var(--gris-claro); transition:background .15s ease; }
+.gs-tabla tbody tr:last-child { border-bottom:none; }
+.gs-tabla tbody tr:hover { background:var(--crema); }
+.gs-tabla tbody td { padding:.85rem 1rem; font-size:.82rem; color:var(--texto); vertical-align:middle; }
+.gs-tabla tbody td:first-child { text-align:center; font-weight:700; color:var(--texto-suave); font-size:.75rem; }
+.gs-loading { text-align:center; padding:3rem; color:var(--texto-suave); font-size:.9rem; }
+.gs-vacio { text-align:center; padding:3rem; color:var(--texto-suave); font-size:.85rem; }
+
+/* Celda solicitante */
+.gs-solicitante-nombre { font-weight:700; font-size:.85rem; color:var(--texto); margin:0 0 .15rem; }
+.gs-solicitante-correo { font-size:.73rem; color:var(--texto-suave); margin:0; }
+
+/* Badge tipo */
+.gs-tipo-badge { display:inline-flex; align-items:center; padding:.2rem .65rem; border-radius:50px; font-size:.7rem; font-weight:700; white-space:nowrap; }
+.tipo-material     { background:rgba(28,54,97,.1);    color:#1C3661; }
+.tipo-economica    { background:rgba(244,152,28,.12); color:#c47a0a; }
+.tipo-voluntariado { background:rgba(0,153,51,.1);    color:#007526; }
+.tipo-talleres     { background:rgba(236,103,27,.1);  color:#EC671B; }
+.tipo-vinculacion  { background:rgba(100,50,150,.1);  color:#6432a0; }
+.tipo-otro         { background:rgba(0,0,0,.06);      color:#4A644A; }
+
+/* Badge estatus */
+.gs-estatus-badge { display:inline-flex; align-items:center; gap:.35rem; padding:.3rem .8rem; border-radius:50px; font-size:.72rem; font-weight:700; white-space:nowrap; }
+.est-nueva      { background:rgba(236,103,27,.12); color:#c15a0a; }
+.est-en_proceso { background:rgba(28,54,97,.1);    color:#1C3661; }
+.est-pendiente  { background:rgba(244,152,28,.12); color:#c47a0a; }
+.est-finalizada { background:rgba(0,153,51,.1);    color:#007526; }
+.est-cancelada  { background:rgba(220,38,38,.1);   color:#dc2626; }
+
+/* Fecha */
+.gs-fecha { font-size:.75rem; color:var(--texto-suave); white-space:nowrap; }
+
+/* Botón editar */
+.gs-btn-editar { display:inline-flex; align-items:center; gap:.3rem; padding:.35rem .8rem; background:rgba(28,54,97,.08); color:#1C3661; border:none; border-radius:50px; font-family:'Montserrat',sans-serif; font-size:.73rem; font-weight:600; cursor:pointer; transition:all .2s ease; }
+.gs-btn-editar:hover { background:#1C3661; color:white; }
+
+/* ── PAGINACIÓN ── */
+.gs-paginacion { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.75rem; }
+.gs-paginacion-info { font-size:.78rem; color:var(--texto-suave); font-weight:500; }
+.gs-paginacion-btns { display:flex; gap:.4rem; }
+.gs-pag-btn { width:34px; height:34px; border:1.5px solid var(--gris-claro); background:var(--blanco); border-radius:8px; font-family:'Montserrat',sans-serif; font-size:.8rem; font-weight:600; color:var(--texto-suave); cursor:pointer; transition:all .2s ease; display:flex; align-items:center; justify-content:center; }
+.gs-pag-btn:hover { border-color:var(--verde); color:var(--verde-oscuro); }
+.gs-pag-btn.activo { background:var(--verde-oscuro); color:white; border-color:var(--verde-oscuro); }
+.gs-pag-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+/* ── MODAL ESTATUS ── */
+.gs-estatus-opciones { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.35rem; }
+.gs-estatus-btn {
+  display:inline-flex; align-items:center; gap:.4rem;
+  padding:.45rem 1rem; border:1.5px solid var(--gris-claro);
+  border-radius:50px; background:var(--blanco);
+  font-family:'Montserrat',sans-serif; font-size:.78rem; font-weight:600;
+  color:var(--texto-suave); cursor:pointer; transition:all .2s ease;
+}
+.gs-estatus-btn:hover { border-color:var(--verde); color:var(--verde-oscuro); }
+.gs-estatus-btn.seleccionado { background:var(--verde-oscuro); color:white; border-color:var(--verde-oscuro); }
+.gs-estatus-btn[data-val="cancelada"].seleccionado  { background:#dc2626; border-color:#dc2626; }
+.gs-estatus-btn[data-val="finalizada"].seleccionado { background:#009933; border-color:#009933; }
+.gs-estatus-btn[data-val="en_proceso"].seleccionado { background:#1C3661; border-color:#1C3661; }
+.gs-estatus-btn[data-val="pendiente"].seleccionado  { background:#c47a0a; border-color:#c47a0a; }
+
+/* Material item en modal */
+.gs-mat-item { padding:.6rem .85rem; background:var(--gris-claro); border-radius:10px; font-size:.8rem; margin-bottom:.4rem; }
+.gs-mat-item strong { display:block; color:var(--texto); margin-bottom:.1rem; font-size:.82rem; }
+.gs-mat-item span { color:var(--texto-suave); }
+
+.spin { display:inline-block; animation:girar 1s linear infinite; }
+@keyframes girar { to { transform:rotate(360deg); } }
+
+@media(max-width:900px) {
+  .gs-tabla thead th:nth-child(4),
+  .gs-tabla tbody td:nth-child(4) { display:none; }
+}
+@media(max-width:700px) {
+  .gs-tabla thead th:nth-child(5),
+  .gs-tabla tbody td:nth-child(5) { display:none; }
+}
+</style>
+
+<script>
+var gs_paginaActual = 1;
+var gs_totalPaginas = 1;
+var gs_debounceTimer = null;
+var gs_idActual = null;
+
+// ── Helpers ───────────────────────────────────────────────────
+function gsClaseTipo(tipo) {
+  if (!tipo) return 'tipo-otro';
+  var t = tipo.toLowerCase();
+  if (t.includes('material'))     return 'tipo-material';
+  if (t.includes('econ'))         return 'tipo-economica';
+  if (t.includes('voluntariado')) return 'tipo-voluntariado';
+  if (t.includes('taller'))       return 'tipo-talleres';
+  if (t.includes('vinculac'))     return 'tipo-vinculacion';
+  return 'tipo-otro';
+}
+
+function gsEstatusInfo(est) {
+  var map = {
+    nueva:      { clase:'est-nueva',      icono:'bi-circle-fill',         label:'Nueva' },
+    en_proceso: { clase:'est-en_proceso', icono:'bi-arrow-repeat',        label:'En proceso' },
+    pendiente:  { clase:'est-pendiente',  icono:'bi-clock-fill',          label:'Pendiente' },
+    finalizada: { clase:'est-finalizada', icono:'bi-check-circle-fill',   label:'Finalizada' },
+    cancelada:  { clase:'est-cancelada',  icono:'bi-x-circle-fill',       label:'Cancelada' }
+  };
+  return map[est] || map['nueva'];
+}
+
+function gsFecha(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('es-MX', {day:'2-digit',month:'short',year:'numeric'});
+}
+
+function gsDebounce() {
+  clearTimeout(gs_debounceTimer);
+  gs_debounceTimer = setTimeout(function(){ gsCargar(1); }, 400);
+}
+
+// ── Cargar datos ──────────────────────────────────────────────
+function gsCargar(pagina) {
+  gs_paginaActual = pagina || 1;
+  var busqueda = document.getElementById('gs-busqueda').value.trim();
+  var tipo     = document.getElementById('gs-filtro-tipo').value;
+  var estatus  = document.getElementById('gs-filtro-estatus').value;
+
+  var params = new URLSearchParams({ pagina: gs_paginaActual, limite: 15 });
+  if (busqueda) params.set('busqueda', busqueda);
+  if (tipo)     params.set('tipo',     tipo);
+  if (estatus)  params.set('estatus',  estatus);
+
+  var tbody = document.getElementById('gs-tbody');
+  tbody.innerHTML = '<tr><td colspan="8" class="gs-loading"><i class="bi bi-arrow-repeat spin"></i> Cargando...</td></tr>';
+
+  fetch('/api/admin/gestion-solicitudes?' + params.toString())
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      gs_totalPaginas = Math.ceil(data.total / 15) || 1;
+      gsRenderTabla(data.data, data.total);
+      gsRenderPaginacion(data.total);
+      gsRenderChips(data.data);
+    })
+    .catch(function(err) {
+      console.error(err);
+      tbody.innerHTML = '<tr><td colspan="8" class="gs-vacio">Error al cargar solicitudes.</td></tr>';
+    });
+}
+
+// ── Render tabla ──────────────────────────────────────────────
+function gsRenderTabla(rows, total) {
+  var tbody = document.getElementById('gs-tbody');
+  if (!rows || rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="gs-vacio"><i class="bi bi-inbox" style="font-size:1.5rem;display:block;margin-bottom:.5rem;opacity:.3"></i>No se encontraron solicitudes.</td></tr>';
+    return;
+  }
+
+  var offset = (gs_paginaActual - 1) * 15;
+  tbody.innerHTML = rows.map(function(s, i) {
+    var est   = gsEstatusInfo(s.estatus_gestion);
+    var tipo  = gsClaseTipo(s.tipo_donacion);
+    var inst  = s.nombre_instancia ? s.tipo_instancia + ' · ' + s.nombre_instancia : (s.tipo_instancia || '—');
+    var mats  = Array.isArray(s.materiales) ? s.materiales : JSON.parse(s.materiales || '[]');
+    var matBadge = mats.length > 0
+      ? '<span style="font-size:.68rem;background:rgba(28,54,97,.08);color:#1C3661;padding:.1rem .5rem;border-radius:50px;font-weight:700;margin-left:.4rem">'+mats.length+' mat.</span>'
+      : '';
+
+    return '<tr>' +
+      '<td>'+(offset+i+1)+'</td>' +
+      '<td>' +
+        '<p class="gs-solicitante-nombre">'+s.nombre_completo+'</p>' +
+        '<p class="gs-solicitante-correo">'+(s.correo||'—')+'</p>' +
+      '</td>' +
+      '<td><span class="gs-tipo-badge '+tipo+'">'+(s.tipo_donacion||'Sin tipo')+'</span>'+matBadge+'</td>' +
+      '<td style="font-size:.78rem;color:var(--texto-suave);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+inst+'">'+inst+'</td>' +
+      '<td style="font-size:.78rem;color:var(--texto-suave);">'+(s.telefono||'—')+'</td>' +
+      '<td><span class="gs-fecha">'+gsFecha(s.created_at)+'</span></td>' +
+      '<td><span class="gs-estatus-badge '+est.clase+'"><i class="bi '+est.icono+'"></i> '+est.label+'</span></td>' +
+      '<td><button class="gs-btn-editar" onclick="gsAbrirModal('+JSON.stringify(s).replace(/"/g,'&quot;')+')"><i class="bi bi-pencil-fill"></i> Editar</button></td>' +
+    '</tr>';
+  }).join('');
+}
+
+// ── Chips resumen ─────────────────────────────────────────────
+function gsRenderChips(rows) {
+  // Hacemos una sola llamada sin filtros para obtener conteos reales
+  fetch('/api/admin/gestion-solicitudes?limite=1000')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      var todos = data.data || [];
+      var counts = { nueva:0, en_proceso:0, pendiente:0, finalizada:0, cancelada:0 };
+      todos.forEach(function(s){ if(counts[s.estatus_gestion]!==undefined) counts[s.estatus_gestion]++; });
+
+      var defs = [
+        { val:'',           label:'Total',      num: data.total,          icono:'bi-list-ul',           color:'var(--azul)' },
+        { val:'nueva',      label:'Nuevas',     num: counts.nueva,        icono:'bi-circle-fill',       color:'var(--naranja)' },
+        { val:'en_proceso', label:'En proceso', num: counts.en_proceso,   icono:'bi-arrow-repeat',      color:'var(--azul)' },
+        { val:'pendiente',  label:'Pendientes', num: counts.pendiente,    icono:'bi-clock-fill',        color:'#c47a0a' },
+        { val:'finalizada', label:'Finalizadas',num: counts.finalizada,   icono:'bi-check-circle-fill', color:'var(--verde)' },
+        { val:'cancelada',  label:'Canceladas', num: counts.cancelada,    icono:'bi-x-circle-fill',     color:'#dc2626' }
+      ];
+
+      var html = defs.map(function(d) {
+        return '<button class="gs-chip" onclick="gsFiltrarEstatus(\''+d.val+'\')" title="Filtrar por '+d.label+'">' +
+          '<i class="bi '+d.icono+'" style="color:'+d.color+'"></i>' +
+          '<span class="gs-chip-num">'+d.num+'</span>' +
+          '<span>'+d.label+'</span>' +
+        '</button>';
+      }).join('');
+      document.getElementById('gs-chips').innerHTML = html;
+    });
+}
+
+function gsFiltrarEstatus(val) {
+  document.getElementById('gs-filtro-estatus').value = val;
+  gsCargar(1);
+}
+
+// ── Paginación ────────────────────────────────────────────────
+function gsRenderPaginacion(total) {
+  var pag  = document.getElementById('gs-paginacion');
+  var ini  = (gs_paginaActual - 1) * 15 + 1;
+  var fin  = Math.min(gs_paginaActual * 15, total);
+
+  var btns = '';
+  btns += '<button class="gs-pag-btn" onclick="gsCargar('+(gs_paginaActual-1)+')" '+(gs_paginaActual<=1?'disabled':'')+'>‹</button>';
+  var desde = Math.max(1, gs_paginaActual - 2);
+  var hasta = Math.min(gs_totalPaginas, desde + 4);
+  for (var p = desde; p <= hasta; p++) {
+    btns += '<button class="gs-pag-btn'+(p===gs_paginaActual?' activo':'')+'" onclick="gsCargar('+p+')">'+p+'</button>';
+  }
+  btns += '<button class="gs-pag-btn" onclick="gsCargar('+(gs_paginaActual+1)+')" '+(gs_paginaActual>=gs_totalPaginas?'disabled':'')+'>›</button>';
+
+  pag.innerHTML =
+    '<span class="gs-paginacion-info">Mostrando '+(total>0?ini:0)+'–'+fin+' de '+total+' solicitudes</span>' +
+    '<div class="gs-paginacion-btns">'+btns+'</div>';
+}
+
+// ── Modal ─────────────────────────────────────────────────────
+function gsAbrirModal(s) {
+  gs_idActual = s.id;
+  document.getElementById('gs-modal-id').textContent      = '#' + s.id;
+  document.getElementById('gs-modal-nombre').textContent  = s.nombre_completo;
+  document.getElementById('gs-modal-ncompleto').value     = s.nombre_completo || '';
+  document.getElementById('gs-modal-correo').value        = s.correo || '';
+  document.getElementById('gs-modal-tel').value           = s.telefono || '';
+  document.getElementById('gs-modal-tipo').value          = s.tipo_donacion || '';
+  document.getElementById('gs-modal-msg').value           = s.mensaje || '';
+  document.getElementById('gs-modal-notas').value         = s.notas_admin || '';
+
+  // Seleccionar estatus activo
+  document.querySelectorAll('.gs-estatus-btn').forEach(function(btn) {
+    btn.classList.toggle('seleccionado', btn.dataset.val === (s.estatus_gestion || 'nueva'));
+  });
+
+  // Materiales
+  var mats = Array.isArray(s.materiales) ? s.materiales : JSON.parse(s.materiales || '[]');
+  var matWrap = document.getElementById('gs-modal-mat-wrap');
+  var matDiv  = document.getElementById('gs-modal-mat');
+  if (mats.length > 0) {
+    matWrap.style.display = 'block';
+    matDiv.innerHTML = mats.map(function(m) {
+      return '<div class="gs-mat-item"><strong>'+(m.escuela||'—')+'</strong><span>'+m.propuesta+' — '+m.cantidad+' '+(m.unidad||'')+'</span></div>';
+    }).join('');
+  } else {
+    matWrap.style.display = 'none';
+  }
+
+  document.getElementById('gs-modal').style.display = 'flex';
+}
+
+function gsSelEstatus(btn) {
+  document.querySelectorAll('.gs-estatus-btn').forEach(function(b){ b.classList.remove('seleccionado'); });
+  btn.classList.add('seleccionado');
+}
+
+function gsCerrarModal() {
+  document.getElementById('gs-modal').style.display = 'none';
+  gs_idActual = null;
+}
+
+function gsGuardar() {
+  if (!gs_idActual) return;
+
+  var btnSel = document.querySelector('.gs-estatus-btn.seleccionado');
+  var payload = {
+    estatus_gestion: btnSel ? btnSel.dataset.val : 'nueva',
+    notas_admin:     document.getElementById('gs-modal-notas').value.trim(),
+    nombre_completo: document.getElementById('gs-modal-ncompleto').value.trim(),
+    correo:          document.getElementById('gs-modal-correo').value.trim(),
+    telefono:        document.getElementById('gs-modal-tel').value.trim(),
+    mensaje:         document.getElementById('gs-modal-msg').value.trim()
+  };
+
+  var btn = document.querySelector('#gs-modal .panel-btn-verde');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Guardando...';
+
+  fetch('/api/admin/gestion-solicitudes/' + gs_idActual, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function() {
+    gsCerrarModal();
+    gsCargar(gs_paginaActual);
+  })
+  .catch(function(err) {
+    console.error(err);
+    alert('Error al guardar. Intenta de nuevo.');
+  })
+  .finally(function() {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-check2"></i> Guardar cambios';
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────
+gsCargar(1);
+</script>

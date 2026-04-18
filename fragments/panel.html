@@ -1,2 +1,637 @@
-<h1>Panel General</h1>
-<p>Contenido del panel general. Esta sección se cargó con fetch.</p>
+<div class="panel-wrap">
+
+  <!-- ENCABEZADO -->
+  <div class="panel-top">
+    <div>
+      <h1 class="panel-titulo">Panel General</h1>
+      <p class="panel-subtitulo">Resumen de actividad de Mi Escuela Primero</p>
+    </div>
+    <span class="panel-fecha" id="panel-fecha"></span>
+  </div>
+
+  <!-- MÉTRICAS -->
+  <div class="panel-metricas" id="panel-metricas">
+    <div class="panel-metric-skeleton"></div>
+    <div class="panel-metric-skeleton"></div>
+    <div class="panel-metric-skeleton"></div>
+    <div class="panel-metric-skeleton"></div>
+  </div>
+
+  <!-- GRÁFICAS -->
+  <div class="panel-graficas">
+
+    <!-- Barras: necesidades por escuela -->
+    <div class="panel-chart-card panel-chart-grande">
+      <div class="panel-chart-header">
+        <div>
+          <h3 class="panel-chart-titulo">Necesidades por Escuela</h3>
+          <p class="panel-chart-sub">Top 8 escuelas con más necesidades pendientes</p>
+        </div>
+        <div class="panel-chart-leyenda">
+          <span class="ley-item"><span class="ley-dot" style="background:#dc2626"></span>Pendientes</span>
+          <span class="ley-item"><span class="ley-dot" style="background:#f59e0b"></span>Parciales</span>
+          <span class="ley-item"><span class="ley-dot" style="background:#009933"></span>Cubiertas</span>
+        </div>
+      </div>
+      <div class="panel-barras-wrap" id="panel-barras">
+        <div class="panel-cargando"><i class="bi bi-arrow-repeat spin"></i></div>
+      </div>
+    </div>
+
+    <!-- Dona: distribución por estado -->
+    <div class="panel-chart-card panel-chart-chico">
+      <div class="panel-chart-header">
+        <div>
+          <h3 class="panel-chart-titulo">Estado de Necesidades</h3>
+          <p class="panel-chart-sub">Distribución general</p>
+        </div>
+      </div>
+      <div class="panel-dona-wrap">
+        <svg id="panel-dona" viewBox="0 0 200 200" width="160" height="160"></svg>
+        <div class="panel-dona-leyenda" id="panel-dona-ley"></div>
+      </div>
+    </div>
+
+    <!-- Dona: distribución solicitudes -->
+    <div class="panel-chart-card panel-chart-chico">
+      <div class="panel-chart-header">
+        <div>
+          <h3 class="panel-chart-titulo">Tipos de Solicitudes</h3>
+          <p class="panel-chart-sub">Por tipo de donación</p>
+        </div>
+      </div>
+      <div class="panel-dona-wrap">
+        <svg id="panel-dona-sol" viewBox="0 0 200 200" width="160" height="160"></svg>
+        <div class="panel-dona-leyenda" id="panel-dona-sol-ley"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DONADORES -->
+  <div class="panel-donadores-card">
+    <div class="panel-chart-header">
+      <div>
+        <h3 class="panel-chart-titulo">Donadores Registrados</h3>
+        <p class="panel-chart-sub">Últimos 10 registros</p>
+      </div>
+      <span class="panel-donadores-total" id="panel-don-total">—</span>
+    </div>
+    <div class="panel-donadores-lista" id="panel-donadores">
+      <div class="panel-cargando"><i class="bi bi-arrow-repeat spin"></i></div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+.panel-wrap {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--texto);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* ── TOP ── */
+.panel-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.panel-titulo {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--verde-oscuro);
+  margin: 0 0 0.2rem;
+  letter-spacing: -0.5px;
+}
+.panel-subtitulo {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin: 0;
+}
+.panel-fecha {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  background: var(--blanco);
+  border: 1px solid var(--gris-claro);
+  padding: 0.4rem 0.9rem;
+  border-radius: 50px;
+}
+
+/* ── MÉTRICAS ── */
+.panel-metricas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.panel-metric-card {
+  background: var(--blanco);
+  border-radius: var(--radio);
+  padding: 1.4rem 1.6rem;
+  box-shadow: var(--sombra);
+  border: 1px solid rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.panel-metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-hover);
+}
+.panel-metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+}
+.pm-verde::before  { background: linear-gradient(90deg, var(--verde), var(--verde-claro)); }
+.pm-azul::before   { background: linear-gradient(90deg, var(--azul), #3b6dc7); }
+.pm-naranja::before{ background: linear-gradient(90deg, var(--naranja), var(--amarillo)); }
+.pm-rojo::before   { background: linear-gradient(90deg, #dc2626, #f87171); }
+
+.panel-metric-icono {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+}
+.pm-verde  .panel-metric-icono { background: var(--verde-suave);           color: var(--verde-oscuro); }
+.pm-azul   .panel-metric-icono { background: rgba(28,54,97,0.1);           color: var(--azul); }
+.pm-naranja.panel-metric-icono { background: rgba(236,103,27,0.1);         color: var(--naranja); }
+.pm-rojo   .panel-metric-icono { background: rgba(220,38,38,0.1);          color: #dc2626; }
+.pm-naranja .panel-metric-icono { background: rgba(236,103,27,0.1); color: var(--naranja); }
+.pm-rojo    .panel-metric-icono { background: rgba(220,38,38,0.1);  color: #dc2626; }
+
+.panel-metric-valor {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--texto);
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.panel-metric-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.panel-metric-sub {
+  font-size: 0.72rem;
+  color: var(--texto-suave);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.panel-metric-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.pill-verde  { background: var(--verde-suave); color: var(--verde-oscuro); }
+.pill-naranja{ background: rgba(236,103,27,0.1); color: var(--naranja); }
+.pill-rojo   { background: rgba(220,38,38,0.1); color: #dc2626; }
+.pill-azul   { background: rgba(28,54,97,0.1); color: var(--azul); }
+
+.panel-metric-skeleton {
+  background: var(--gris-claro);
+  border-radius: var(--radio);
+  height: 140px;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer {
+  0%,100%{ opacity:1 } 50%{ opacity:0.5 }
+}
+
+/* ── GRÁFICAS ── */
+.panel-graficas {
+  display: grid;
+  grid-template-columns: 1fr 220px 220px;
+  gap: 1rem;
+  align-items: start;
+}
+.panel-chart-card {
+  background: var(--blanco);
+  border-radius: var(--radio);
+  padding: 1.5rem;
+  box-shadow: var(--sombra);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+.panel-chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.panel-chart-titulo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--verde-oscuro);
+  margin: 0 0 0.2rem;
+}
+.panel-chart-sub {
+  font-size: 0.75rem;
+  color: var(--texto-suave);
+  margin: 0;
+}
+.panel-chart-leyenda {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.ley-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+.ley-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── BARRAS ── */
+.panel-barras-wrap {
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+.panel-barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  min-height: 180px;
+  padding: 0 0.25rem;
+}
+.barra-grupo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 60px;
+}
+.barra-stack {
+  display: flex;
+  flex-direction: column-reverse;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 4px;
+  transition: all 0.4s ease;
+}
+.barra-seg {
+  transition: height 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.barra-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  text-align: center;
+  line-height: 1.2;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── DONA ── */
+.panel-dona-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.panel-dona-leyenda {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+}
+.dona-ley-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--texto);
+  font-weight: 500;
+}
+.dona-ley-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dona-ley-num {
+  font-weight: 700;
+  margin-left: auto;
+  padding-left: 0.5rem;
+}
+
+/* ── DONADORES ── */
+.panel-donadores-card {
+  background: var(--blanco);
+  border-radius: var(--radio);
+  padding: 1.5rem;
+  box-shadow: var(--sombra);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+.panel-donadores-total {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  background: var(--gris-claro);
+  padding: 0.3rem 0.75rem;
+  border-radius: 50px;
+  white-space: nowrap;
+}
+.panel-donadores-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.6rem;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+.panel-don-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--gris-claro);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+.panel-don-item:hover {
+  background: var(--verde-suave);
+}
+.panel-don-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--verde-oscuro);
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.panel-don-info { min-width: 0; }
+.panel-don-nombre {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.panel-don-correo {
+  font-size: 0.7rem;
+  color: var(--texto-suave);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panel-cargando {
+  padding: 2rem;
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 1.5rem;
+}
+.spin { display:inline-block; animation: girar 1s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+
+.panel-donadores-lista::-webkit-scrollbar { width: 5px; }
+.panel-donadores-lista::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
+
+@media (max-width: 1100px) {
+  .panel-metricas { grid-template-columns: repeat(2, 1fr); }
+  .panel-graficas { grid-template-columns: 1fr 1fr; }
+  .panel-chart-grande { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  .panel-metricas { grid-template-columns: 1fr 1fr; }
+  .panel-graficas { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+// ── Fecha ─────────────────────────────────────────────────────
+(function() {
+  var d = new Date();
+  var meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  var dias  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  document.getElementById('panel-fecha').textContent =
+    dias[d.getDay()] + ', ' + d.getDate() + ' ' + meses[d.getMonth()] + ' ' + d.getFullYear();
+})();
+
+// ── Animar número ─────────────────────────────────────────────
+function animarNumero(el, destino, duracion) {
+  var inicio = 0;
+  var paso   = duracion / 60;
+  var incremento = destino / (duracion / (1000 / 60));
+  var actual = 0;
+  var timer = setInterval(function() {
+    actual += incremento;
+    if (actual >= destino) { actual = destino; clearInterval(timer); }
+    el.textContent = Math.round(actual).toLocaleString('es-MX');
+  }, paso);
+}
+
+// ── Dona SVG ──────────────────────────────────────────────────
+function dibujarDona(svgId, leyId, datos, colores) {
+  var svg = document.getElementById(svgId);
+  var ley = document.getElementById(leyId);
+  if (!svg || !datos.length) return;
+
+  var total = datos.reduce(function(a,b){ return a + parseInt(b.total); }, 0);
+  if (total === 0) return;
+
+  var cx = 100, cy = 100, r = 75, ri = 45;
+  var angulo = -Math.PI / 2;
+  var html = '';
+
+  datos.forEach(function(d, i) {
+    var pct    = parseInt(d.total) / total;
+    var span   = pct * 2 * Math.PI;
+    var x1     = cx + r * Math.cos(angulo);
+    var y1     = cy + r * Math.sin(angulo);
+    var x2     = cx + r * Math.cos(angulo + span);
+    var y2     = cy + r * Math.sin(angulo + span);
+    var xi1    = cx + ri * Math.cos(angulo);
+    var yi1    = cy + ri * Math.sin(angulo);
+    var xi2    = cx + ri * Math.cos(angulo + span);
+    var yi2    = cy + ri * Math.sin(angulo + span);
+    var large  = span > Math.PI ? 1 : 0;
+    var path   = 'M '+x1+' '+y1+' A '+r+' '+r+' 0 '+large+' 1 '+x2+' '+y2+
+                 ' L '+xi2+' '+yi2+' A '+ri+' '+ri+' 0 '+large+' 0 '+xi1+' '+yi1+' Z';
+    var color  = colores[i % colores.length];
+    svg.innerHTML += '<path d="'+path+'" fill="'+color+'" opacity="0.9"/>';
+    angulo += span;
+
+    html += '<div class="dona-ley-item">' +
+      '<span class="dona-ley-dot" style="background:'+color+'"></span>' +
+      '<span>'+(d.estado || d.tipo || d.label)+'</span>' +
+      '<span class="dona-ley-num">'+parseInt(d.total).toLocaleString('es-MX')+'</span>' +
+    '</div>';
+  });
+
+  // Texto central
+  svg.innerHTML += '<circle cx="100" cy="100" r="38" fill="white"/>' +
+    '<text x="100" y="96" text-anchor="middle" font-size="22" font-weight="800" fill="'+colores[0]+'" font-family="Montserrat,sans-serif">'+total.toLocaleString('es-MX')+'</text>' +
+    '<text x="100" y="112" text-anchor="middle" font-size="9" fill="#888" font-family="Montserrat,sans-serif">TOTAL</text>';
+
+  ley.innerHTML = html;
+}
+
+// ── Barras apiladas ───────────────────────────────────────────
+function dibujarBarras(datos) {
+  var wrap = document.getElementById('panel-barras');
+  if (!datos || !datos.length) { wrap.innerHTML = '<p style="color:var(--texto-suave);font-size:.82rem;padding:1rem">Sin datos.</p>'; return; }
+
+  var maxTotal = Math.max.apply(null, datos.map(function(d){ return parseInt(d.total)||0; }));
+  var altMax   = 160;
+
+  var html = '<div class="panel-barras">';
+  datos.forEach(function(d) {
+    var pend = parseInt(d.pendientes) || 0;
+    var parc = parseInt(d.parciales)  || 0;
+    var cub  = parseInt(d.cubiertas)  || 0;
+    var tot  = pend + parc + cub;
+    var scale = maxTotal > 0 ? altMax / maxTotal : 0;
+
+    html += '<div class="barra-grupo">' +
+      '<div class="barra-stack" style="height:'+(tot*scale)+'px">' +
+        '<div class="barra-seg" style="height:'+(pend*scale)+'px;background:#dc2626;" title="Pendientes: '+pend+'"></div>' +
+        '<div class="barra-seg" style="height:'+(parc*scale)+'px;background:#f59e0b;" title="Parciales: '+parc+'"></div>' +
+        '<div class="barra-seg" style="height:'+(cub*scale)+'px;background:#009933;"  title="Cubiertas: '+cub+'"></div>' +
+      '</div>' +
+      '<span class="barra-label" title="'+d.escuela+'">'+d.escuela+'</span>' +
+    '</div>';
+  });
+  html += '</div>';
+  wrap.innerHTML = html;
+}
+
+// ── Cargar datos ──────────────────────────────────────────────
+fetch('/api/admin/panel/metricas')
+  .then(function(r){ return r.json(); })
+  .then(function(data) {
+    var n = data.necesidades;
+    var s = data.solicitudes;
+
+    // Métricas
+    var metricas = [
+      {
+        clase: 'pm-verde',
+        icono: 'bi-box-seam-fill',
+        valor: parseInt(n.total),
+        label: 'Total Necesidades',
+        sub:   parseInt(n.cubiertas) + ' cubiertas',
+        pill:  { texto: Math.round(parseInt(n.cubiertas)/parseInt(n.total)*100)+'%', clase: 'pill-verde' }
+      },
+      {
+        clase: 'pm-azul',
+        icono: 'bi-check-circle-fill',
+        valor: parseInt(n.cubiertas),
+        label: 'Necesidades Cubiertas',
+        sub:   parseInt(n.parciales) + ' parcialmente',
+        pill:  { texto: parseInt(n.parciales) + ' parciales', clase: 'pill-naranja' }
+      },
+      {
+        clase: 'pm-naranja',
+        icono: 'bi-inbox-fill',
+        valor: parseInt(s.nuevas),
+        label: 'Solicitudes Pendientes',
+        sub:   'de ' + parseInt(s.total) + ' totales',
+        pill:  { texto: parseInt(s.nuevas) + ' nuevas', clase: 'pill-naranja' }
+      },
+      {
+        clase: 'pm-rojo',
+        icono: 'bi-exclamation-circle-fill',
+        valor: parseInt(n.pendientes),
+        label: 'Necesidades Pendientes',
+        sub:   'aún sin cubrir',
+        pill:  { texto: Math.round(parseInt(n.pendientes)/parseInt(n.total)*100)+'% sin cubrir', clase: 'pill-rojo' }
+      }
+    ];
+
+    var wrap = document.getElementById('panel-metricas');
+    wrap.innerHTML = metricas.map(function(m) {
+      return '<div class="panel-metric-card '+m.clase+'">' +
+        '<div class="panel-metric-icono"><i class="bi '+m.icono+'"></i></div>' +
+        '<div class="panel-metric-valor" data-val="'+m.valor+'">0</div>' +
+        '<div class="panel-metric-label">'+m.label+'</div>' +
+        '<div class="panel-metric-sub">' +
+          '<span class="panel-metric-pill '+m.pill.clase+'">'+m.pill.texto+'</span>' +
+          m.sub +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    // Animar números
+    wrap.querySelectorAll('.panel-metric-valor').forEach(function(el) {
+      animarNumero(el, parseInt(el.dataset.val), 800);
+    });
+
+    // Gráfica barras
+    dibujarBarras(data.porEscuela);
+
+    // Dona necesidades
+    var coloresNec = ['#dc2626','#f59e0b','#009933','#9ca3af'];
+    var datosNec = data.porEstado.map(function(d){ return { estado: d.estado, total: d.total }; });
+    dibujarDona('panel-dona', 'panel-dona-ley', datosNec, coloresNec);
+
+    // Dona solicitudes
+    var datosSol = [
+      { label: 'Material',  tipo: 'Material',  total: parseInt(s.material) },
+      { label: 'Otros',     tipo: 'Otros',     total: parseInt(s.otras)    },
+      { label: 'Nuevas',    tipo: 'Nuevas',    total: parseInt(s.nuevas)   },
+      { label: 'Leídas',    tipo: 'Leídas',    total: parseInt(s.leidas)   },
+      { label: 'Archivadas',tipo: 'Archivadas',total: parseInt(s.archivadas)}
+    ].filter(function(d){ return d.total > 0; });
+    var coloresSol = ['#1C3661','#f59e0b','#EC671B','#009933','#9ca3af'];
+    dibujarDona('panel-dona-sol', 'panel-dona-sol-ley', datosSol, coloresSol);
+
+    // Donadores
+    var donTotal = document.getElementById('panel-don-total');
+    if (donTotal) donTotal.textContent = data.donadores.length + ' registrados';
+    var donLista = document.getElementById('panel-donadores');
+    if (data.donadores.length === 0) {
+      donLista.innerHTML = '<p style="color:var(--texto-suave);font-size:.82rem;padding:.5rem">Sin donadores registrados.</p>';
+    } else {
+      donLista.innerHTML = data.donadores.map(function(d) {
+        var inicial = (d.nombre_completo || 'D').charAt(0).toUpperCase();
+        return '<div class="panel-don-item">' +
+          '<div class="panel-don-avatar">'+inicial+'</div>' +
+          '<div class="panel-don-info">' +
+            '<p class="panel-don-nombre">'+d.nombre_completo+'</p>' +
+            '<p class="panel-don-correo">'+(d.correo||'—')+'</p>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+  })
+  .catch(function(err) {
+    console.error(err);
+    document.getElementById('panel-metricas').innerHTML =
+      '<p style="color:#dc2626;font-size:.85rem;grid-column:1/-1">Error al cargar métricas.</p>';
+  });
+</script>

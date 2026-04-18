@@ -320,28 +320,19 @@ app.post("/api/contacto", async (req, res) => {
       aviso_privacidad_aceptado
     } = req.body;
 
+    const { tipo_donacion } = req.body;
+
     const result = await pool.query(
       `INSERT INTO solicitudes_donacion (
-         nombre_completo,
-         tipo_instancia,
-         nombre_instancia,
-         correo,
-         telefono,
-         mensaje,
-         origen_formulario,
-         aviso_privacidad_aceptado
-       )
-       VALUES ($1, $2, $3, $4, $5, $6, 'contacto', $7)
-       RETURNING id`,
-      [
-        nombre_completo,
-        tipo_instancia || null,
-        nombre_instancia || null,
-        correo || null,
-        telefono,
-        mensaje || null,
-        aviso_privacidad_aceptado
-      ]
+        nombre_completo, tipo_instancia, nombre_instancia,
+        correo, telefono, mensaje, origen_formulario,
+        aviso_privacidad_aceptado, tipo_donacion
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, 'contacto', $7, $8)
+      RETURNING id`,
+      [nombre_completo, tipo_instancia||null, nombre_instancia||null,
+      correo||null, telefono, mensaje||null, aviso_privacidad_aceptado,
+      tipo_donacion||null]
     );
 
     res.status(201).json({
@@ -417,26 +408,14 @@ app.post("/api/solicitud-material", async (req, res) => {
 
     const solicitudResult = await client.query(
       `INSERT INTO solicitudes_donacion (
-         nombre_completo,
-         tipo_instancia,
-         nombre_instancia,
-         correo,
-         telefono,
-         mensaje,
-         origen_formulario,
-         aviso_privacidad_aceptado
-       )
-       VALUES ($1, $2, $3, $4, $5, $6, 'pasos', $7)
-       RETURNING id`,
-      [
-        nombre_completo,
-        tipo_instancia || null,
-        nombre_instancia || null,
-        correo || null,
-        telefono,
-        mensaje || null,
-        aviso_privacidad_aceptado
-      ]
+        nombre_completo, tipo_instancia, nombre_instancia,
+        correo, telefono, mensaje, origen_formulario,
+        aviso_privacidad_aceptado, tipo_donacion
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, 'pasos', $7, 'Donación material')
+      RETURNING id`,
+      [nombre_completo, tipo_instancia||null, nombre_instancia||null,
+      correo||null, telefono, mensaje||null, aviso_privacidad_aceptado]
     );
 
     const solicitudId = solicitudResult.rows[0].id;
@@ -1269,6 +1248,333 @@ app.post("/api/auth/login-admin", async (req, res) => {
   } catch (err) {
     console.error("Error en login-admin:", err);
     res.status(500).json({ error: "Error en servidor." });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   GET /api/admin/solicitudes
+   Lista todas las solicitudes de donación con estado de lectura.
+   ══════════════════════════════════════════════════════════ */
+app.get('/api/admin/solicitudes', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, nombre_completo, tipo_instancia, nombre_instancia,
+              correo, telefono, mensaje, origen_formulario,
+              tipo_donacion, estado_lectura, created_at
+       FROM solicitudes_donacion
+       ORDER BY created_at DESC`
+    );
+    res.json({ data: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en servidor' });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   GET /api/admin/solicitudes/:id/materiales
+   Materiales de una solicitud de tipo "pasos".
+   ══════════════════════════════════════════════════════════ */
+app.get('/api/admin/solicitudes/:id/materiales', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT escuela, propuesta, cantidad, unidad
+       FROM solicitud_materiales
+       WHERE solicitud_id = $1`,
+      [req.params.id]
+    );
+    res.json({ data: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en servidor' });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   PATCH /api/admin/solicitudes/:id/estado
+   Actualiza el estado de lectura (nueva / leida / archivada).
+   ══════════════════════════════════════════════════════════ */
+app.patch('/api/admin/solicitudes/:id/estado', async (req, res) => {
+  try {
+    const { estado_lectura } = req.body;
+    const validos = ['nueva', 'leida', 'archivada'];
+    if (!validos.includes(estado_lectura))
+      return res.status(400).json({ error: 'Estado inválido' });
+
+    await pool.query(
+      'UPDATE solicitudes_donacion SET estado_lectura = $1 WHERE id = $2',
+      [estado_lectura, req.params.id]
+    );
+    res.json({ message: 'Estado actualizado' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en servidor' });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   GET /api/admin/panel/metricas
+   Métricas generales para el panel de administración.
+   ══════════════════════════════════════════════════════════ */
+app.get('/api/admin/panel/metricas', async (req, res) => {
+  try {
+    const [necesidades, solicitudes, donadores, porEstado, porEscuela] = await Promise.all([
+
+      // Total necesidades y cuántas están cubiertas
+      pool.query(`
+        SELECT
+          COUNT(*) AS total,
+          COUNT(*) FILTER (WHERE estado = 'Cubierto') AS cubiertas,
+          COUNT(*) FILTER (WHERE estado = 'Cubierto parcialmente') AS parciales,
+          COUNT(*) FILTER (WHERE estado = 'Aun no cubierto') AS pendientes
+        FROM necesidades
+      `),
+
+      // Solicitudes de donación
+      pool.query(`
+        SELECT
+          COUNT(*) AS total,
+          COUNT(*) FILTER (WHERE estado_lectura = 'nueva' OR estado_lectura IS NULL) AS nuevas,
+          COUNT(*) FILTER (WHERE estado_lectura = 'leida') AS leidas,
+          COUNT(*) FILTER (WHERE estado_lectura = 'archivada') AS archivadas,
+          COUNT(*) FILTER (WHERE tipo_donacion = 'Donación material') AS material,
+          COUNT(*) FILTER (WHERE tipo_donacion != 'Donación material' AND tipo_donacion IS NOT NULL) AS otras
+        FROM solicitudes_donacion
+      `),
+
+      // Donadores registrados
+      pool.query(`
+        SELECT id, nombre_completo, correo, estado, created_at
+        FROM donadores
+        ORDER BY created_at DESC
+        LIMIT 10
+      `),
+
+      // Necesidades por estado (para gráfica de dona)
+      pool.query(`
+        SELECT estado, COUNT(*) AS total
+        FROM necesidades
+        GROUP BY estado
+        ORDER BY total DESC
+      `),
+
+      // Top 8 escuelas con más necesidades pendientes
+      pool.query(`
+        SELECT e.nombre AS escuela,
+          COUNT(*) FILTER (WHERE n.estado = 'Cubierto') AS cubiertas,
+          COUNT(*) FILTER (WHERE n.estado = 'Cubierto parcialmente') AS parciales,
+          COUNT(*) FILTER (WHERE n.estado = 'Aun no cubierto') AS pendientes,
+          COUNT(*) AS total
+        FROM necesidades n
+        JOIN escuelas e ON n.escuela_id = e.id
+        GROUP BY e.nombre
+        ORDER BY pendientes DESC
+        LIMIT 8
+      `)
+    ]);
+
+    res.json({
+      necesidades:  necesidades.rows[0],
+      solicitudes:  solicitudes.rows[0],
+      donadores:    donadores.rows,
+      porEstado:    porEstado.rows,
+      porEscuela:   porEscuela.rows
+    });
+  } catch (err) {
+    console.error('Error en /api/admin/panel/metricas:', err);
+    res.status(500).json({ error: 'Error en servidor' });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   GET /api/admin/gestion-solicitudes
+   Todas las solicitudes con sus materiales agregados (para tabla).
+   ══════════════════════════════════════════════════════════ */
+app.get('/api/admin/gestion-solicitudes', async (req, res) => {
+  try {
+    const { busqueda, tipo, estatus, pagina = 1, limite = 15 } = req.query;
+    const offset = (parseInt(pagina) - 1) * parseInt(limite);
+
+    const conditions = [];
+    const values = [];
+
+    if (busqueda) {
+      values.push(`%${busqueda}%`);
+      conditions.push(`(sd.nombre_completo ILIKE $${values.length} OR sd.correo ILIKE $${values.length})`);
+    }
+    if (tipo) {
+      values.push(tipo);
+      conditions.push(`sd.tipo_donacion = $${values.length}`);
+    }
+    if (estatus) {
+      values.push(estatus);
+      conditions.push(`sd.estatus_gestion = $${values.length}`);
+    }
+
+    const where = conditions.length ? 'WHERE ' + conditions.join(' AND ') : '';
+
+    // Total para paginación
+    const totalRes = await pool.query(
+      `SELECT COUNT(*) FROM solicitudes_donacion sd ${where}`, values
+    );
+
+    // Datos paginados
+    const dataRes = await pool.query(
+      `SELECT
+         sd.id, sd.nombre_completo, sd.tipo_instancia, sd.nombre_instancia,
+         sd.correo, sd.telefono, sd.mensaje, sd.tipo_donacion,
+         sd.origen_formulario, sd.estado_lectura, sd.created_at,
+         COALESCE(sd.estatus_gestion, 'nueva') AS estatus_gestion,
+         COALESCE(sd.notas_admin, '') AS notas_admin,
+         -- Materiales agregados como JSON array
+         COALESCE(
+           json_agg(
+             json_build_object(
+               'escuela', sm.escuela,
+               'propuesta', sm.propuesta,
+               'cantidad', sm.cantidad,
+               'unidad', sm.unidad
+             )
+           ) FILTER (WHERE sm.id IS NOT NULL),
+           '[]'
+         ) AS materiales
+       FROM solicitudes_donacion sd
+       LEFT JOIN solicitud_materiales sm ON sm.solicitud_id = sd.id
+       ${where}
+       GROUP BY sd.id
+       ORDER BY sd.created_at DESC
+       LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
+      [...values, parseInt(limite), offset]
+    );
+
+    res.json({
+      data:   dataRes.rows,
+      total:  parseInt(totalRes.rows[0].count),
+      pagina: parseInt(pagina),
+      limite: parseInt(limite)
+    });
+  } catch (err) {
+    console.error('Error en gestion-solicitudes:', err);
+    res.status(500).json({ error: 'Error en servidor' });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   PATCH /api/admin/gestion-solicitudes/:id
+   Actualizar estatus_gestion y/o notas_admin de una solicitud.
+   ══════════════════════════════════════════════════════════ */
+app.patch('/api/admin/gestion-solicitudes/:id', async (req, res) => {
+  try {
+    const { estatus_gestion, notas_admin, nombre_completo, correo, telefono, mensaje } = req.body;
+    const { id } = req.params;
+
+    const sets = [];
+    const values = [];
+
+    if (estatus_gestion !== undefined) {
+      const validos = ['nueva', 'en_proceso', 'pendiente', 'finalizada', 'cancelada'];
+      if (!validos.includes(estatus_gestion))
+        return res.status(400).json({ error: 'Estatus inválido' });
+      values.push(estatus_gestion);
+      sets.push(`estatus_gestion = $${values.length}`);
+    }
+    if (notas_admin     !== undefined) { values.push(notas_admin);     sets.push(`notas_admin = $${values.length}`); }
+    if (nombre_completo !== undefined) { values.push(nombre_completo); sets.push(`nombre_completo = $${values.length}`); }
+    if (correo          !== undefined) { values.push(correo);          sets.push(`correo = $${values.length}`); }
+    if (telefono        !== undefined) { values.push(telefono);        sets.push(`telefono = $${values.length}`); }
+    if (mensaje         !== undefined) { values.push(mensaje);         sets.push(`mensaje = $${values.length}`); }
+
+    if (sets.length === 0)
+      return res.status(400).json({ error: 'Nada que actualizar' });
+
+    values.push(id);
+    await pool.query(
+      `UPDATE solicitudes_donacion SET ${sets.join(', ')} WHERE id = $${values.length}`,
+      values
+    );
+
+    res.json({ message: 'Solicitud actualizada' });
+  } catch (err) {
+    console.error('Error en PATCH gestion-solicitudes:', err);
+    res.status(500).json({ error: 'Error en servidor' });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   GET /api/admin/equipo
+   ══════════════════════════════════════════════════════════ */
+app.get('/api/admin/equipo', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, nombre, correo, rol, imagen FROM administradores ORDER BY id`
+    );
+    res.json({ data: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en servidor' });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   POST /api/admin/equipo
+   ══════════════════════════════════════════════════════════ */
+app.post('/api/admin/equipo', async (req, res) => {
+  try {
+    const { nombre, correo, password, rol } = req.body;
+    if (!nombre || !correo || !password)
+      return res.status(400).json({ error: 'Nombre, correo y contraseña son requeridos.' });
+
+    const existe = await pool.query('SELECT id FROM administradores WHERE correo = $1', [correo]);
+    if (existe.rows.length > 0)
+      return res.status(400).json({ error: 'Ya existe un administrador con ese correo.' });
+
+    const result = await pool.query(
+      `INSERT INTO administradores (nombre, correo, password_hash, rol)
+       VALUES ($1, $2, $3, $4) RETURNING id`,
+      [nombre, correo, password, rol || 'admin']
+    );
+    res.status(201).json({ message: 'Administrador creado.', id: result.rows[0].id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en servidor' });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   PATCH /api/admin/equipo/:id
+   ══════════════════════════════════════════════════════════ */
+app.patch('/api/admin/equipo/:id', async (req, res) => {
+  try {
+    const { nombre, correo, password, rol } = req.body;
+    const sets = []; const values = [];
+    if (nombre)   { values.push(nombre);   sets.push(`nombre = $${values.length}`); }
+    if (correo)   { values.push(correo);   sets.push(`correo = $${values.length}`); }
+    if (password) { values.push(password); sets.push(`password_hash = $${values.length}`); }
+    if (rol)      { values.push(rol);      sets.push(`rol = $${values.length}`); }
+    if (sets.length === 0) return res.status(400).json({ error: 'Nada que actualizar.' });
+    values.push(req.params.id);
+    await pool.query(`UPDATE administradores SET ${sets.join(', ')} WHERE id = $${values.length}`, values);
+    res.json({ message: 'Administrador actualizado.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en servidor' });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   DELETE /api/admin/equipo/:id
+   ══════════════════════════════════════════════════════════ */
+app.delete('/api/admin/equipo/:id', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'DELETE FROM administradores WHERE id = $1 RETURNING id', [req.params.id]
+    );
+    if (result.rows.length === 0)
+      return res.status(404).json({ error: 'Administrador no encontrado.' });
+    res.json({ message: 'Administrador eliminado.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en servidor' });
   }
 });
 

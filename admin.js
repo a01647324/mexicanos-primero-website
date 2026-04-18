@@ -74,3 +74,30 @@ links.forEach(function(link) {
 // 4. Cargar la sección por defecto al abrir la página
 
 cambiarSeccion('panel');
+
+// ── Cerrar sesión admin ───────────────────────────────────────
+function adminCerrarSesion(e) {
+  e.preventDefault();
+  localStorage.removeItem('token');
+  localStorage.removeItem('rol');
+  localStorage.removeItem('nombreDonador');
+  localStorage.removeItem('correoDonador');
+  window.location.href = 'login-admin.html';
+}
+
+// ── Configuración (placeholder) ───────────────────────────────
+function adminConfiguracion(e) {
+  e.preventDefault();
+  alert('Configuración estará disponible próximamente.');
+}
+
+// ── Poblar nombre del admin en el header ──────────────────────
+(function() {
+  var token = localStorage.getItem('token');
+  if (!token) return;
+  try {
+    var payload = JSON.parse(atob(token.split('.')[1]));
+    var nombreEl = document.querySelector('.admin-nombre');
+    if (nombreEl && payload.nombre) nombreEl.textContent = payload.nombre;
+  } catch(e) {}
+})();
