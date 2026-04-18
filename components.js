@@ -23,6 +23,13 @@ async function loadComponent(selector, filePath) {
     if (activeLink) {
       activeLink.classList.add("active");
     }
+  
+    const dropdownPages = ["donacion", "voluntariado", "talleres", "vinculaciones", "catalogo"];
+    const dropdown = document.querySelector(".nav-dropdown");
+  
+    if (dropdown && dropdownPages.includes(currentPage)) {
+      dropdown.classList.add("active");
+    }
   }
   
   function initNavbarScroll() {
@@ -161,6 +168,31 @@ async function loadComponent(selector, filePath) {
       dropdown.classList.remove('open')
     })
   }
+
+  function initNavDropdown() {
+    const dropdown = document.querySelector(".nav-dropdown");
+    const toggle = document.getElementById("nav-dropdown-toggle");
+    const menu = document.getElementById("nav-dropdown-menu");
+  
+    if (!dropdown || !toggle || !menu) return;
+  
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle("open");
+    });
+  
+    document.addEventListener("click", (e) => {
+      if (!dropdown.contains(e.target)) {
+        dropdown.classList.remove("open");
+      }
+    });
+  
+    menu.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        dropdown.classList.remove("open");
+      });
+    });
+  }
   
   document.addEventListener("DOMContentLoaded", async () => {
     await loadComponent("#header-placeholder", "components/header.html");
@@ -172,4 +204,5 @@ async function loadComponent(selector, filePath) {
     initLoginModal();
     actualizarHeaderSesion();
     initPerfilDropdown();
+    initNavDropdown();
   });

@@ -13,15 +13,31 @@
       <span></span>
     </button>
   
-    <div class="navbar-panel" id="navbar-panel">
-      <div class="navbar-menu">
-        <a href="index.html" data-page="inicio">Inicio</a>
+    <div class="navbar-menu">
+        <a href="index.html" data-page="inicio" class="nav-home">
+          <img src="images/home.png" alt="Inicio">
+        </a>
+      
         <a href="quienesSomos.html" data-page="quienes">¿Quiénes somos?</a>
-        <a href="donacionEconomica.html" data-page="donacion">Donación Económica</a>
-        <a href="voluntariado.html" data-page="voluntariado">Voluntariado</a>
-        <a href="talleres.html" data-page="talleres">Brindar Talleres</a>
-        <a href="vinculaciones.html" data-page="vinculaciones">Vinculaciones</a>
+      
+        <div class="nav-dropdown">
+          <button type="button" class="nav-dropdown-toggle" id="nav-dropdown-toggle">
+            Tipos de Donaciones
+            <span class="nav-dropdown-arrow">▾</span>
+          </button>
+      
+          <div class="nav-dropdown-menu" id="nav-dropdown-menu">
+            <a href="donacionEconomica.html" data-page="donacion">Donación Económica</a>
+            <a href="voluntariado.html" data-page="voluntariado">Voluntariado</a>
+            <a href="talleres.html" data-page="talleres">Brindar Talleres</a>
+            <a href="vinculaciones.html" data-page="vinculaciones">Vinculaciones</a>
+            <a href="catalogo.html" data-page="catalogo">Catálogo</a>
+          </div>
+        </div>
+      
+        <a href="faq.html" data-page="faq">Preguntas Frecuentes</a>
         <a href="contacto.html" data-page="contacto">Contacto</a>
+        
       </div>
   
       <div class="navbar-acciones">

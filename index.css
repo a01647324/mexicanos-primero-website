@@ -835,14 +835,7 @@
     max-height: 380px;
   }
 }
-@media (max-width: 768px) {
-  .footer-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
-  }
 
-}
 
 /* ── NAVBAR PERFIL DONADOR ── */
 .navbar-perfil {

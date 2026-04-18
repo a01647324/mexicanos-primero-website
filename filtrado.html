@@ -11,27 +11,54 @@
 <body>
   <!-- NAVBAR -->
   <nav class="navbar">
-        <div class="navbar-logo">
-            <a href="index.html">
-                <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
-            </a>
-        </div>
-        <div class="navbar-menu">
-            <a href="index.html">Inicio</a>
-            <a href="quienesSomos.html">¿Quiénes somos?</a>
+    <div class="navbar-logo">
+      <a href="index.html">
+        <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
+      </a>
+    </div>
+  
+    <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  
+    <div class="navbar-panel" id="navbar-panel">
+      <div class="navbar-menu">
+        <a href="index.html" class="nav-home">
+          <img src="images/home.png" alt="Inicio">
+        </a>
+  
+        <a href="quienesSomos.html">¿Quiénes somos?</a>
+  
+        <div class="nav-dropdown">
+          <button type="button" class="nav-dropdown-toggle" id="nav-dropdown-toggle">
+            Tipos de Donaciones
+            <span class="nav-dropdown-arrow">▾</span>
+          </button>
+  
+          <div class="nav-dropdown-menu" id="nav-dropdown-menu">
             <a href="donacionEconomica.html">Donación Económica</a>
             <a href="voluntariado.html">Voluntariado</a>
             <a href="talleres.html">Brindar Talleres</a>
             <a href="vinculaciones.html">Vinculaciones</a>
-            <a href="contacto.html">Contacto</a>
+            <a href="catalogo.html">Catálogo</a>
+          </div>
         </div>
-        <div class="navbar-acciones">
-            <a href="login-admin.html" class="btn-iniciar-sesion">Iniciar sesión</a>
-             <button class="btn-carrito" onclick="abrirCarrito()">
+  
+        <a href="faq.html">Preguntas Frecuentes</a>
+        <a href="contacto.html">Contacto</a>
+      </div>
+  
+      <div class="navbar-acciones">
+        <button type="button" class="btn-iniciar-sesion">Iniciar sesión</button>
+  
+        <button class="btn-carrito" onclick="abrirCarrito()">
           ♡ Mis donaciones <span id="carrito-count">0</span>
         </button>
-        </div>
-    </nav>
+      </div>
+    </div>
+  </nav>
 
 
 
