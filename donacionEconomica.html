@@ -23,33 +23,30 @@
     <main class="support-page">
         <section class="support-section support-section--cards">
             <div class="support-container">
-                <div class="support-donation-grid">
-                <article class="support-donation-card" onclick="irAContactoConMonto('100')">
-                    <img src="images/libro.jpg" alt="Libros para estudiantes">
-                    <h3>$100</h3>
-                    <p class="support-panel-text">Pueden comprar dos libros para que un niño pueda leer.</p>
-                </article>
+                <div class="support-donation-grid support-donation-grid--three">
+                <a href="contacto.html?tipo=Donación%20económica" class="support-donation-card-link" onclick="prepararContacto('Donación económica')">
+                    <article class="support-donation-card">
+                        <img src="images/libro.jpg" alt="Libros para estudiantes">
+                        <h3>$100</h3>
+                        <p class="support-panel-text">Pueden comprar dos libros para que un niño pueda leer.</p>
+                    </article>
+                </a>
 
-                <article class="support-donation-card" onclick="irAContactoConMonto('250')">
-                    <img src="images/materialPapeleria.jpg" alt="Material escolar">
-                    <h3>$250</h3>
-                    <p class="support-panel-text">Ayuda a una escuela a recibir material básico para sus actividades.</p>
-                </article>
+                <a href="contacto.html?tipo=Donación%20económica" class="support-donation-card-link" onclick="prepararContacto('Donación económica')">
+                    <article class="support-donation-card">
+                        <img src="images/materialPapeleria.jpg" alt="Material escolar">
+                        <h3>$250</h3>
+                        <p class="support-panel-text">Ayuda a una escuela a recibir material básico para sus actividades.</p>
+                    </article>
+                </a>
 
-                <article class="support-donation-card" onclick="irAContactoConMonto('500')">
-                    <img src="images/salon.jpg" alt="Aula escolar">
-                    <h3>$500</h3>
-                    <p class="support-panel-text">Contribuye a mejorar las condiciones de un aula y su mobiliario.</p>
-                </article>
-
-                <article class="support-donation-card support-donation-card--input">
-                    <img src="images/gracias.jpg" alt="Donación personalizada">
-                    <h3>Otra cantidad</h3>
-                    <p class="support-panel-text">Indica el monto que deseas donar:</p>
-                    <label class="sr-only" for="donacionPersonalizada">Monto de donación</label>
-                    <input type="number" id="donacionPersonalizada" placeholder="$..." min="1">
-                    <button class="support-btn support-btn--orange" type="button" onclick="aceptarDonacion()">Aceptar</button>
-                </article>
+                <a href="contacto.html?tipo=Donación%20económica" class="support-donation-card-link" onclick="prepararContacto('Donación económica')">
+                    <article class="support-donation-card">
+                        <img src="images/salon.jpg" alt="Aula escolar">
+                        <h3>$500</h3>
+                        <p class="support-panel-text">Contribuye a mejorar las condiciones de un aula y su mobiliario.</p>
+                    </article>
+                </a>
                 </div>
             </div>
         </section>
@@ -76,19 +73,25 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        function irAContactoConMonto(monto) {
-            prepararContacto('Donación económica');
-            sessionStorage.setItem('monto_donacion_economica', monto);
-            window.location.href = 'contacto.html?tipo=Donación%20económica&monto=' + encodeURIComponent(monto);
+        const navbar = document.querySelector('.navbar');
+        const lineas = document.getElementById('lineas');
+        const menuDesplegable = document.getElementById('menuDesplegable');
+
+        function prepararContacto(tipo) {
+            sessionStorage.setItem('origen_formulario', 'tipo_apoyo');
+            sessionStorage.setItem('tipo_donacion', tipo);
+            sessionStorage.removeItem('carrito_donacion');
         }
 
-        function aceptarDonacion() {
-            const monto = document.getElementById('donacionPersonalizada').value;
-            if (monto && Number(monto) > 0) {
-                irAContactoConMonto(monto);
-                return;
-            }
-            alert('Por favor ingresa una cantidad válida.');
+        window.addEventListener('scroll', function () {
+            if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        if (lineas && menuDesplegable) {
+            lineas.addEventListener('click', function () {
+                lineas.classList.toggle('abierto');
+                menuDesplegable.classList.toggle('abierto');
+            });
         }
     </script>
     <script src="components.js"></script>
