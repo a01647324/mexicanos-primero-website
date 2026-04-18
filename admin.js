@@ -85,19 +85,25 @@ function adminCerrarSesion(e) {
   window.location.href = 'login-admin.html';
 }
 
-// ── Configuración (placeholder) ───────────────────────────────
-function adminConfiguracion(e) {
-  e.preventDefault();
-  alert('Configuración estará disponible próximamente.');
-}
-
-// ── Poblar nombre del admin en el header ──────────────────────
+// ── Poblar nombre e inicial del admin en el header ───────────
 (function() {
   var token = localStorage.getItem('token');
   if (!token) return;
   try {
     var payload = JSON.parse(atob(token.split('.')[1]));
+
+    // Nombre en el header
     var nombreEl = document.querySelector('.admin-nombre');
     if (nombreEl && payload.nombre) nombreEl.textContent = payload.nombre;
+
+    // Avatar: inicial + color (misma lógica que equipo.html)
+    var avatarEl = document.getElementById('admin-avatar-inicial');
+    if (avatarEl && payload.nombre) {
+      var colores = ['#007526','#1C3661','#c47a0a','#6432a0','#EC671B','#dc2626','#0891b2'];
+      var inicial = payload.nombre.charAt(0).toUpperCase();
+      var color   = colores[payload.nombre.charCodeAt(0) % colores.length];
+      avatarEl.textContent       = inicial;
+      avatarEl.style.background  = color;
+    }
   } catch(e) {}
 })();

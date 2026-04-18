@@ -146,113 +146,146 @@
 </div>
 
 <style>
-.gs-wrap { font-family:'Montserrat',sans-serif; color:var(--texto); display:flex; flex-direction:column; gap:1.25rem; }
+/* ── GESTIÓN DE SOLICITUDES ── */
+.gs-wrap { font-family:'Montserrat',sans-serif; color:var(--texto); display:flex; flex-direction:column; gap:1.1rem; }
 .gs-top  { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:.5rem; }
 
-/* ── CHIPS ── */
-.gs-chips { display:flex; gap:.6rem; flex-wrap:wrap; }
+/* Chips */
+.gs-chips { display:flex; gap:.5rem; flex-wrap:wrap; }
 .gs-chip {
-  display:flex; align-items:center; gap:.5rem;
-  padding:.5rem 1rem; background:var(--blanco);
-  border-radius:50px; border:1.5px solid rgba(0,0,0,.06);
-  font-size:.78rem; font-weight:600; color:var(--texto-suave);
-  box-shadow:var(--sombra); cursor:pointer; transition:all .2s ease;
+  display:flex; align-items:center; gap:.45rem;
+  padding:.42rem .9rem;
+  background:var(--blanco);
+  border-radius:var(--radio-xl);
+  border:1px solid var(--gris-borde);
+  font-size:.76rem; font-weight:600; color:var(--texto-suave);
+  box-shadow:var(--sombra); cursor:pointer; transition:var(--t);
 }
 .gs-chip:hover, .gs-chip.activo { border-color:var(--verde); color:var(--verde-oscuro); background:var(--verde-suave); }
-.gs-chip-num { font-size:1rem; font-weight:900; color:var(--texto); }
-.gs-chip-skeleton { width:110px; height:40px; border-radius:50px; background:var(--gris-claro); animation:shimmer 1.4s infinite; }
-@keyframes shimmer { 0%,100%{opacity:1} 50%{opacity:.5} }
+.gs-chip-num { font-size:.95rem; font-weight:800; color:var(--texto); }
+.gs-chip-skeleton { width:100px; height:38px; border-radius:var(--radio-xl); background:var(--gris-claro); animation:shimmer 1.4s infinite; }
+@keyframes shimmer { 0%,100%{opacity:1} 50%{opacity:.45} }
 
-/* ── TOOLBAR ── */
-.gs-toolbar { display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
-.gs-search-wrap { position:relative; flex:1; min-width:220px; }
-.gs-search-icon { position:absolute; left:.9rem; top:50%; transform:translateY(-50%); color:var(--texto-suave); font-size:.9rem; pointer-events:none; }
-.gs-search { width:100%; padding:.65rem 1rem .65rem 2.4rem; border:1.5px solid var(--gris-claro); border-radius:50px; font-family:'Montserrat',sans-serif; font-size:.85rem; color:var(--texto); background:var(--blanco); outline:none; transition:all .2s ease; }
-.gs-search:focus { border-color:var(--verde); box-shadow:0 0 0 3px rgba(0,153,51,.1); }
-.gs-filter { width:auto; min-width:150px; border-radius:50px; font-size:.82rem; }
+/* Toolbar */
+.gs-toolbar { display:flex; gap:.65rem; flex-wrap:wrap; align-items:center; }
+.gs-search-wrap { position:relative; flex:1; min-width:210px; }
+.gs-search-icon { position:absolute; left:.85rem; top:50%; transform:translateY(-50%); color:var(--texto-label); font-size:.82rem; pointer-events:none; }
+.gs-search {
+  width:100%; padding:.62rem 1rem .62rem 2.3rem;
+  border:1px solid var(--gris-borde); border-radius:var(--radio-xl);
+  font-family:'Montserrat',sans-serif; font-size:.83rem; color:var(--texto);
+  background:var(--blanco); outline:none; transition:var(--t);
+}
+.gs-search:focus { border-color:var(--verde); box-shadow:0 0 0 3px rgba(0,153,51,.09); }
+.gs-filter { width:auto; min-width:145px; border-radius:var(--radio-xl); font-size:.8rem; }
 
-/* ── TABLA ── */
-.gs-tabla-wrap { background:var(--blanco); border-radius:var(--radio); box-shadow:var(--sombra); overflow:hidden; border:1px solid rgba(0,0,0,.04); }
+/* Tabla */
+.gs-tabla-wrap {
+  background:var(--blanco);
+  border-radius:var(--radio-lg);
+  box-shadow:var(--sombra);
+  overflow:hidden;
+  border:1px solid var(--gris-borde);
+}
 .gs-tabla { width:100%; border-collapse:collapse; font-family:'Montserrat',sans-serif; }
-.gs-tabla thead tr { background:var(--verde-oscuro); }
-.gs-tabla thead th { padding:.85rem 1rem; font-size:.72rem; font-weight:700; color:rgba(255,255,255,.85); text-transform:uppercase; letter-spacing:.5px; white-space:nowrap; }
-.gs-tabla thead th:first-child { border-radius:0; width:50px; text-align:center; }
-.gs-tabla tbody tr { border-bottom:1px solid var(--gris-claro); transition:background .15s ease; }
+.gs-tabla thead tr { background:var(--azul); }
+.gs-tabla thead th {
+  padding:.8rem 1rem;
+  font-size:.68rem; font-weight:700;
+  color:rgba(255,255,255,.8);
+  text-transform:uppercase; letter-spacing:.5px; white-space:nowrap;
+}
+.gs-tabla thead th:first-child { width:46px; text-align:center; }
+.gs-tabla tbody tr { border-bottom:1px solid var(--gris-claro); transition:background .14s ease; }
 .gs-tabla tbody tr:last-child { border-bottom:none; }
 .gs-tabla tbody tr:hover { background:var(--crema); }
-.gs-tabla tbody td { padding:.85rem 1rem; font-size:.82rem; color:var(--texto); vertical-align:middle; }
-.gs-tabla tbody td:first-child { text-align:center; font-weight:700; color:var(--texto-suave); font-size:.75rem; }
-.gs-loading { text-align:center; padding:3rem; color:var(--texto-suave); font-size:.9rem; }
-.gs-vacio { text-align:center; padding:3rem; color:var(--texto-suave); font-size:.85rem; }
+.gs-tabla tbody td { padding:.8rem 1rem; font-size:.8rem; color:var(--texto); vertical-align:middle; }
+.gs-tabla tbody td:first-child { text-align:center; font-weight:700; color:var(--texto-suave); font-size:.72rem; }
+.gs-loading { text-align:center; padding:2.5rem; color:var(--texto-suave); font-size:.88rem; }
+.gs-vacio   { text-align:center; padding:2.5rem; color:var(--texto-suave); font-size:.82rem; }
 
 /* Celda solicitante */
-.gs-solicitante-nombre { font-weight:700; font-size:.85rem; color:var(--texto); margin:0 0 .15rem; }
-.gs-solicitante-correo { font-size:.73rem; color:var(--texto-suave); margin:0; }
+.gs-solicitante-nombre { font-weight:700; font-size:.82rem; color:var(--texto); margin:0 0 .12rem; }
+.gs-solicitante-correo { font-size:.71rem; color:var(--texto-suave); margin:0; }
 
 /* Badge tipo */
-.gs-tipo-badge { display:inline-flex; align-items:center; padding:.2rem .65rem; border-radius:50px; font-size:.7rem; font-weight:700; white-space:nowrap; }
-.tipo-material     { background:rgba(28,54,97,.1);    color:#1C3661; }
-.tipo-economica    { background:rgba(244,152,28,.12); color:#c47a0a; }
-.tipo-voluntariado { background:rgba(0,153,51,.1);    color:#007526; }
-.tipo-talleres     { background:rgba(236,103,27,.1);  color:#EC671B; }
-.tipo-vinculacion  { background:rgba(100,50,150,.1);  color:#6432a0; }
-.tipo-otro         { background:rgba(0,0,0,.06);      color:#4A644A; }
+.gs-tipo-badge { display:inline-flex; align-items:center; padding:.18rem .62rem; border-radius:var(--radio-xl); font-size:.68rem; font-weight:700; white-space:nowrap; }
+.tipo-material     { background:var(--azul-suave);    color:var(--azul); }
+.tipo-economica    { background:rgba(244,152,28,.1);   color:#a86c0a; }
+.tipo-voluntariado { background:var(--verde-suave);    color:var(--verde-oscuro); }
+.tipo-talleres     { background:var(--naranja-suave);  color:#b84f10; }
+.tipo-vinculacion  { background:rgba(100,50,150,.08);  color:#5a2a90; }
+.tipo-otro         { background:var(--gris-claro);     color:var(--texto-suave); }
 
 /* Badge estatus */
-.gs-estatus-badge { display:inline-flex; align-items:center; gap:.35rem; padding:.3rem .8rem; border-radius:50px; font-size:.72rem; font-weight:700; white-space:nowrap; }
-.est-nueva      { background:rgba(236,103,27,.12); color:#c15a0a; }
-.est-en_proceso { background:rgba(28,54,97,.1);    color:#1C3661; }
-.est-pendiente  { background:rgba(244,152,28,.12); color:#c47a0a; }
-.est-finalizada { background:rgba(0,153,51,.1);    color:#007526; }
-.est-cancelada  { background:rgba(220,38,38,.1);   color:#dc2626; }
+.gs-estatus-badge { display:inline-flex; align-items:center; gap:.3rem; padding:.22rem .72rem; border-radius:var(--radio-xl); font-size:.69rem; font-weight:700; white-space:nowrap; }
+.est-nueva      { background:var(--naranja-suave);  color:#b84f10; }
+.est-en_proceso { background:var(--azul-suave);     color:var(--azul); }
+.est-pendiente  { background:rgba(244,152,28,.1);   color:#a86c0a; }
+.est-finalizada { background:var(--verde-suave);    color:var(--verde-oscuro); }
+.est-cancelada  { background:var(--rojo-suave);     color:var(--rojo); }
 
-/* Fecha */
-.gs-fecha { font-size:.75rem; color:var(--texto-suave); white-space:nowrap; }
+.gs-fecha { font-size:.73rem; color:var(--texto-suave); white-space:nowrap; }
 
-/* Botón editar */
-.gs-btn-editar { display:inline-flex; align-items:center; gap:.3rem; padding:.35rem .8rem; background:rgba(28,54,97,.08); color:#1C3661; border:none; border-radius:50px; font-family:'Montserrat',sans-serif; font-size:.73rem; font-weight:600; cursor:pointer; transition:all .2s ease; }
-.gs-btn-editar:hover { background:#1C3661; color:white; }
-
-/* ── PAGINACIÓN ── */
-.gs-paginacion { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.75rem; }
-.gs-paginacion-info { font-size:.78rem; color:var(--texto-suave); font-weight:500; }
-.gs-paginacion-btns { display:flex; gap:.4rem; }
-.gs-pag-btn { width:34px; height:34px; border:1.5px solid var(--gris-claro); background:var(--blanco); border-radius:8px; font-family:'Montserrat',sans-serif; font-size:.8rem; font-weight:600; color:var(--texto-suave); cursor:pointer; transition:all .2s ease; display:flex; align-items:center; justify-content:center; }
-.gs-pag-btn:hover { border-color:var(--verde); color:var(--verde-oscuro); }
-.gs-pag-btn.activo { background:var(--verde-oscuro); color:white; border-color:var(--verde-oscuro); }
-.gs-pag-btn:disabled { opacity:.4; cursor:not-allowed; }
-
-/* ── MODAL ESTATUS ── */
-.gs-estatus-opciones { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.35rem; }
-.gs-estatus-btn {
-  display:inline-flex; align-items:center; gap:.4rem;
-  padding:.45rem 1rem; border:1.5px solid var(--gris-claro);
-  border-radius:50px; background:var(--blanco);
-  font-family:'Montserrat',sans-serif; font-size:.78rem; font-weight:600;
-  color:var(--texto-suave); cursor:pointer; transition:all .2s ease;
+.gs-btn-editar {
+  display:inline-flex; align-items:center; gap:.28rem;
+  padding:.33rem .75rem;
+  background:var(--azul-suave); color:var(--azul);
+  border:none; border-radius:var(--radio-xl);
+  font-family:'Montserrat',sans-serif; font-size:.71rem; font-weight:600;
+  cursor:pointer; transition:var(--t);
 }
-.gs-estatus-btn:hover { border-color:var(--verde); color:var(--verde-oscuro); }
-.gs-estatus-btn.seleccionado { background:var(--verde-oscuro); color:white; border-color:var(--verde-oscuro); }
-.gs-estatus-btn[data-val="cancelada"].seleccionado  { background:#dc2626; border-color:#dc2626; }
-.gs-estatus-btn[data-val="finalizada"].seleccionado { background:#009933; border-color:#009933; }
-.gs-estatus-btn[data-val="en_proceso"].seleccionado { background:#1C3661; border-color:#1C3661; }
-.gs-estatus-btn[data-val="pendiente"].seleccionado  { background:#c47a0a; border-color:#c47a0a; }
+.gs-btn-editar:hover { background:var(--azul); color:white; }
 
-/* Material item en modal */
-.gs-mat-item { padding:.6rem .85rem; background:var(--gris-claro); border-radius:10px; font-size:.8rem; margin-bottom:.4rem; }
-.gs-mat-item strong { display:block; color:var(--texto); margin-bottom:.1rem; font-size:.82rem; }
-.gs-mat-item span { color:var(--texto-suave); }
+/* Paginación */
+.gs-paginacion { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.65rem; }
+.gs-paginacion-info { font-size:.76rem; color:var(--texto-suave); font-weight:500; }
+.gs-paginacion-btns { display:flex; gap:.35rem; }
+.gs-pag-btn {
+  width:32px; height:32px;
+  border:1px solid var(--gris-borde); background:var(--blanco);
+  border-radius:8px;
+  font-family:'Montserrat',sans-serif; font-size:.78rem; font-weight:600;
+  color:var(--texto-suave); cursor:pointer; transition:var(--t);
+  display:flex; align-items:center; justify-content:center;
+}
+.gs-pag-btn:hover { border-color:var(--verde); color:var(--verde-oscuro); background:var(--verde-suave); }
+.gs-pag-btn.activo { background:var(--azul); color:white; border-color:var(--azul); }
+.gs-pag-btn:disabled { opacity:.35; cursor:not-allowed; }
+
+/* Modal estatus */
+.gs-estatus-opciones { display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.3rem; }
+.gs-estatus-btn {
+  display:inline-flex; align-items:center; gap:.38rem;
+  padding:.42rem .9rem;
+  border:1px solid var(--gris-borde); border-radius:var(--radio-xl);
+  background:var(--blanco);
+  font-family:'Montserrat',sans-serif; font-size:.76rem; font-weight:600;
+  color:var(--texto-suave); cursor:pointer; transition:var(--t);
+}
+.gs-estatus-btn:hover { border-color:var(--verde); color:var(--verde-oscuro); background:var(--verde-suave); }
+.gs-estatus-btn.seleccionado { background:var(--azul); color:white; border-color:var(--azul); }
+.gs-estatus-btn[data-val="cancelada"].seleccionado  { background:var(--rojo);  border-color:var(--rojo); }
+.gs-estatus-btn[data-val="finalizada"].seleccionado { background:var(--verde); border-color:var(--verde); }
+.gs-estatus-btn[data-val="en_proceso"].seleccionado { background:var(--azul);  border-color:var(--azul); }
+.gs-estatus-btn[data-val="pendiente"].seleccionado  { background:#a86c0a;      border-color:#a86c0a; }
+
+.gs-mat-item {
+  padding:.55rem .8rem; background:var(--crema);
+  border-radius:9px; border:1px solid var(--gris-claro);
+  font-size:.78rem; margin-bottom:.35rem;
+}
+.gs-mat-item strong { display:block; color:var(--texto); margin-bottom:.08rem; font-size:.8rem; }
+.gs-mat-item span   { color:var(--texto-suave); }
 
 .spin { display:inline-block; animation:girar 1s linear infinite; }
 @keyframes girar { to { transform:rotate(360deg); } }
 
 @media(max-width:900px) {
-  .gs-tabla thead th:nth-child(4),
-  .gs-tabla tbody td:nth-child(4) { display:none; }
+  .gs-tabla thead th:nth-child(4), .gs-tabla tbody td:nth-child(4) { display:none; }
 }
 @media(max-width:700px) {
-  .gs-tabla thead th:nth-child(5),
-  .gs-tabla tbody td:nth-child(5) { display:none; }
+  .gs-tabla thead th:nth-child(5), .gs-tabla tbody td:nth-child(5) { display:none; }
 }
 </style>
 

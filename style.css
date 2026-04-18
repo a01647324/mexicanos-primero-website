@@ -410,7 +410,7 @@ img {
   box-shadow: 0 10px 24px rgba(243, 112, 33, 0.28);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   white-space: nowrap;
-  z-index: 1250;
+  z-index: 1200;
 }
 
 .btn-ayudar-fixed:hover {
@@ -957,6 +957,7 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
 .navbar-perfil {
   align-items: center;
   position: relative;
+  z-index: 1300;
 }
 
 .navbar-perfil-btn {
@@ -1007,7 +1008,7 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
   box-shadow: 0 12px 32px rgba(0,0,0,0.12);
   padding: 1rem;
   min-width: 200px;
-  z-index: 2000;
+  z-index: 1400;
 }
 .navbar-perfil-dropdown.open { display: block; }
 

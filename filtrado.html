@@ -7,61 +7,16 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="catalogo.css">
   <link rel="stylesheet" href="filtrado.css">
+  <style>
+    .btn-ayudar-fixed { display: none; }
+  </style>
 </head>
 <body>
   <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="navbar-logo">
-      <a href="index.html">
-        <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
-      </a>
-    </div>
-  
-    <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  
-    <div class="navbar-panel" id="navbar-panel">
-      <div class="navbar-menu">
-        <a href="index.html" class="nav-home">
-          <img src="images/home.png" alt="Inicio">
-        </a>
-  
-        <a href="quienesSomos.html">¿Quiénes somos?</a>
-  
-        <div class="nav-dropdown">
-          <button type="button" class="nav-dropdown-toggle" id="nav-dropdown-toggle">
-            Tipos de Donaciones
-            <span class="nav-dropdown-arrow">▾</span>
-          </button>
-  
-          <div class="nav-dropdown-menu" id="nav-dropdown-menu">
-            <a href="donacionEconomica.html">Donación Económica</a>
-            <a href="voluntariado.html">Voluntariado</a>
-            <a href="talleres.html">Brindar Talleres</a>
-            <a href="vinculaciones.html">Vinculaciones</a>
-            <a href="catalogo.html">Catálogo</a>
-          </div>
-        </div>
-  
-        <a href="faq.html">Preguntas Frecuentes</a>
-        <a href="contacto.html">Contacto</a>
-      </div>
-  
-      <div class="navbar-acciones">
-        <button type="button" class="btn-iniciar-sesion">Iniciar sesión</button>
-  
-        <button class="btn-carrito" onclick="abrirCarrito()">
-          ♡ Mis donaciones <span id="carrito-count">0</span>
-        </button>
-      </div>
-    </div>
-  </nav>
-
-
-
+  <div id="header-placeholder"></div>
+  <button class="btn-carrito" onclick="abrirCarrito()">
+    ♡ Mis donaciones <span id="carrito-count">0</span>
+  </button>
 
   <!-- HERO -->
   <div id="header-texto" style="background-image: url('images/HEADER.jpeg'); background-size: 120%; background-position: center">
@@ -553,6 +508,20 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('modal-donar').addEventListener('click', function(e) {
     if (e.target === this) cerrarModalDonar();
   });
+  </script>
+  <script src="components.js"></script>
+  <script>
+    new MutationObserver(function(_, obs) {
+      const navbar = document.querySelector('.navbar');
+      if (!navbar) return;
+
+      const btn = document.querySelector('.btn-carrito');
+      if (btn) navbar.appendChild(btn);
+
+      obs.disconnect();
+    }).observe(document.getElementById('header-placeholder'), {
+      childList: true, subtree: true
+    });
   </script>
 </body>
 </html>

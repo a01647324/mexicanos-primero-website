@@ -129,6 +129,7 @@ async function loadComponent(selector, filePath) {
     if (!btnLogin || !perfil) return
 
     if (token && rol === 'donador') {
+      // ── Donador logueado ──────────────────────────────────────
       btnLogin.style.display = 'none'
       perfil.style.display   = 'flex'
 
@@ -140,7 +141,49 @@ async function loadComponent(selector, filePath) {
       if (correo) {
         document.getElementById('perfil-dropdown-correo').textContent = correo
       }
+
+    } else if (token && rol === 'admin') {
+      // ── Admin logueado: mostrar avatar y acceso al panel ──────
+      btnLogin.style.display = 'none'
+      perfil.style.display   = 'flex'
+
+      let nombreAdmin = ''
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]))
+        nombreAdmin = payload.nombre || 'Admin'
+      } catch(e) {}
+
+      document.getElementById('navbar-perfil-nombre').textContent = nombreAdmin.split(' ')[0] || 'Admin'
+      document.getElementById('navbar-avatar').textContent         = nombreAdmin.charAt(0).toUpperCase()
+
+      const dropdownNombre = document.getElementById('perfil-dropdown-nombre')
+      const dropdownCorreo = document.getElementById('perfil-dropdown-correo')
+      if (dropdownNombre) dropdownNombre.textContent = nombreAdmin
+      if (dropdownCorreo) dropdownCorreo.textContent = 'Administrador'
+
+      // Reemplazar botones del dropdown para el rol admin
+      const dropdownItem = document.querySelector('.perfil-dropdown-item')
+      if (dropdownItem) {
+        const irPanel = document.createElement('button')
+        irPanel.className   = 'perfil-dropdown-item'
+        irPanel.textContent = 'Ir al panel'
+        irPanel.onclick     = () => { window.location.href = 'admin.html' }
+
+        const cerrarAdmin = document.createElement('button')
+        cerrarAdmin.className   = 'perfil-dropdown-item'
+        cerrarAdmin.textContent = 'Cerrar sesión'
+        cerrarAdmin.onclick     = () => {
+          localStorage.removeItem('token')
+          localStorage.removeItem('rol')
+          window.location.reload()
+        }
+
+        dropdownItem.replaceWith(irPanel)
+        irPanel.parentNode.insertBefore(cerrarAdmin, irPanel.nextSibling)
+      }
+
     } else {
+      // ── Sin sesión ────────────────────────────────────────────
       btnLogin.style.display = ''
       perfil.style.display   = 'none'
     }

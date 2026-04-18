@@ -64,51 +64,133 @@
 </div>
 
 <style>
-.bandeja-tabs{display:flex;align-items:center;gap:.4rem;margin-bottom:1.25rem;border-bottom:2px solid rgba(0,0,0,.07);padding-bottom:.75rem;flex-wrap:wrap}
-.bandeja-tab{display:flex;align-items:center;gap:.45rem;padding:.5rem 1.1rem;border:none;border-radius:50px;background:var(--gris-claro);color:var(--texto-suave);font-family:'Montserrat',sans-serif;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .2s ease}
-.bandeja-tab:hover{background:rgba(0,153,51,.08);color:var(--verde-oscuro)}
-.bandeja-tab.activo{background:var(--verde-oscuro);color:white}
-.bandeja-tab-badge{background:var(--naranja);color:white;font-size:.68rem;font-weight:700;min-width:18px;height:18px;padding:0 5px;border-radius:50px;display:inline-flex;align-items:center;justify-content:center}
-.bandeja-tab-badge.leidas{background:var(--verde)}
-.bandeja-tab-badge.archivadas{background:#9ca3af}
-#sol-lista{display:flex;flex-direction:column;gap:.55rem}
-.sol-card{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--blanco);border-radius:14px;border:1.5px solid rgba(0,153,51,.07);border-left:4px solid var(--naranja);font-family:'Montserrat',sans-serif;transition:opacity .2s,transform .2s}
-.sol-card:hover{transform:translateY(-2px);box-shadow:var(--sombra-hover)}
-.sol-card[data-estado="leida"]{border-left-color:var(--verde)}
-.sol-card[data-estado="archivada"]{border-left-color:#9ca3af;opacity:.75}
-.sol-dot{width:10px;height:10px;border-radius:50%;background:var(--naranja);flex-shrink:0}
+/* ── BANDEJA DE SOLICITUDES ── */
+.bandeja-tabs {
+  display: flex; align-items: center; gap: 0.35rem;
+  margin-bottom: 1.1rem;
+  border-bottom: 1px solid var(--gris-borde);
+  padding-bottom: 0.7rem;
+  flex-wrap: wrap;
+}
+.bandeja-tab {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-xl);
+  background: var(--blanco);
+  color: var(--texto-suave);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600; font-size: 0.79rem;
+  cursor: pointer; transition: var(--t);
+}
+.bandeja-tab:hover { background: var(--verde-suave); color: var(--verde-oscuro); border-color: rgba(0,117,38,0.2); }
+.bandeja-tab.activo { background: var(--azul); color: white; border-color: var(--azul); }
+.bandeja-tab-badge {
+  background: var(--naranja); color: white;
+  font-size: 0.65rem; font-weight: 700;
+  min-width: 17px; height: 17px; padding: 0 4px;
+  border-radius: var(--radio-xl);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.bandeja-tab-badge.leidas    { background: var(--verde); }
+.bandeja-tab-badge.archivadas{ background: var(--gris-medio); }
+
+/* Lista */
+#sol-lista { display: flex; flex-direction: column; gap: 0.45rem; }
+
+/* Card */
+.sol-card {
+  display: flex; align-items: center; gap: 0.9rem;
+  padding: 0.9rem 1.1rem;
+  background: var(--blanco);
+  border-radius: var(--radio-lg);
+  border: 1px solid var(--gris-borde);
+  border-left: 3px solid var(--naranja);
+  font-family: 'Montserrat', sans-serif;
+  transition: var(--t);
+  cursor: pointer;
+}
+.sol-card:hover { transform: translateY(-1px); box-shadow: var(--sombra-m); }
+.sol-card[data-estado="leida"]    { border-left-color: var(--verde); }
+.sol-card[data-estado="archivada"]{ border-left-color: var(--gris-medio); opacity: 0.8; }
+.sol-card[data-estado="eliminada"]{ border-left-color: var(--rojo); opacity: 0.7; }
+
+.sol-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--naranja); flex-shrink: 0;
+}
 .sol-card[data-estado="leida"] .sol-dot,
-.sol-card[data-estado="archivada"] .sol-dot{background:transparent}
-.sol-info{flex:1;min-width:0}
-.sol-nombre{font-weight:700;font-size:.9rem;color:var(--texto);margin:0 0 .3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sol-meta{display:flex;gap:1rem;flex-wrap:wrap;font-size:.76rem;color:var(--texto-suave);margin:0}
-.sol-meta-item{display:flex;align-items:center;gap:.3rem}
-.sol-tipo{display:inline-flex;align-items:center;padding:.25rem .75rem;border-radius:50px;font-size:.72rem;font-weight:700;flex-shrink:0;white-space:nowrap}
-.tipo-material{background:rgba(28,54,97,.1);color:#1C3661}
-.tipo-economica{background:rgba(244,152,28,.12);color:#c47a0a}
-.tipo-voluntariado{background:rgba(0,153,51,.1);color:#007526}
-.tipo-talleres{background:rgba(236,103,27,.1);color:#EC671B}
-.tipo-vinculacion{background:rgba(100,50,150,.1);color:#6432a0}
-.tipo-otro{background:rgba(0,0,0,.06);color:#4A644A}
-.sol-acciones{display:flex;gap:.4rem;flex-shrink:0}
-.sol-btn{display:inline-flex;align-items:center;gap:.35rem;padding:.4rem .85rem;border:none;border-radius:50px;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s ease}
-.sol-btn-detalle{background:rgba(28,54,97,.08);color:#1C3661}
-.sol-btn-detalle:hover{background:#1C3661;color:white}
-.sol-btn-leida{background:rgba(0,153,51,.08);color:var(--verde-oscuro)}
-.sol-btn-leida:hover{background:var(--verde);color:white}
-.sol-btn-archivar{background:var(--gris-claro);color:var(--texto-suave)}
-.sol-btn-archivar:hover{background:#d1d5db;color:var(--texto)}
-.sol-btn-x{background:transparent;color:#9ca3af;border:none;border-radius:50%;width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;font-size:.85rem}
-.sol-btn-x:hover{background:rgba(220,38,38,.1);color:#dc2626}
-.sol-vacio{padding:3rem 1rem;text-align:center;color:var(--texto-suave);font-size:.88rem;font-family:'Montserrat',sans-serif}
-.sol-vacio i{display:block;font-size:2.5rem;margin-bottom:.75rem;opacity:.3}
-.sol-loading{padding:3rem;text-align:center;color:var(--texto-suave);font-family:'Montserrat',sans-serif}
-.spin{display:inline-block;animation:girar 1s linear infinite}
-@keyframes girar{to{transform:rotate(360deg)}}
-.modal-material-item{padding:.65rem .85rem;background:var(--gris-claro);border-radius:10px;font-size:.82rem}
-.modal-material-item strong{display:block;color:var(--texto);margin-bottom:.15rem}
-.modal-material-item span{color:var(--texto-suave)}
-.solicitud-tipo-badge{display:inline-flex;align-items:center;padding:.25rem .75rem;border-radius:50px;font-size:.72rem;font-weight:700}
+.sol-card[data-estado="archivada"] .sol-dot { background: transparent; }
+
+.sol-info { flex: 1; min-width: 0; }
+.sol-nombre {
+  font-weight: 700; font-size: 0.87rem; color: var(--texto);
+  margin: 0 0 0.28rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sol-meta {
+  display: flex; gap: 0.85rem; flex-wrap: wrap;
+  font-size: 0.73rem; color: var(--texto-suave); margin: 0;
+}
+.sol-meta-item { display: flex; align-items: center; gap: 0.28rem; }
+
+/* Tipo badge */
+.sol-tipo {
+  display: inline-flex; align-items: center;
+  padding: 0.22rem 0.7rem; border-radius: var(--radio-xl);
+  font-size: 0.69rem; font-weight: 700; flex-shrink: 0; white-space: nowrap;
+}
+.tipo-material     { background: var(--azul-suave);    color: var(--azul); }
+.tipo-economica    { background: rgba(244,152,28,0.1);  color: #a86c0a; }
+.tipo-voluntariado { background: var(--verde-suave);    color: var(--verde-oscuro); }
+.tipo-talleres     { background: var(--naranja-suave);  color: #b84f10; }
+.tipo-vinculacion  { background: rgba(100,50,150,0.08); color: #5a2a90; }
+.tipo-otro         { background: var(--gris-claro);     color: var(--texto-suave); }
+
+/* Acciones */
+.sol-acciones { display: flex; gap: 0.35rem; flex-shrink: 0; }
+.sol-btn {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.38rem 0.8rem; border: none; border-radius: var(--radio-xl);
+  font-family: 'Montserrat', sans-serif; font-size: 0.72rem; font-weight: 600;
+  cursor: pointer; transition: var(--t);
+}
+.sol-btn-detalle  { background: var(--azul-suave);   color: var(--azul); }
+.sol-btn-detalle:hover  { background: var(--azul);   color: white; }
+.sol-btn-leida    { background: var(--verde-suave);  color: var(--verde-oscuro); }
+.sol-btn-leida:hover    { background: var(--verde);  color: white; }
+.sol-btn-archivar { background: var(--gris-claro);   color: var(--texto-suave); }
+.sol-btn-archivar:hover { background: #d5d9dd;        color: var(--texto); }
+.sol-btn-x {
+  background: transparent; color: var(--gris-medio);
+  border: none; border-radius: 50%;
+  width: 28px; height: 28px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: var(--t); font-size: 0.8rem;
+}
+.sol-btn-x:hover { background: var(--rojo-suave); color: var(--rojo); }
+
+.sol-vacio {
+  padding: 2.5rem 1rem; text-align: center;
+  color: var(--texto-suave); font-size: 0.85rem; font-family: 'Montserrat', sans-serif;
+}
+.sol-vacio i { display: block; font-size: 2rem; margin-bottom: 0.65rem; opacity: 0.25; }
+.sol-loading { padding: 2.5rem; text-align: center; color: var(--texto-suave); font-family: 'Montserrat', sans-serif; }
+
+.spin { display: inline-block; animation: girar 1s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+
+.modal-material-item {
+  padding: 0.6rem 0.8rem; background: var(--crema);
+  border-radius: 9px; border: 1px solid var(--gris-claro); font-size: 0.8rem;
+}
+.modal-material-item strong { display: block; color: var(--texto); margin-bottom: 0.1rem; font-size: 0.82rem; }
+.modal-material-item span   { color: var(--texto-suave); }
+
+.solicitud-tipo-badge {
+  display: inline-flex; align-items: center;
+  padding: 0.22rem 0.7rem; border-radius: var(--radio-xl);
+  font-size: 0.69rem; font-weight: 700;
+}
 </style>
 
 <script>

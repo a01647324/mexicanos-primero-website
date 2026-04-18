@@ -5,26 +5,37 @@
   --verde-claro:  #00bb3f;
   --verde-suave:  #d4f5df;
   --azul:         #1C3661;
+  --azul-suave:   rgba(28, 54, 97, 0.10);
   --naranja:      #EC671B;
+  --naranja-suave:#fde8da;
   --amarillo:     #F4981C;
+  --rojo:         #dc2626;
+  --rojo-suave:   rgba(220, 38, 38, 0.10);
 
   /* Fondos */
   --fondo:        #F0F7F1;
   --blanco:       #FAFDF8;
   --crema:        #F7FAF7;
   --gris-claro:   #F2F7F2;
+  --gris-medio:   #9ca3af;
+  --gris-borde:   rgba(0, 0, 0, 0.08);
 
   /* Texto */
   --texto:        #1A2E1A;
   --texto-suave:  #4A644A;
 
   /* Sombras */
---sombra:       0 2px 12px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.06);
---sombra-hover: 0 8px 28px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.05);
+  --sombra:       0 2px 12px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.06);
+  --sombra-hover: 0 8px 28px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.05);
+  --sombra-m:     0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
 
   /* Radios */
   --radio:    16px;
+  --radio-lg: 14px;
   --radio-xl: 44px;
+
+  /* Transición global */
+  --t: all 0.2s ease;
 }
 
 body {

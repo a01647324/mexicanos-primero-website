@@ -18,6 +18,26 @@
 
   <!-- Tu CSS del admin -->
   <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Avatar de inicial en el header (reemplaza la imagen) */
+    .admin-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #007526;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      font-size: .9rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      user-select: none;
+      transition: background .2s;
+    }
+  </style>
 </head>
 <body>
 
@@ -48,14 +68,11 @@
         <!-- Perfil con dropdown -->
         <div class="dropdown admin-perfil">
           <button type="button" class="admin-perfil-btn" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="images/admin-avatar.png" alt="Perfil" class="admin-avatar">
+            <div class="admin-avatar" id="admin-avatar-inicial">A</div>
             <span class="admin-nombre">Nombre Admin</span>
             <i class="bi bi-chevron-down admin-chevron"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end admin-dropdown">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
-            <li><a class="dropdown-item" href="#" onclick="adminConfiguracion(event)"><i class="bi bi-gear me-2"></i>Configuración</a></li>
-            <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item admin-logout" href="#" onclick="adminCerrarSesion(event)"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
           </ul>
         </div>
