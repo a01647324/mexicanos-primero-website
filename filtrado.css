@@ -3,161 +3,15 @@
    Estilos exclusivos de la página de búsqueda y filtrado.
    Carga junto con style.css (base) + catalogo.css (header/hero).
    ============================================================ */
-body {
-  padding-top: 96px;
-}
- 
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1100;
-  height: 96px;
-  background: #ffffff;
-  border-bottom: 4px solid #1f3f77;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
- 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2.5rem 0 12rem;
-}
- 
-.navbar-logo {
-  position: absolute;
-  left: 1.8rem;
-  top: 10px;
-  z-index: 1102;
-}
- 
-.logo-img {
-  width: 130px;
-  height: 130px;
-  object-fit: contain;
-  display: block;
-  transition: width 0.25s ease, height 0.25s ease, transform 0.25s ease;
-}
- 
-/* ── Menú central ── */
-.navbar-menu {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  height: 100%;
-  flex-wrap: nowrap;
-  overflow: hidden;         /* evita desbordamiento */
-  min-width: 0;             /* permite que flex achique */
-}
- 
-.navbar-menu a,
-#header-categorias a {
-  text-decoration: none;
-  color: #178d45;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  font-size: 0.9rem;        /* un poco más pequeño para que quepan más */
-  transition: color 0.2s ease;
-  position: relative;
-  white-space: nowrap;
-}
- 
-.navbar-menu a:hover,
-.navbar-menu a.active,
-#header-categorias a:hover {
-  color: #f37021;
-}
- 
-.navbar-menu a.active::after,
-.navbar-menu a:hover::after,
-#header-categorias a:hover::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -14px;
-  width: 100%;
-  height: 4px;
-  background: #f37021;
-  border-radius: 4px;
-}
- 
-/* nav dentro del menú hereda el display flex */
-#header-categorias {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  flex-wrap: nowrap;
-  overflow: hidden;
-  min-width: 0;
-}
- 
-/* ── Acciones (botones derecha) ── */
+
 .navbar-acciones {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  margin-left: 1.5rem;
-  height: 100%;
   position: relative;
-  flex-shrink: 0;           /* nunca se achica */
 }
- 
-/* ── Botón "Quiero ayudar" colgante ── */
-.btn-ayudar-flotante {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 4px);   /* cuelga debajo de la navbar */
- 
-  background: linear-gradient(180deg, #f7a63a, #e68b21);
-  color: #ffffff;
-  text-decoration: none;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  font-size: 1rem;
-  padding: 0.95rem 2.4rem;
-  border-radius: 0 0 20px 20px;
-  box-shadow: 0 10px 24px rgba(243, 112, 33, 0.28);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  white-space: nowrap;
-  z-index: 1200;
-}
- 
-.btn-ayudar-flotante:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(243, 112, 33, 0.35);
-}
- 
-/* ── Botón "Iniciar sesión" ── */
+
 .btn-iniciar-sesion {
-  background: transparent;
-  color: #1B6B35;
-  text-decoration: none;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  padding: 0.8rem 1.4rem;
-  border-radius: 999px;
-  border: 2px solid rgba(0, 117, 38, 0.25);
-  transition: all 0.2s ease;
-  white-space: nowrap;
+  margin-right: 0.25rem;
 }
- 
-.btn-iniciar-sesion:hover {
-  background: #1B6B35;
-  color: white;
-  border-color: #1B6B35;
-  transform: translateY(-2px);
-}
- 
-/* ── Scroll: navbar más pequeña ── */
-.navbar.scrolled {
-  height: 72px;
-}
- 
-.navbar.scrolled .logo-img {
-  width: 72px;
-  height: 72px;
-}
+
 /* ── BUSCADOR ── */
 #school-finder-wrapper {
     background: var(--crema);
@@ -265,26 +119,49 @@ body {
 
 /* ── BOTÓN CARRITO (estilo "Quiero ayudar") ── */
 .btn-carrito {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 20px);
   background: linear-gradient(180deg, #f7a63a, #e68b21);
   color: #ffffff;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 1rem;
-  padding: 0.85rem 1.8rem;
-  border-radius: 999px;
+  padding: 0.95rem 2.3rem;
+  border-radius: 999px; 
   border: none;
-  box-shadow: 0 8px 20px rgba(243, 112, 33, 0.28);
+  box-shadow: 0 10px 24px rgba(243, 112, 33, 0.28);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   white-space: nowrap;
+  z-index: 1250;
 }
- 
+
 .btn-carrito:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgba(243, 112, 33, 0.38);
+}
+
+#carrito-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 95;
+}
+
+#carrito-panel {
+  z-index: 100;
+}
+
+#carrito-panel.abierto + #carrito-overlay {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 #carrito-count {
@@ -546,18 +423,20 @@ body {
 
 /* ── PANEL CARRITO ── */
 #carrito-panel {
-    position: fixed;
-    top: 0; right: -420px;
-    width: 380px;
-    height: 100vh;
-    background: var(--blanco);
-    box-shadow: -4px 0 40px rgba(0,0,0,0.12);
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    transition: right 0.35s ease;
-    border-radius: var(--radio) 0 0 var(--radio);
+  position: fixed;
+  top: 170px; /* ← más abajo para que no se encime con el botón */
+  right: -420px;
+  width: 380px;
+  height: calc(100vh - 170px);
+  background: var(--blanco);
+  box-shadow: -4px 0 40px rgba(0,0,0,0.12);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.35s ease;
+  border-radius: var(--radio) 0 0 var(--radio);
 }
+
 #carrito-panel.abierto { right: 0; }
 
 #carrito-header {
@@ -569,14 +448,15 @@ body {
 }
 #carrito-header h2 { font-size: 18px; font-weight: 800; color: var(--verde-oscuro); }
 #carrito-cerrar {
-    background: none;
-    margin-top: 80px;
-    border: none;
-    font-size: 18px;
-    color: var(--gris-medio);
-    cursor: pointer;
-    transition: color 0.2s;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--gris-medio);
+  cursor: pointer;
+  transition: color 0.2s;
+  margin-top: 0;
 }
+
 #carrito-cerrar:hover { color: var(--gris-texto); }
 
 #carrito-lista {
@@ -971,3 +851,20 @@ body {
   cursor: pointer;
 }
 .perfil-dropdown-item:hover { text-decoration: underline; }
+
+@media (max-width: 1024px) {
+  .btn-carrito {
+    position: static;
+    top: auto;
+    right: auto;
+    border-radius: 999px;
+    padding: 0.85rem 1.8rem;
+    box-shadow: 0 8px 20px rgba(243, 112, 33, 0.28);
+    width: 100%;
+    justify-content: center;
+  }
+
+  .navbar-acciones {
+    position: static;
+  }
+}

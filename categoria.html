@@ -6,26 +6,13 @@
     <title>Categoría – Mi Escuela Primero</title>
     <link rel="icon" type="image/png" href="img/logo.png"/>
     <link rel="stylesheet" href="catalogo.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-page="catalogo">
 
     <!-- ── NAVBAR ── -->
-   
-    <nav class="navbar">
-        <div class="navbar-logo">
-            <a href="index.html">
-                <img src="images/mexipri_logo.png" alt="Logo Mi Escuela Primero" class="logo-img">
-            </a>
-        </div>
-        <div class="navbar-menu">
-            <a href="index.html">Inicio</a>
-            <div id="header-categorias"></div>
-        </div>
-        <div class="navbar-acciones">
-            <a href="admin-login.html" class="btn-iniciar-sesion">Iniciar sesión</a>
-            <a href="#" id="btn-ayudar-flotante" class="btn-ayudar-flotante">♡ ¡Quiero ayudar!</a>
-        </div>
-    </nav>
+    <div id="header-placeholder"></div>
+
 
     <!-- ── HERO ── -->
     <div id="header-texto">
@@ -49,28 +36,8 @@
   
 
     <!-- ── FOOTER ── -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-left">
-                <div class="footer-logo-box">
-                    <img src="images/mi-escuela-logo.png" alt="Mi Escuela Primero">
-                </div>
-                <div class="footer-redes">
-                    <a href="#"><img src="images/whatsapp.png" alt="WhatsApp"></a>
-                    <a href="#"><img src="images/facebook.png" alt="Facebook"></a>
-                    <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
-                    <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
-                    <a href="#"><img src="images/linkedin.png" alt="LinkedIn"></a>
-                </div>
-            </div>
-            <div class="footer-right">
-                <p><strong>© 2026 Mexicanos Primero Jalisco, A.C.</strong> Todos los derechos reservados.</p>
-                <p>Prado de los Cedros #1530, Ciudad del Sol, Zapopan, Jalisco, México</p>
-                <p>Tel: 332-106-8253 · <a href="mailto:contacto@mpj.org.mx">contacto@mpj.org.mx</a></p>
-                <p><a href="#">Aviso de privacidad</a></p>
-            </div>
-        </div>
-    </footer>
+    <div id="footer-placeholder"></div>
+    <script src="components.js"></script>
 
     <script>
     const API_URL = "http://localhost:3000/api";
@@ -117,82 +84,88 @@
 
     /* ── Cargar subcategorías de esta categoría ── */
     async function cargarSubcategorias() {
-        const grid      = document.getElementById('catalog-grid');
-        const loading   = document.getElementById('catalog-loading');
-        const pageTitle = document.getElementById('page-title');
-        const btnAyudar = document.getElementById('btn-ayudar-flotante');
+    const grid      = document.getElementById('catalog-grid');
+    const loading   = document.getElementById('catalog-loading');
+    const pageTitle = document.getElementById('page-title');
 
-        try {
-            if (categoriaId == 13) {
-    window.location.href = "otros.html";
-}
-            // Ambos fetches en paralelo para mayor velocidad
-            const [subRes, catRes] = await Promise.all([
-                fetch(`${API_URL}/catalogo/${categoriaId}/subcategorias`),
-                fetch(`${API_URL}/catalogo`)
-            ]);
+    try {
+        if (categoriaId == 13) {
+            window.location.href = "otros.html";
+        }
 
-            if (!subRes.ok) throw new Error(`HTTP ${subRes.status} — subcategorías`);
-            if (!catRes.ok) throw new Error(`HTTP ${catRes.status} — catálogo`);
+        const [subRes, catRes] = await Promise.all([
+            fetch(`${API_URL}/catalogo/${categoriaId}/subcategorias`),
+            fetch(`${API_URL}/catalogo`)
+        ]);
 
-            const { data: subcats }  = await subRes.json();
-            const { data: catalogo } = await catRes.json();
+        if (!subRes.ok) throw new Error(`HTTP ${subRes.status} — subcategorías`);
+        if (!catRes.ok) throw new Error(`HTTP ${catRes.status} — catálogo`);
 
-            // Título de la página
-            const catInfo = catalogo.find(c => String(c.id) === String(categoriaId));
-            if (catInfo) {
-                pageTitle.textContent = catInfo.nombre;
-                document.title = `${catInfo.nombre} – Mi Escuela Primero`;
-            }
+        const { data: subcats }  = await subRes.json();
+        const { data: catalogo } = await catRes.json();
 
-            loading.style.display = 'none';
+        const catInfo = catalogo.find(c => String(c.id) === String(categoriaId));
+        if (catInfo) {
+            pageTitle.textContent = catInfo.nombre;
+            document.title = `${catInfo.nombre} – Mi Escuela Primero`;
+        }
 
-            if (subcats.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;color:var(--gris-medio);padding:40px 0;">No hay subcategorías en esta categoría.</p>';
-                return;
-            }
+        loading.style.display = 'none';
 
-            // Botón "Quiero ayudar" → filtrado con solo la categoría
+        if (subcats.length === 0) {
+            grid.innerHTML = '<p style="text-align:center;color:var(--gris-medio);padding:40px 0;">No hay subcategorías en esta categoría.</p>';
+            return;
+        }
+
+        const btnAyudar = document.querySelector('.btn-ayudar-fixed');
+
+        if (btnAyudar) {
             btnAyudar.onclick = (e) => {
-                 e.preventDefault();
+                e.preventDefault();
                 localStorage.setItem('filtro_categoria_id', categoriaId);
                 localStorage.removeItem('filtro_subcategoria_id');
                 location.href = 'filtrado.html';
+                btnAyudar.href = 'filtrado.html';
             };
-
-            // Tarjetas
-            subcats.forEach((sub, i) => {
-                const card = document.createElement('article');
-                card.className = 'need-card';
-                card.style.animationDelay = `${(i + 1) * 0.05}s`;
-                card.onclick = () => irAFiltrado(sub.id, categoriaId);
-                card.innerHTML = `
-                    <div class="need-card-imagen">
-                        <img src="${sub.imagen || 'images/otros.png'}"
-                             alt="${sub.nombre}"
-                             onerror="this.src='images/otros.png'">
-                    </div>
-                    <div class="need-card-cuerpo">
-                        <h2 class="need-card-titulo">${sub.nombre}</h2>
-                        <div class="need-card-cta">
-                            <button class="btn-ver"
-                                onclick="event.stopPropagation(); irAFiltrado(${sub.id}, ${categoriaId})">
-                                Donar →
-                            </button>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-
-        } catch (err) {
-            loading.innerHTML = `
-                <p style="color:#c0392b;font-weight:700;">No se pudieron cargar las subcategorías.</p>
-                <p style="color:#888;font-size:0.85em;">Verifica que el backend esté corriendo en ${API_URL}</p>
-                <p style="color:#aaa;font-size:0.8em;">${err.message}</p>
-            `;
         }
+
+        subcats.forEach((sub, i) => {
+            const card = document.createElement('article');
+            card.className = 'need-card';
+            card.style.animationDelay = `${(i + 1) * 0.05}s`;
+            card.onclick = () => irAFiltrado(sub.id, categoriaId);
+            card.innerHTML = `
+                <div class="need-card-imagen">
+                    <img src="${sub.imagen || 'images/otros.png'}"
+                         alt="${sub.nombre}"
+                         onerror="this.src='images/otros.png'">
+                </div>
+                <div class="need-card-cuerpo">
+                    <h2 class="need-card-titulo">${sub.nombre}</h2>
+                    <div class="need-card-cta">
+                        <button class="btn-ver"
+                            onclick="event.stopPropagation(); irAFiltrado(${sub.id}, ${categoriaId})">
+                            Donar →
+                        </button>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+    } catch (err) {
+        loading.innerHTML = `
+            <p style="color:#c0392b;font-weight:700;">No se pudieron cargar las subcategorías.</p>
+            <p style="color:#888;font-size:0.85em;">Verifica que el backend esté corriendo en ${API_URL}</p>
+            <p style="color:#aaa;font-size:0.8em;">${err.message}</p>
+        `;
     }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    cargarNavbarCategorias();
+    cargarSubcategorias();
+});
 
     /* ── Scroll shrink ── */
     window.addEventListener('scroll', () => {
@@ -204,3 +177,5 @@
     </script>
 </body>
 </html>
+
+
