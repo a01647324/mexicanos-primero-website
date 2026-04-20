@@ -134,9 +134,9 @@
         <div class="form-grupo">
           <label class="form-label">Estado</label>
           <select name="estado" class="panel-select" required>
-            <option value="Pendiente">Pendiente</option>
-            <option value="En proceso">En proceso</option>
-            <option value="Completado">Completado</option>
+            <option value="Cubierto">Cubierto</option>
+            <option value="Aun no cubierto">Aun no cubierto</option>
+            <option value="Cubierto parcialmente">Cubierto parcialmente</option>
           </select>
         </div>
 
@@ -635,9 +635,9 @@
         '<div class="form-grupo">' +
           '<label class="form-label">Estado</label>' +
           '<select class="panel-select" id="edit-estado">' +
-            '<option value="Pendiente"' + (reg.Estado === 'Pendiente' ? ' selected' : '') + '>Pendiente</option>' +
-            '<option value="En proceso"' + (reg.Estado === 'En proceso' ? ' selected' : '') + '>En proceso</option>' +
-            '<option value="Completado"' + (reg.Estado === 'Completado' ? ' selected' : '') + '>Completado</option>' +
+            '<option value="Cubierto"' + (reg.Estado === 'Cubierto' ? ' selected' : '') + '>Cubierto</option>' +
+            '<option value="Aun no cubierto"' + (reg.Estado === 'Aun no cubierto' ? ' selected' : '') + '>Aun no cubierto</option>' +
+            '<option value="Cubierto parcialmente"' + (reg.Estado === 'Cubierto parcialmente' ? ' selected' : '') + '>Cubierto parcialmente</option>' +
           '</select>' +
         '</div>' +
         '<div class="form-grupo">' +
@@ -770,14 +770,18 @@
       // Obtener los textos seleccionados (los nombres reales)
       var categoria =
         categoriaEl.options[categoriaEl.selectedIndex]?.text || "";
-      var subcategoria =
-        subcatEl.options[subcatEl.selectedIndex]?.text || "";
+      var subcategoria_id = parseInt(subcatEl.value);
+
+      if (!subcategoria_id) {
+        alert('Selecciona una subcategoría.');
+        return;
+      }
 
       if (
         !escuela ||
         !municipio ||
         !categoria ||
-        !subcategoria ||
+        !subcategoria_id ||
         !propuesta ||
         !unidad ||
         isNaN(cantidad)
@@ -786,37 +790,27 @@
         return;
       }
 
-      if (
-        !confirm(
-          "¿Deseas crear este registro?\n\n" +
-            "Escuela: " +
-            escuela +
-            "\n" +
-            "Municipio: " +
-            municipio +
-            "\n" +
-            "Categoría: " +
-            categoria +
-            "\n" +
-            "Subcategoría: " +
-            subcategoria +
-            "\n" +
-            "Propuesta: " +
-            propuesta
-        )
-      )
-        return;
+      var catTexto  = categoriaEl.options[categoriaEl.selectedIndex]?.text || '';
+      var subcatTexto = subcatEl.options[subcatEl.selectedIndex]?.text || '';
+
+      if (!confirm(
+        '¿Deseas crear este registro?\n\n' +
+        'Escuela: ' + escuela + '\n' +
+        'Municipio: ' + municipio + '\n' +
+        'Categoría: ' + catTexto + '\n' +
+        'Subcategoría: ' + subcatTexto + '\n' +
+        'Propuesta: ' + propuesta
+      )) return;
 
       var body = {
         escuela,
         municipio,
-        categoria,
-        subcategoria,
+        subcategoria_id,
         propuesta,
         cantidad,
         unidad,
         estado,
-        detalles,
+        detalles
       };
 
       fetch(API_URL + "/admin/necesidades", {

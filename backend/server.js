@@ -653,7 +653,7 @@ app.post("/api/admin/necesidades", async (req, res) => {
       `INSERT INTO necesidades (escuela_id, subcategoria_id, propuesta, cantidad, unidad, estado, detalles)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING id`,
-      [escuelaId, subcategoria_id, propuesta, cantidad, unidad, estado || 'Pendiente', detalles || null]
+      [escuelaId, subcategoria_id, propuesta, cantidad, unidad, estado || 'Aun no cubierto', detalles || null]
     );
 
     res.status(201).json({ id: result.rows[0].id, message: "Necesidad creada exitosamente" });
