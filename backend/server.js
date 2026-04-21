@@ -8,44 +8,55 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { pool } from "./db.js";
 
-const upload = multer({ storage: multer.memoryStorage() });
+const upload   = multer({ storage: multer.memoryStorage() });
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const SECRET = process.env.JWT_SECRET || "supersecretkey";
+const __dirname  = path.dirname(__filename);
+const SECRET     = process.env.JWT_SECRET || "supersecretkey";
 
 console.log("DB URL:", process.env.DATABASE_URL?.replace(/:[^:@]+@/, ":***@"));
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..")));
 
-// ── TEST ──────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────
+// UTILIDADES
+// ─────────────────────────────────────────────────────────────
+
+// Valida los campos mínimos compartidos por /api/contacto y /api/solicitud-material
+function validarFormularioBase(body) {
+  const { nombre_completo, correo, telefono, aviso_privacidad_aceptado } = body;
+  if (!nombre_completo || !telefono)
+    return "Nombre completo y teléfono son obligatorios.";
+  if (!aviso_privacidad_aceptado)
+    return "Debes aceptar el aviso de privacidad.";
+  if (correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo))
+    return "Correo electrónico inválido.";
+  return null;
+}
+
+
+// ─────────────────────────────────────────────────────────────
+// TEST
+// ─────────────────────────────────────────────────────────────
+
 app.get("/api/test", (req, res) => {
   res.json({ message: "Backend funcionando 🚀" });
 });
 
 
-/* ══════════════════════════════════════════════════════════
-   ██  ENDPOINTS PÚBLICOS (CATÁLOGO + FILTRADO)
-   ══════════════════════════════════════════════════════════ */
+// ─────────────────────────────────────────────────────────────
+// CATÁLOGO PÚBLICO
+// ─────────────────────────────────────────────────────────────
 
-
-/* ══════════════════════════════════════════════════════════
-   /api/catalogo
-   Devuelve todas las categorías del catálogo visual
-   (las tarjetas grandes de catalogo.html)
-   con su mapeo a la categoría real de la BD.
-   ══════════════════════════════════════════════════════════ */
+// Devuelve todas las categorías del catálogo visual con su mapeo a la BD real
 app.get("/api/catalogo", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT
-         cc.id,
-         cc.nombre,
-         cc.imagen,
-         cc.link,
+         cc.id, cc.nombre, cc.imagen, cc.link,
          cc.categoria_real_id,
          c.nombre AS categoria_real_nombre
        FROM categorias_catalogo cc
@@ -58,33 +69,24 @@ app.get("/api/catalogo", async (req, res) => {
     res.status(500).json({ error: "Error en servidor" });
   }
 });
- 
-/* ══════════════════════════════════════════════════════════
-   /api/catalogo/:id/subcategorias
-   Devuelve las subcategorías visuales de una categoría catálogo.
-   Ej: /api/catalogo/3/subcategorias → cards de deportivo.html
-   Incluye el mapeo a subcategoria_real y categoria_real para
-   que el frontend sepa qué filtros pre-seleccionar.
-   ══════════════════════════════════════════════════════════ */
+
+// Devuelve las subcategorías visuales de una categoría del catálogo
 app.get("/api/catalogo/:id/subcategorias", async (req, res) => {
   try {
-    const { id } = req.params;
     const result = await pool.query(
       `SELECT
-         sc.id,
-         sc.nombre,
-         sc.imagen,
+         sc.id, sc.nombre, sc.imagen,
          sc.categoria_catalogo_id,
          sc.subcategoria_real_id,
          sc.categoria_real_id,
-         c.nombre  AS categoria_real_nombre,
-         s.nombre  AS subcategoria_real_nombre
+         c.nombre AS categoria_real_nombre,
+         s.nombre AS subcategoria_real_nombre
        FROM subcategorias_catalogo sc
        LEFT JOIN categorias    c ON sc.categoria_real_id    = c.id
        LEFT JOIN subcategorias s ON sc.subcategoria_real_id = s.id
        WHERE sc.categoria_catalogo_id = $1
        ORDER BY sc.id`,
-      [id]
+      [req.params.id]
     );
     res.json({ data: result.rows });
   } catch (err) {
@@ -92,39 +94,17 @@ app.get("/api/catalogo/:id/subcategorias", async (req, res) => {
     res.status(500).json({ error: "Error en servidor" });
   }
 });
- 
-/* ══════════════════════════════════════════════════════════
-   /api/filtros
-   Devuelve las opciones para los <select> de filtrado.html.
- 
-   CAMBIO CLAVE respecto a la versión anterior:
-   - categorias    → ahora viene de categorias_catalogo (lo que el
-                     usuario ve: "Material didáctico", "Salud", etc.)
-   - subcategorias → ahora viene de subcategorias_catalogo
-   - municipios y escuelas siguen igual (tablas reales)
- 
-   El frontend mostrará los nombres del catálogo visual, pero
-   al hacer la query real usaremos los IDs reales mapeados.
-   ══════════════════════════════════════════════════════════ */
+
+// Devuelve las opciones para los selects de filtrado (municipios, categorías, subcategorías, escuelas)
+// Las categorías y subcategorías vienen de las tablas de catálogo visual, no de las reales
 app.get("/api/filtros", async (req, res) => {
   try {
     const [municipios, categorias, subcategorias, escuelas] = await Promise.all([
       pool.query("SELECT nombre FROM municipios ORDER BY nombre"),
- 
-      // Categorías visibles = categorias_catalogo
-      pool.query(`
-        SELECT id, nombre, categoria_real_id
-        FROM categorias_catalogo
-        ORDER BY nombre
-      `),
- 
-      // Subcategorías visibles = subcategorias_catalogo
-      // Incluimos categoria_catalogo_id para poder filtrar
-      // subcategorias por categoría seleccionada en el frontend
+      pool.query("SELECT id, nombre, categoria_real_id FROM categorias_catalogo ORDER BY nombre"),
       pool.query(`
         SELECT
-          sc.id,
-          sc.nombre,
+          sc.id, sc.nombre,
           sc.categoria_catalogo_id,
           sc.subcategoria_real_id,
           sc.categoria_real_id,
@@ -133,14 +113,13 @@ app.get("/api/filtros", async (req, res) => {
         JOIN categorias_catalogo cc ON sc.categoria_catalogo_id = cc.id
         ORDER BY cc.nombre, sc.nombre
       `),
- 
       pool.query("SELECT nombre FROM escuelas ORDER BY nombre"),
     ]);
- 
+
     res.json({
       municipios:    municipios.rows.map(r => r.nombre),
-      categorias:    categorias.rows,          // objetos completos con id y categoria_real_id
-      subcategorias: subcategorias.rows,        // objetos completos con todos los IDs de mapeo
+      categorias:    categorias.rows,
+      subcategorias: subcategorias.rows,
       escuelas:      escuelas.rows.map(r => r.nombre),
     });
   } catch (err) {
@@ -148,80 +127,34 @@ app.get("/api/filtros", async (req, res) => {
     res.status(500).json({ error: "Error en servidor" });
   }
 });
- 
-/* ══════════════════════════════════════════════════════════
-   /api/data  — Filtrado inteligente
-   ══════════════════════════════════════════════════════════
-   Parámetros que acepta:
-     - municipio       → nombre directo (tabla real)
-     - escuela         → nombre directo (tabla real)
-     - categoria_id    → ID de categorias_catalogo
-                         → se traduce a categoria_real_id → filtra por categorias real
-     - subcategoria_id → ID de subcategorias_catalogo
-                         → se traduce a subcategoria_real_id → filtra por subcategorias real
- 
-   Ejemplo de traducción:
-     categoria_id=5 (Material didáctico en catálogo)
-       → categoria_real_id = 1 (Material en BD real)
-       → WHERE c.id = 1
- 
-     subcategoria_id=12 (Bloques geométricos en catálogo)
-       → subcategoria_real_id = 9 (Material didáctico en BD real)
-       → WHERE s.id = 9
-   ══════════════════════════════════════════════════════════ */
+
+// Devuelve necesidades filtradas por municipio, escuela, categoria_id y subcategoria_id
+// Los IDs de categoría y subcategoría son del catálogo visual; se traducen a IDs reales internamente
 app.get("/api/data", async (req, res) => {
   try {
     const { municipio, escuela, categoria_id, subcategoria_id } = req.query;
- 
-    // Paso 1: Si vienen IDs del catálogo, traducirlos a IDs reales
+
     let categoriaRealId    = null;
     let subcategoriaRealId = null;
- 
+
     if (categoria_id) {
-      const catRes = await pool.query(
-        "SELECT categoria_real_id FROM categorias_catalogo WHERE id = $1",
-        [categoria_id]
-      );
-      if (catRes.rows.length > 0) {
-        categoriaRealId = catRes.rows[0].categoria_real_id;
-      }
+      const r = await pool.query("SELECT categoria_real_id FROM categorias_catalogo WHERE id = $1", [categoria_id]);
+      if (r.rows.length > 0) categoriaRealId = r.rows[0].categoria_real_id;
     }
- 
     if (subcategoria_id) {
-      const subRes = await pool.query(
-        "SELECT subcategoria_real_id FROM subcategorias_catalogo WHERE id = $1",
-        [subcategoria_id]
-      );
-      if (subRes.rows.length > 0) {
-        subcategoriaRealId = subRes.rows[0].subcategoria_real_id;
-      }
+      const r = await pool.query("SELECT subcategoria_real_id FROM subcategorias_catalogo WHERE id = $1", [subcategoria_id]);
+      if (r.rows.length > 0) subcategoriaRealId = r.rows[0].subcategoria_real_id;
     }
- 
-    // Paso 2: Construir WHERE dinámico con los IDs reales
+
     const conditions = [];
     const values     = [];
- 
-    if (municipio) {
-      values.push(municipio);
-      conditions.push(`m.nombre = $${values.length}`);
-    }
-    if (escuela) {
-      values.push(escuela);
-      conditions.push(`e.nombre = $${values.length}`);
-    }
-    if (categoriaRealId) {
-      values.push(categoriaRealId);
-      conditions.push(`c.id = $${values.length}`);
-    }
-    if (subcategoriaRealId) {
-      values.push(subcategoriaRealId);
-      conditions.push(`s.id = $${values.length}`);
-    }
- 
-    const whereClause = conditions.length > 0
-      ? `WHERE ${conditions.join(" AND ")}`
-      : "";
- 
+    if (municipio)         { values.push(municipio);         conditions.push(`m.nombre = $${values.length}`); }
+    if (escuela)           { values.push(escuela);           conditions.push(`e.nombre = $${values.length}`); }
+    if (categoriaRealId)   { values.push(categoriaRealId);   conditions.push(`c.id = $${values.length}`); }
+    if (subcategoriaRealId){ values.push(subcategoriaRealId);conditions.push(`s.id = $${values.length}`); }
+
+    const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+
     const result = await pool.query(
       `SELECT
          n.id          AS "id",
@@ -234,937 +167,116 @@ app.get("/api/data", async (req, res) => {
          n.unidad      AS "Unidad",
          n.estado      AS "Estado"
        FROM necesidades n
-       JOIN escuelas     e ON n.escuela_id    = e.id
-       JOIN municipios   m ON e.municipio_id  = m.id
+       JOIN escuelas     e ON n.escuela_id     = e.id
+       JOIN municipios   m ON e.municipio_id   = m.id
        JOIN subcategorias s ON n.subcategoria_id = s.id
-       JOIN categorias   c ON s.categoria_id  = c.id
-       ${whereClause}
+       JOIN categorias   c ON s.categoria_id   = c.id
+       ${where}
        ORDER BY n.id`,
       values
     );
- 
     res.json({ data: result.rows });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error en servidor" });
   }
 });
- 
-/* ══════════════════════════════════════════════════════════════
-   VALIDACIÓN BASE DE FORMULARIOS
-   ══════════════════════════════════════════════════════════════
-   Esta función valida los campos mínimos compartidos por:
-   - /api/contacto
-   - /api/solicitud-material
 
-   Reglas:
-   - nombre_completo y telefono son obligatorios
-   - aviso_privacidad_aceptado debe venir en true
-   - si correo viene lleno, debe tener formato válido
-   ══════════════════════════════════════════════════════════════ */
-function validarFormularioBase(body) {
-  const {
-    nombre_completo,
-    correo,
-    telefono,
-    aviso_privacidad_aceptado
-  } = body;
 
-  if (!nombre_completo || !telefono) {
-    return "Nombre completo y teléfono son obligatorios.";
-  }
+// ─────────────────────────────────────────────────────────────
+// FORMULARIOS PÚBLICOS
+// ─────────────────────────────────────────────────────────────
 
-  if (!aviso_privacidad_aceptado) {
-    return "Debes aceptar el aviso de privacidad.";
-  }
-
-  if (correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
-    return "Correo electrónico inválido.";
-  }
-
-  return null;
-}
-
-/* ══════════════════════════════════════════════════════════════
-   /api/contacto
-   Guarda el formulario de la página de contacto.
-   ══════════════════════════════════════════════════════════════
-   Body esperado:
-   {
-     "nombre_completo": "Juan Pérez",
-     "tipo_instancia": "Empresa",
-     "nombre_instancia": "Mi Empresa SA",
-     "correo": "correo@ejemplo.com",
-     "telefono": "3312345678",
-     "mensaje": "Quiero apoyar",
-     "aviso_privacidad_aceptado": true
-   }
-
-   Se guarda en la tabla solicitudes_donacion con:
-   origen_formulario = 'contacto'
-   ══════════════════════════════════════════════════════════════ */
+// Guarda una solicitud del formulario de contacto (origen: 'contacto')
 app.post("/api/contacto", async (req, res) => {
   try {
     const error = validarFormularioBase(req.body);
-    if (error) {
-      return res.status(400).json({ error });
-    }
+    if (error) return res.status(400).json({ error });
 
     const {
-      nombre_completo,
-      tipo_instancia,
-      nombre_instancia,
-      correo,
-      telefono,
-      mensaje,
-      aviso_privacidad_aceptado
+      nombre_completo, tipo_instancia, nombre_instancia,
+      correo, telefono, mensaje, aviso_privacidad_aceptado, tipo_donacion
     } = req.body;
-
-    const { tipo_donacion } = req.body;
 
     const result = await pool.query(
       `INSERT INTO solicitudes_donacion (
-        nombre_completo, tipo_instancia, nombre_instancia,
-        correo, telefono, mensaje, origen_formulario,
-        aviso_privacidad_aceptado, tipo_donacion
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, 'contacto', $7, $8)
-      RETURNING id`,
+         nombre_completo, tipo_instancia, nombre_instancia,
+         correo, telefono, mensaje, origen_formulario,
+         aviso_privacidad_aceptado, tipo_donacion
+       )
+       VALUES ($1, $2, $3, $4, $5, $6, 'contacto', $7, $8)
+       RETURNING id`,
       [nombre_completo, tipo_instancia||null, nombre_instancia||null,
-      correo||null, telefono, mensaje||null, aviso_privacidad_aceptado,
-      tipo_donacion||null]
+       correo||null, telefono, mensaje||null, aviso_privacidad_aceptado, tipo_donacion||null]
     );
 
-    res.status(201).json({
-      message: "Formulario de contacto guardado correctamente.",
-      solicitud_id: result.rows[0].id
-    });
+    res.status(201).json({ message: "Formulario guardado.", solicitud_id: result.rows[0].id });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Error al guardar el formulario de contacto." });
+    res.status(500).json({ error: "Error al guardar el formulario." });
   }
 });
 
-/* ══════════════════════════════════════════════════════════════
-   /api/solicitud-material
-   Guarda el formulario de "Siguientes Pasos" junto con los
-   materiales que vienen del carrito de filtrado.
-   ══════════════════════════════════════════════════════════════
-   Body esperado:
-   {
-     "nombre_completo": "Juan Pérez",
-     "tipo_instancia": "Empresa",
-     "nombre_instancia": "Mi Empresa SA",
-     "correo": "correo@ejemplo.com",
-     "telefono": "3312345678",
-     "mensaje": "Puedo entregar la próxima semana",
-     "aviso_privacidad_aceptado": true,
-     "materiales": [
-       {
-         "id": 15,
-         "escuela": "Primaria Benito Juárez",
-         "propuesta": "Cuadernos profesionales",
-         "cantidad": 10,
-         "unidad": "piezas"
-       }
-     ]
-   }
-
-   Flujo:
-   1) Inserta el formulario en solicitudes_donacion
-      con origen_formulario = 'pasos'
-   2) Obtiene el id de esa solicitud
-   3) Inserta cada material del carrito en solicitud_materiales
-      relacionándolo con solicitud_id
-   4) Todo se hace dentro de una transacción
-   ══════════════════════════════════════════════════════════════ */
+// Guarda una solicitud de donación material junto con los ítems del carrito (origen: 'pasos')
+// Usa una transacción: si falla algún ítem, todo se revierte
 app.post("/api/solicitud-material", async (req, res) => {
   const client = await pool.connect();
-
   try {
     const error = validarFormularioBase(req.body);
-    if (error) {
-      return res.status(400).json({ error });
-    }
+    if (error) return res.status(400).json({ error });
 
     const {
-      nombre_completo,
-      tipo_instancia,
-      nombre_instancia,
-      correo,
-      telefono,
-      mensaje,
-      aviso_privacidad_aceptado,
-      materiales
+      nombre_completo, tipo_instancia, nombre_instancia,
+      correo, telefono, mensaje, aviso_privacidad_aceptado, materiales
     } = req.body;
 
-    if (!Array.isArray(materiales) || materiales.length === 0) {
-      return res.status(400).json({
-        error: "Debes enviar al menos un material del carrito."
-      });
-    }
+    if (!Array.isArray(materiales) || materiales.length === 0)
+      return res.status(400).json({ error: "Debes enviar al menos un material." });
 
     await client.query("BEGIN");
 
-    const solicitudResult = await client.query(
+    const solicitud = await client.query(
       `INSERT INTO solicitudes_donacion (
-        nombre_completo, tipo_instancia, nombre_instancia,
-        correo, telefono, mensaje, origen_formulario,
-        aviso_privacidad_aceptado, tipo_donacion
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, 'pasos', $7, 'Donación material')
-      RETURNING id`,
+         nombre_completo, tipo_instancia, nombre_instancia,
+         correo, telefono, mensaje, origen_formulario,
+         aviso_privacidad_aceptado, tipo_donacion
+       )
+       VALUES ($1, $2, $3, $4, $5, $6, 'pasos', $7, 'Donación material')
+       RETURNING id`,
       [nombre_completo, tipo_instancia||null, nombre_instancia||null,
-      correo||null, telefono, mensaje||null, aviso_privacidad_aceptado]
+       correo||null, telefono, mensaje||null, aviso_privacidad_aceptado]
     );
 
-    const solicitudId = solicitudResult.rows[0].id;
+    const solicitudId = solicitud.rows[0].id;
 
     for (const item of materiales) {
       await client.query(
-        `INSERT INTO solicitud_materiales (
-           solicitud_id,
-           necesidad_id,
-           escuela,
-           propuesta,
-           cantidad,
-           unidad
-         )
+        `INSERT INTO solicitud_materiales (solicitud_id, necesidad_id, escuela, propuesta, cantidad, unidad)
          VALUES ($1, $2, $3, $4, $5, $6)`,
-        [
-          solicitudId,
-          item.id || null,
-          item.escuela || null,
-          item.propuesta,
-          item.cantidad,
-          item.unidad || null
-        ]
+        [solicitudId, item.id||null, item.escuela||null, item.propuesta, item.cantidad, item.unidad||null]
       );
     }
 
     await client.query("COMMIT");
-
-    res.status(201).json({
-      message: "Solicitud y materiales guardados correctamente.",
-      solicitud_id: solicitudId
-    });
+    res.status(201).json({ message: "Solicitud guardada.", solicitud_id: solicitudId });
   } catch (err) {
     await client.query("ROLLBACK");
     console.error(err);
-    res.status(500).json({ error: "Error al guardar la solicitud de materiales." });
+    res.status(500).json({ error: "Error al guardar la solicitud." });
   } finally {
     client.release();
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   ██  ENDPOINTS ADMIN (CRUD DE NECESIDADES)
-   ══════════════════════════════════════════════════════════ */
 
+// ─────────────────────────────────────────────────────────────
+// AUTENTICACIÓN
+// ─────────────────────────────────────────────────────────────
 
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/necesidades
-   Consulta de necesidades para el panel admin.
-   ══════════════════════════════════════════════════════════ */
-app.get("/api/admin/necesidades", async (req, res) => {
-  try {
-    const { municipio, escuela, categoria_id, subcategoria_id, busqueda } = req.query;
-
-    if (!municipio && !escuela && !categoria_id && !subcategoria_id && !busqueda) {
-      return res.json({ data: [] });
-    }
-
-    let categoriaRealId    = null;
-    let subcategoriaRealId = null;
-
-    if (categoria_id) {
-      const catRes = await pool.query(
-        "SELECT categoria_real_id FROM categorias_catalogo WHERE id = $1",
-        [categoria_id]
-      );
-      if (catRes.rows.length > 0) {
-        categoriaRealId = catRes.rows[0].categoria_real_id;
-      }
-    }
-
-    if (subcategoria_id) {
-      const subRes = await pool.query(
-        "SELECT subcategoria_real_id FROM subcategorias_catalogo WHERE id = $1",
-        [subcategoria_id]
-      );
-      if (subRes.rows.length > 0) {
-        subcategoriaRealId = subRes.rows[0].subcategoria_real_id;
-      }
-    }
-
-    const conditions = [];
-    const values     = [];
-
-    if (municipio) {
-      values.push(municipio);
-      conditions.push(`m.nombre = $${values.length}`);
-    }
-    if (escuela) {
-      values.push(escuela);
-      conditions.push(`e.nombre = $${values.length}`);
-    }
-    if (categoriaRealId) {
-      values.push(categoriaRealId);
-      conditions.push(`c.id = $${values.length}`);
-    }
-    if (subcategoriaRealId) {
-      values.push(subcategoriaRealId);
-      conditions.push(`s.id = $${values.length}`);
-    }
-    if (busqueda) {
-      values.push(`%${busqueda}%`);
-      conditions.push(`e.nombre ILIKE $${values.length}`);
-    }
-
-    const whereClause = conditions.length > 0
-      ? `WHERE ${conditions.join(" AND ")}`
-      : "";
-
-    const result = await pool.query(
-      `SELECT
-         n.id               AS "id",
-         n.escuela_id       AS "escuela_id",
-         n.subcategoria_id  AS "subcategoria_id",
-         e.nombre           AS "Escuela",
-         e.municipio_id     AS "municipio_id",
-         m.nombre           AS "Municipio",
-         c.id               AS "categoria_id",
-         c.nombre           AS "Categoría",
-         s.nombre           AS "Subcategoría",
-         n.propuesta        AS "Propuesta",
-         n.cantidad         AS "Cantidad",
-         n.unidad           AS "Unidad",
-         n.estado           AS "Estado",
-         n.detalles         AS "Detalles"
-       FROM necesidades n
-       JOIN escuelas      e ON n.escuela_id     = e.id
-       JOIN municipios    m ON e.municipio_id   = m.id
-       JOIN subcategorias s ON n.subcategoria_id = s.id
-       JOIN categorias    c ON s.categoria_id   = c.id
-       ${whereClause}
-       ORDER BY e.nombre, n.id`,
-      values
-    );
-
-    res.json({ data: result.rows });
-  } catch (err) {
-    console.error("Error en GET /api/admin/necesidades:", err);
-    res.status(500).json({ error: "Error en servidor" });
-  }
-});
-
-
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/necesidades/:id
-   Detalle completo de UNA necesidad (para el modal).
-   ══════════════════════════════════════════════════════════ */
-app.get("/api/admin/necesidades/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const result = await pool.query(
-      `SELECT
-         n.id               AS "id",
-         n.escuela_id       AS "escuela_id",
-         n.subcategoria_id  AS "subcategoria_id",
-         e.nombre           AS "Escuela",
-         e.municipio_id     AS "municipio_id",
-         m.nombre           AS "Municipio",
-         c.id               AS "categoria_id",
-         c.nombre           AS "Categoría",
-         s.nombre           AS "Subcategoría",
-         n.propuesta        AS "Propuesta",
-         n.cantidad         AS "Cantidad",
-         n.unidad           AS "Unidad",
-         n.estado           AS "Estado",
-         n.detalles         AS "Detalles"
-       FROM necesidades n
-       JOIN escuelas      e ON n.escuela_id     = e.id
-       JOIN municipios    m ON e.municipio_id   = m.id
-       JOIN subcategorias s ON n.subcategoria_id = s.id
-       JOIN categorias    c ON s.categoria_id   = c.id
-       WHERE n.id = $1`,
-      [id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Necesidad no encontrada" });
-    }
-
-    res.json({ data: result.rows[0] });
-  } catch (err) {
-    console.error("Error en GET /api/admin/necesidades/:id:", err);
-    res.status(500).json({ error: "Error en servidor" });
-  }
-});
-
-
-/* ══════════════════════════════════════════════════════════
-   POST /api/admin/necesidades
-   Crear una nueva necesidad.
-   ══════════════════════════════════════════════════════════ */
-app.post("/api/admin/necesidades", async (req, res) => {
-  try {
-    const {
-      escuela,
-      municipio,
-      subcategoria_id,
-      propuesta,
-      cantidad,
-      unidad,
-      estado,
-      detalles
-    } = req.body;
-
-    if (!escuela || !municipio || !subcategoria_id || !propuesta || cantidad == null || !unidad) {
-      return res.status(400).json({ error: "Faltan campos obligatorios" });
-    }
-
-    // Buscar o crear municipio
-    let munResult = await pool.query("SELECT id FROM municipios WHERE nombre = $1", [municipio]);
-    let municipioId;
-    if (munResult.rows.length > 0) {
-      municipioId = munResult.rows[0].id;
-    } else {
-      const newMun = await pool.query("INSERT INTO municipios (nombre) VALUES ($1) RETURNING id", [municipio]);
-      municipioId = newMun.rows[0].id;
-    }
-
-    // Buscar o crear escuela
-    let escResult = await pool.query("SELECT id FROM escuelas WHERE nombre = $1", [escuela]);
-    let escuelaId;
-    if (escResult.rows.length > 0) {
-      escuelaId = escResult.rows[0].id;
-    } else {
-      const newEsc = await pool.query(
-        "INSERT INTO escuelas (nombre, municipio_id) VALUES ($1, $2) RETURNING id",
-        [escuela, municipioId]
-      );
-      escuelaId = newEsc.rows[0].id;
-    }
-
-    // Insertar necesidad
-    const result = await pool.query(
-      `INSERT INTO necesidades (escuela_id, subcategoria_id, propuesta, cantidad, unidad, estado, detalles)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING id`,
-      [escuelaId, subcategoria_id, propuesta, cantidad, unidad, estado || 'Aun no cubierto', detalles || null]
-    );
-
-    res.status(201).json({ id: result.rows[0].id, message: "Necesidad creada exitosamente" });
-  } catch (err) {
-    console.error("Error en POST /api/admin/necesidades:", err);
-    res.status(500).json({ error: "Error en servidor" });
-  }
-});
-
-
-/* ══════════════════════════════════════════════════════════
-   PUT /api/admin/necesidades/:id
-   Actualizar una necesidad existente.
-   ══════════════════════════════════════════════════════════ */
-app.put("/api/admin/necesidades/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      escuela,
-      municipio,
-      subcategoria_id,
-      propuesta,
-      cantidad,
-      unidad,
-      estado,
-      detalles
-    } = req.body;
-
-    const existe = await pool.query("SELECT id FROM necesidades WHERE id = $1", [id]);
-    if (existe.rows.length === 0) {
-      return res.status(404).json({ error: "Necesidad no encontrada" });
-    }
-
-    let escuelaId = null;
-
-    if (escuela && municipio) {
-      let munResult = await pool.query("SELECT id FROM municipios WHERE nombre = $1", [municipio]);
-      let municipioId;
-      if (munResult.rows.length > 0) {
-        municipioId = munResult.rows[0].id;
-      } else {
-        const newMun = await pool.query("INSERT INTO municipios (nombre) VALUES ($1) RETURNING id", [municipio]);
-        municipioId = newMun.rows[0].id;
-      }
-
-      let escResult = await pool.query("SELECT id FROM escuelas WHERE nombre = $1", [escuela]);
-      if (escResult.rows.length > 0) {
-        escuelaId = escResult.rows[0].id;
-        await pool.query("UPDATE escuelas SET municipio_id = $1 WHERE id = $2", [municipioId, escuelaId]);
-      } else {
-        const newEsc = await pool.query(
-          "INSERT INTO escuelas (nombre, municipio_id) VALUES ($1, $2) RETURNING id",
-          [escuela, municipioId]
-        );
-        escuelaId = newEsc.rows[0].id;
-      }
-    }
-
-    const sets = [];
-    const values = [];
-
-    if (escuelaId) {
-      values.push(escuelaId);
-      sets.push(`escuela_id = $${values.length}`);
-    }
-    if (subcategoria_id) {
-      values.push(subcategoria_id);
-      sets.push(`subcategoria_id = $${values.length}`);
-    }
-    if (propuesta !== undefined) {
-      values.push(propuesta);
-      sets.push(`propuesta = $${values.length}`);
-    }
-    if (cantidad !== undefined) {
-      values.push(cantidad);
-      sets.push(`cantidad = $${values.length}`);
-    }
-    if (unidad !== undefined) {
-      values.push(unidad);
-      sets.push(`unidad = $${values.length}`);
-    }
-    if (estado !== undefined) {
-      values.push(estado);
-      sets.push(`estado = $${values.length}`);
-    }
-    if (detalles !== undefined) {
-      values.push(detalles);
-      sets.push(`detalles = $${values.length}`);
-    }
-
-    if (sets.length === 0) {
-      return res.status(400).json({ error: "No se enviaron campos para actualizar" });
-    }
-
-    values.push(id);
-    await pool.query(
-      `UPDATE necesidades SET ${sets.join(", ")} WHERE id = $${values.length}`,
-      values
-    );
-
-    res.json({ message: "Necesidad actualizada exitosamente" });
-  } catch (err) {
-    console.error("Error en PUT /api/admin/necesidades/:id:", err);
-    res.status(500).json({ error: "Error en servidor" });
-  }
-});
-
-
-/* ══════════════════════════════════════════════════════════
-   DELETE /api/admin/necesidades/:id
-   ══════════════════════════════════════════════════════════ */
-app.delete("/api/admin/necesidades/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const result = await pool.query(
-      "DELETE FROM necesidades WHERE id = $1 RETURNING id",
-      [id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Necesidad no encontrada" });
-    }
-
-    res.json({ message: "Necesidad eliminada exitosamente" });
-  } catch (err) {
-    console.error("Error en DELETE /api/admin/necesidades/:id:", err);
-    res.status(500).json({ error: "Error en servidor" });
-  }
-});
-
-
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/categorias-reales
-   Categorías y subcategorías REALES (para el Create).
-   ══════════════════════════════════════════════════════════ */
-app.get("/api/admin/categorias-reales", async (req, res) => {
-  try {
-    const [categorias, subcategorias] = await Promise.all([
-      pool.query("SELECT id, nombre FROM categorias ORDER BY nombre"),
-      pool.query("SELECT id, nombre, categoria_id FROM subcategorias ORDER BY nombre"),
-    ]);
-
-    res.json({
-      categorias: categorias.rows,
-      subcategorias: subcategorias.rows,
-    });
-  } catch (err) {
-    console.error("Error en GET /api/admin/categorias-reales:", err);
-    res.status(500).json({ error: "Error en servidor" });
-  }
-});
-
-
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/escuelas/buscar?q=texto
-   Autocompletado de escuelas.
-   ══════════════════════════════════════════════════════════ */
-app.get("/api/admin/escuelas/buscar", async (req, res) => {
-  try {
-    const { q } = req.query;
-
-    if (!q || q.length < 2) {
-      return res.json({ data: [] });
-    }
-
-    const result = await pool.query(
-      `SELECT nombre FROM escuelas
-       WHERE nombre ILIKE $1
-       ORDER BY nombre
-       LIMIT 10`,
-      [`%${q}%`]
-    );
-
-    res.json({ data: result.rows.map(r => r.nombre) });
-  } catch (err) {
-    console.error("Error en GET /api/admin/escuelas/buscar:", err);
-    res.status(500).json({ error: "Error en servidor" });
-  }
-});
-
-
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/municipios/buscar?q=texto
-   Autocompletado de municipios.
-   ══════════════════════════════════════════════════════════ */
-app.get("/api/admin/municipios/buscar", async (req, res) => {
-  try {
-    const { q } = req.query;
-
-    if (!q || q.length < 2) {
-      return res.json({ data: [] });
-    }
-
-    const result = await pool.query(
-      `SELECT nombre FROM municipios
-       WHERE nombre ILIKE $1
-       ORDER BY nombre
-       LIMIT 10`,
-      [`%${q}%`]
-    );
-
-    res.json({ data: result.rows.map(r => r.nombre) });
-  } catch (err) {
-    console.error("Error en GET /api/admin/municipios/buscar:", err);
-    res.status(500).json({ error: "Error en servidor" });
-  }
-});
-
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/excel/info
-   Devuelve metadata rápida para mostrar en el panel de sync:
-   - total de registros en la BD
-   - ID del registro más reciente (proxy de "última actualización")
-   Se usa para mostrar el texto "Última actualización en sistema".
-   ══════════════════════════════════════════════════════════ */
-app.get("/api/admin/excel/info", async (req, res) => {
-  try {
-    const result = await pool.query(
-      "SELECT COUNT(*) AS total, MAX(id) AS ultimo_id FROM necesidades"
-    );
-    res.json({
-      total:    parseInt(result.rows[0].total),
-      ultimoId: result.rows[0].ultimo_id
-    });
-  } catch (err) {
-    console.error("Error en GET /api/admin/excel/info:", err);
-    res.status(500).json({ error: "Error en servidor" });
-  }
-});
-
-
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/excel/descargar
-   Genera un archivo .xlsx en memoria con TODOS los registros
-   de la BD y lo envía como descarga.
-   
-   Las columnas son exactamente las mismas que el Excel original
-   (mismo nombre, mismo orden) para que el admin pueda editarlo
-   y volver a subirlo sin problemas de formato.
-   
-   Usa la librería xlsx (ya instalada) para construir el archivo
-   en buffer — nunca se escribe en disco.
-   ══════════════════════════════════════════════════════════ */
-app.get("/api/admin/excel/descargar", async (req, res) => {
-  try {
-    const result = await pool.query(
-      `SELECT
-         m.nombre  AS "Municipio",
-         c.nombre  AS "Categoría",
-         s.nombre  AS "Subcategoría",
-         e.nombre  AS "Escuela",
-         n.propuesta AS "Propuesta",
-         n.cantidad  AS "Cantidad",
-         n.unidad    AS "Unidad",
-         n.detalles  AS "Detalles",
-         n.estado    AS "Estado"
-       FROM necesidades n
-       JOIN escuelas      e ON n.escuela_id      = e.id
-       JOIN municipios    m ON e.municipio_id    = m.id
-       JOIN subcategorias s ON n.subcategoria_id = s.id
-       JOIN categorias    c ON s.categoria_id    = c.id
-       ORDER BY m.nombre, e.nombre, n.id`
-    );
-
-    const wb = XLSX.utils.book_new();
-
-    const headers = [
-      "Municipio",
-      "Categoría",
-      "Subcategoría",
-      "Escuela",
-      "Propuesta",
-      "Cantidad",
-      "Unidad",
-      "Detalles",
-      "Estado"
-    ];
-
-    const data = result.rows.map(r => [
-      r.Municipio,
-      r.Categoría,
-      r.Subcategoría,
-      r.Escuela,
-      r.Propuesta,
-      r.Cantidad,
-      r.Unidad,
-      r.Detalles,
-      r.Estado
-    ]);
-
-    const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
-
-    // 📌 Rango de la hoja
-    const range = XLSX.utils.decode_range(ws["!ref"]);
-
-    // 🎨 Estilo encabezados
-    const headerStyle = {
-      fill: {
-        fgColor: { rgb: "259D63" }
-      },
-      font: {
-        color: { rgb: "FFFFFF" },
-        bold: true,
-        name: "Montserrat"
-      },
-      alignment: {
-        horizontal: "center",
-        vertical: "center"
-      }
-    };
-
-    // 🎨 Estilo general (todas las celdas)
-    const cellStyle = {
-      font: {
-        name: "Montserrat"
-      }
-    };
-
-    // Aplicar estilos
-    for (let R = range.s.r; R <= range.e.r; ++R) {
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
-
-        if (!ws[cellAddress]) continue;
-
-        // Encabezados (fila 0)
-        if (R === 0) {
-          ws[cellAddress].s = headerStyle;
-        } else {
-          ws[cellAddress].s = cellStyle;
-        }
-      }
-    }
-
-    // Ancho de columnas
-    ws["!cols"] = [
-      { wch: 20 },
-      { wch: 20 },
-      { wch: 25 },
-      { wch: 30 },
-      { wch: 35 },
-      { wch: 10 },
-      { wch: 15 },
-      { wch: 40 },
-      { wch: 20 }
-    ];
-
-    XLSX.utils.book_append_sheet(wb, ws, "Necesidades");
-
-    const buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
-
-    const fecha = new Date().toISOString().slice(0, 10);
-    res.setHeader("Content-Disposition", `attachment; filename="necesidades_${fecha}.xlsx"`);
-    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    res.send(buffer);
-
-  } catch (err) {
-    console.error("Error en GET /api/admin/excel/descargar:", err);
-    res.status(500).json({ error: "Error en servidor" });
-  }
-});
-
-
-/* ══════════════════════════════════════════════════════════
-   POST /api/admin/excel/subir
-   Recibe un archivo .xlsx, lo procesa fila por fila y agrega
-   las necesidades a la BD usando la misma lógica de upsert
-   que el script de importación original.
-   
-   NO borra registros existentes — solo agrega los nuevos.
-   Si una combinación de datos ya existe exactamente igual,
-   se insertará de todos modos (la BD no tiene UNIQUE en necesidades).
-   
-   Usa multer con memoryStorage: el archivo llega en req.file.buffer.
-   Columnas esperadas (insensible a mayúsculas):
-     Municipio, Categoría, Subcategoría, Escuela,
-     Propuesta, Cantidad, Unidad, Detalles, Estado
-   ══════════════════════════════════════════════════════════ */
-app.post("/api/admin/excel/subir", upload.single("archivo"), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "No se recibió ningún archivo" });
-  }
-
-  try {
-    // Leer el buffer del archivo
-    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
-    const sheet    = workbook.Sheets[workbook.SheetNames[0]];
-    const filas    = XLSX.utils.sheet_to_json(sheet);
-
-    if (filas.length === 0) {
-      return res.status(400).json({ error: "El archivo no contiene datos" });
-    }
-
-    const clean = (val) => (val ? String(val).trim() : null);
-    const normalizeEstado = (estado) => {
-      if (!estado) return "Aun no cubierto";
-
-      const val = String(estado).toLowerCase().trim();
-
-      if (val === "cubierto") return "Cubierto";
-      if (val === "cubierto parcialmente") return "Cubierto parcialmente";
-      if (val === "aun no cubierto" || val === "aún no cubierto") return "Aun no cubierto";
-
-      // fallback seguro
-      return "Aun no cubierto";
-    };
-
-    const client = await pool.connect();
-    let insertados = 0;
-    let omitidos   = 0;
-
-    try {
-      if (filas.length < 5) {
-        return res.status(400).json({
-          error: "El archivo parece incompleto. Operación cancelada."
-        });
-      }
-
-      await client.query("BEGIN");
-
-      // ⚠️ BORRAR TODO ANTES DE INSERTAR
-      await client.query("TRUNCATE TABLE necesidades RESTART IDENTITY CASCADE");
-
-      for (const fila of filas) {
-        const municipio   = clean(fila["Municipio"]);
-        const categoria   = clean(fila["Categoría"] || fila["Categoria"]);
-        const subcategoria = clean(fila["Subcategoría"] || fila["Subcategoria"]);
-        const escuela     = clean(fila["Escuela"]);
-        const propuesta   = clean(fila["Propuesta"]);
-        const cantidad    = parseInt(fila["Cantidad"]) || 1;
-        const unidad      = clean(fila["Unidad"]);
-        const detalles    = clean(fila["Detalles"]);
-        const estado      = normalizeEstado(fila["Estado"]);
-
-        // Omitir filas incompletas
-        if (!municipio || !categoria || !subcategoria || !escuela || !propuesta) {
-          omitidos++;
-          continue;
-        }
-
-        // Buscar o crear municipio
-        let munRes = await client.query(
-          "SELECT id FROM municipios WHERE nombre = $1", [municipio]
-        );
-        let municipioId = munRes.rows.length > 0
-          ? munRes.rows[0].id
-          : (await client.query("INSERT INTO municipios (nombre) VALUES ($1) RETURNING id", [municipio])).rows[0].id;
-
-        // Buscar o crear categoría
-        let catRes = await client.query(
-          "SELECT id FROM categorias WHERE nombre = $1", [categoria]
-        );
-        let categoriaId = catRes.rows.length > 0
-          ? catRes.rows[0].id
-          : (await client.query("INSERT INTO categorias (nombre) VALUES ($1) RETURNING id", [categoria])).rows[0].id;
-
-        // Buscar o crear subcategoría
-        let subRes = await client.query(
-          "SELECT id FROM subcategorias WHERE nombre = $1 AND categoria_id = $2",
-          [subcategoria, categoriaId]
-        );
-        let subcategoriaId = subRes.rows.length > 0
-          ? subRes.rows[0].id
-          : (await client.query("INSERT INTO subcategorias (nombre, categoria_id) VALUES ($1, $2) RETURNING id", [subcategoria, categoriaId])).rows[0].id;
-
-        // Buscar o crear escuela
-        let escRes = await client.query(
-          "SELECT id FROM escuelas WHERE nombre = $1", [escuela]
-        );
-        let escuelaId = escRes.rows.length > 0
-          ? escRes.rows[0].id
-          : (await client.query("INSERT INTO escuelas (nombre, municipio_id) VALUES ($1, $2) RETURNING id", [escuela, municipioId])).rows[0].id;
-
-        // Insertar necesidad
-        await client.query(
-          `INSERT INTO necesidades (escuela_id, subcategoria_id, propuesta, cantidad, unidad, estado, detalles)
-           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-          [escuelaId, subcategoriaId, propuesta, cantidad, unidad, estado, detalles]
-        );
-
-        insertados++;
-      }
-
-      await client.query("COMMIT");
-      res.json({
-        message:    `Importación completada: ${insertados} registros insertados, ${omitidos} omitidos por datos incompletos.`,
-        insertados,
-        omitidos
-      });
-
-    } catch (err) {
-      await client.query("ROLLBACK");
-      throw err;
-    } finally {
-      client.release();
-    }
-
-  } catch (err) {
-    console.error("Error en POST /api/admin/excel/subir:", err);
-    res.status(500).json({ error: "Error procesando el archivo: " + err.message });
-  }
-});
-
-/* ══════════════════════════════════════════════════════════
-   AUTH — REGISTRO DONADOR
-   ══════════════════════════════════════════════════════════ */
+// Registra un nuevo donador
 app.post("/api/auth/register-donador", async (req, res) => {
   try {
     const { nombre_completo, correo, password, fecha_nacimiento, estado } = req.body;
-
     if (!nombre_completo || !correo || !password)
       return res.status(400).json({ error: "Nombre, correo y contraseña son requeridos." });
 
@@ -1175,33 +287,27 @@ app.post("/api/auth/register-donador", async (req, res) => {
     await pool.query(
       `INSERT INTO donadores (nombre_completo, correo, password_hash, fecha_nacimiento, estado)
        VALUES ($1, $2, $3, $4, $5)`,
-      [nombre_completo, correo, password, fecha_nacimiento || null, estado || null]
+      [nombre_completo, correo, password, fecha_nacimiento||null, estado||null]
     );
-
     res.status(201).json({ message: "Cuenta creada exitosamente." });
   } catch (err) {
-    console.error("Error en register-donador:", err);
+    console.error(err);
     res.status(500).json({ error: "Error en servidor." });
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   AUTH — LOGIN DONADOR
-   ══════════════════════════════════════════════════════════ */
+// Login de donador — devuelve JWT con rol 'donador'
 app.post("/api/auth/login-donador", async (req, res) => {
   try {
     const { correo, password } = req.body;
-
     if (!correo || !password)
       return res.status(400).json({ error: "Completa todos los campos." });
 
-    const porCorreo = await pool.query(
-      "SELECT * FROM donadores WHERE correo = $1", [correo]
-    );
-    if (porCorreo.rows.length === 0)
+    const r = await pool.query("SELECT * FROM donadores WHERE correo = $1", [correo]);
+    if (r.rows.length === 0)
       return res.status(401).json({ error: "No existe una cuenta con ese correo." });
 
-    const user = porCorreo.rows[0];
+    const user = r.rows[0];
     if (user.password_hash !== password)
       return res.status(401).json({ error: "Contraseña incorrecta." });
 
@@ -1210,31 +316,25 @@ app.post("/api/auth/login-donador", async (req, res) => {
       SECRET,
       { expiresIn: "2h" }
     );
-
-    res.json({ message: "Bienvenido", token, rol: "donador", nombre: user.nombre_completo, correo: user.correo })
+    res.json({ message: "Bienvenido", token, rol: "donador", nombre: user.nombre_completo, correo: user.correo });
   } catch (err) {
-    console.error("Error en login-donador:", err);
+    console.error(err);
     res.status(500).json({ error: "Error en servidor." });
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   AUTH — LOGIN ADMIN
-   ══════════════════════════════════════════════════════════ */
+// Login de administrador — devuelve JWT con rol 'admin'
 app.post("/api/auth/login-admin", async (req, res) => {
   try {
     const { correo, password } = req.body;
-
     if (!correo || !password)
       return res.status(400).json({ error: "Completa todos los campos." });
 
-    const porCorreo = await pool.query(
-      "SELECT * FROM administradores WHERE correo = $1", [correo]
-    );
-    if (porCorreo.rows.length === 0)
+    const r = await pool.query("SELECT * FROM administradores WHERE correo = $1", [correo]);
+    if (r.rows.length === 0)
       return res.status(401).json({ error: "No existe un administrador con ese correo." });
 
-    const user = porCorreo.rows[0];
+    const user = r.rows[0];
     if (user.password_hash !== password)
       return res.status(401).json({ error: "Contraseña incorrecta." });
 
@@ -1243,19 +343,399 @@ app.post("/api/auth/login-admin", async (req, res) => {
       SECRET,
       { expiresIn: "4h" }
     );
-
     res.json({ message: "Acceso concedido", token, rol: "admin" });
   } catch (err) {
-    console.error("Error en login-admin:", err);
+    console.error(err);
     res.status(500).json({ error: "Error en servidor." });
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/solicitudes
-   Lista todas las solicitudes de donación con estado de lectura.
-   ══════════════════════════════════════════════════════════ */
-app.get('/api/admin/solicitudes', async (req, res) => {
+
+// ─────────────────────────────────────────────────────────────
+// ADMIN — NECESIDADES
+// ─────────────────────────────────────────────────────────────
+
+// Busca necesidades con filtros opcionales (municipio, escuela, categoria, subcategoria, busqueda por texto)
+// Requiere al menos un filtro; si no hay ninguno devuelve array vacío
+app.get("/api/admin/necesidades", async (req, res) => {
+  try {
+    const { municipio, escuela, categoria_id, subcategoria_id, busqueda } = req.query;
+
+    if (!municipio && !escuela && !categoria_id && !subcategoria_id && !busqueda)
+      return res.json({ data: [] });
+
+    let categoriaRealId    = null;
+    let subcategoriaRealId = null;
+
+    if (categoria_id) {
+      const r = await pool.query("SELECT categoria_real_id FROM categorias_catalogo WHERE id = $1", [categoria_id]);
+      if (r.rows.length > 0) categoriaRealId = r.rows[0].categoria_real_id;
+    }
+    if (subcategoria_id) {
+      const r = await pool.query("SELECT subcategoria_real_id FROM subcategorias_catalogo WHERE id = $1", [subcategoria_id]);
+      if (r.rows.length > 0) subcategoriaRealId = r.rows[0].subcategoria_real_id;
+    }
+
+    const conditions = [];
+    const values     = [];
+    if (municipio)         { values.push(municipio);          conditions.push(`m.nombre = $${values.length}`); }
+    if (escuela)           { values.push(escuela);            conditions.push(`e.nombre = $${values.length}`); }
+    if (categoriaRealId)   { values.push(categoriaRealId);    conditions.push(`c.id = $${values.length}`); }
+    if (subcategoriaRealId){ values.push(subcategoriaRealId); conditions.push(`s.id = $${values.length}`); }
+    if (busqueda)          { values.push(`%${busqueda}%`);    conditions.push(`e.nombre ILIKE $${values.length}`); }
+
+    const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    const result = await pool.query(
+      `SELECT
+         n.id, n.escuela_id, n.subcategoria_id,
+         e.nombre AS "Escuela", e.municipio_id,
+         m.nombre AS "Municipio",
+         c.id     AS "categoria_id", c.nombre AS "Categoría",
+         s.nombre AS "Subcategoría",
+         n.propuesta AS "Propuesta", n.cantidad AS "Cantidad",
+         n.unidad AS "Unidad", n.estado AS "Estado", n.detalles AS "Detalles"
+       FROM necesidades n
+       JOIN escuelas      e ON n.escuela_id     = e.id
+       JOIN municipios    m ON e.municipio_id   = m.id
+       JOIN subcategorias s ON n.subcategoria_id = s.id
+       JOIN categorias    c ON s.categoria_id   = c.id
+       ${where}
+       ORDER BY e.nombre, n.id`,
+      values
+    );
+    res.json({ data: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// Devuelve el detalle completo de una necesidad por ID
+app.get("/api/admin/necesidades/:id", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT
+         n.id, n.escuela_id, n.subcategoria_id,
+         e.nombre AS "Escuela", e.municipio_id,
+         m.nombre AS "Municipio",
+         c.id     AS "categoria_id", c.nombre AS "Categoría",
+         s.nombre AS "Subcategoría",
+         n.propuesta AS "Propuesta", n.cantidad AS "Cantidad",
+         n.unidad AS "Unidad", n.estado AS "Estado", n.detalles AS "Detalles"
+       FROM necesidades n
+       JOIN escuelas      e ON n.escuela_id     = e.id
+       JOIN municipios    m ON e.municipio_id   = m.id
+       JOIN subcategorias s ON n.subcategoria_id = s.id
+       JOIN categorias    c ON s.categoria_id   = c.id
+       WHERE n.id = $1`,
+      [req.params.id]
+    );
+    if (result.rows.length === 0)
+      return res.status(404).json({ error: "Necesidad no encontrada" });
+    res.json({ data: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// Crea una nueva necesidad; busca o crea el municipio y la escuela si no existen
+app.post("/api/admin/necesidades", async (req, res) => {
+  try {
+    const { escuela, municipio, subcategoria_id, propuesta, cantidad, unidad, estado, detalles } = req.body;
+
+    if (!escuela || !municipio || !subcategoria_id || !propuesta || cantidad == null || !unidad)
+      return res.status(400).json({ error: "Faltan campos obligatorios" });
+
+    let munRes = await pool.query("SELECT id FROM municipios WHERE nombre = $1", [municipio]);
+    const municipioId = munRes.rows.length > 0
+      ? munRes.rows[0].id
+      : (await pool.query("INSERT INTO municipios (nombre) VALUES ($1) RETURNING id", [municipio])).rows[0].id;
+
+    let escRes = await pool.query("SELECT id FROM escuelas WHERE nombre = $1", [escuela]);
+    const escuelaId = escRes.rows.length > 0
+      ? escRes.rows[0].id
+      : (await pool.query("INSERT INTO escuelas (nombre, municipio_id) VALUES ($1, $2) RETURNING id", [escuela, municipioId])).rows[0].id;
+
+    const estadosValidos = ["Cubierto", "Aun no cubierto", "Cubierto parcialmente"];
+    const estadoFinal    = estadosValidos.includes(estado) ? estado : "Aun no cubierto";
+
+    const result = await pool.query(
+      `INSERT INTO necesidades (escuela_id, subcategoria_id, propuesta, cantidad, unidad, estado, detalles)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+      [escuelaId, subcategoria_id, propuesta, cantidad, unidad, estadoFinal, detalles||null]
+    );
+    res.status(201).json({ id: result.rows[0].id, message: "Necesidad creada exitosamente" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// Actualiza una necesidad existente; solo modifica los campos que vienen en el body
+app.put("/api/admin/necesidades/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { escuela, municipio, subcategoria_id, propuesta, cantidad, unidad, estado, detalles } = req.body;
+
+    const existe = await pool.query("SELECT id FROM necesidades WHERE id = $1", [id]);
+    if (existe.rows.length === 0)
+      return res.status(404).json({ error: "Necesidad no encontrada" });
+
+    let escuelaId = null;
+    if (escuela && municipio) {
+      let munRes = await pool.query("SELECT id FROM municipios WHERE nombre = $1", [municipio]);
+      const municipioId = munRes.rows.length > 0
+        ? munRes.rows[0].id
+        : (await pool.query("INSERT INTO municipios (nombre) VALUES ($1) RETURNING id", [municipio])).rows[0].id;
+
+      let escRes = await pool.query("SELECT id FROM escuelas WHERE nombre = $1", [escuela]);
+      if (escRes.rows.length > 0) {
+        escuelaId = escRes.rows[0].id;
+        await pool.query("UPDATE escuelas SET municipio_id = $1 WHERE id = $2", [municipioId, escuelaId]);
+      } else {
+        escuelaId = (await pool.query("INSERT INTO escuelas (nombre, municipio_id) VALUES ($1, $2) RETURNING id", [escuela, municipioId])).rows[0].id;
+      }
+    }
+
+    const sets   = [];
+    const values = [];
+    if (escuelaId)            { values.push(escuelaId);       sets.push(`escuela_id = $${values.length}`); }
+    if (subcategoria_id)      { values.push(subcategoria_id); sets.push(`subcategoria_id = $${values.length}`); }
+    if (propuesta !== undefined){ values.push(propuesta);     sets.push(`propuesta = $${values.length}`); }
+    if (cantidad  !== undefined){ values.push(cantidad);      sets.push(`cantidad = $${values.length}`); }
+    if (unidad    !== undefined){ values.push(unidad);        sets.push(`unidad = $${values.length}`); }
+    if (estado    !== undefined){ values.push(estado);        sets.push(`estado = $${values.length}`); }
+    if (detalles  !== undefined){ values.push(detalles);      sets.push(`detalles = $${values.length}`); }
+
+    if (sets.length === 0)
+      return res.status(400).json({ error: "No se enviaron campos para actualizar" });
+
+    values.push(id);
+    await pool.query(`UPDATE necesidades SET ${sets.join(", ")} WHERE id = $${values.length}`, values);
+    res.json({ message: "Necesidad actualizada exitosamente" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// Elimina una necesidad por ID
+app.delete("/api/admin/necesidades/:id", async (req, res) => {
+  try {
+    const result = await pool.query("DELETE FROM necesidades WHERE id = $1 RETURNING id", [req.params.id]);
+    if (result.rows.length === 0)
+      return res.status(404).json({ error: "Necesidad no encontrada" });
+    res.json({ message: "Necesidad eliminada exitosamente" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// Devuelve categorías y subcategorías reales de la BD (no del catálogo visual) para el formulario de crear necesidad
+app.get("/api/admin/categorias-reales", async (req, res) => {
+  try {
+    const [categorias, subcategorias] = await Promise.all([
+      pool.query("SELECT id, nombre FROM categorias ORDER BY nombre"),
+      pool.query("SELECT id, nombre, categoria_id FROM subcategorias ORDER BY nombre"),
+    ]);
+    res.json({ categorias: categorias.rows, subcategorias: subcategorias.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// Autocompletado de escuelas por texto (mínimo 2 caracteres, máximo 10 resultados)
+app.get("/api/admin/escuelas/buscar", async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q || q.length < 2) return res.json({ data: [] });
+    const result = await pool.query(
+      "SELECT nombre FROM escuelas WHERE nombre ILIKE $1 ORDER BY nombre LIMIT 10",
+      [`%${q}%`]
+    );
+    res.json({ data: result.rows.map(r => r.nombre) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// Autocompletado de municipios por texto (mínimo 2 caracteres, máximo 10 resultados)
+app.get("/api/admin/municipios/buscar", async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q || q.length < 2) return res.json({ data: [] });
+    const result = await pool.query(
+      "SELECT nombre FROM municipios WHERE nombre ILIKE $1 ORDER BY nombre LIMIT 10",
+      [`%${q}%`]
+    );
+    res.json({ data: result.rows.map(r => r.nombre) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+
+// ─────────────────────────────────────────────────────────────
+// ADMIN — EXCEL (NECESIDADES)
+// ─────────────────────────────────────────────────────────────
+
+// Devuelve el total de necesidades y el ID más reciente (para el label de última actualización)
+app.get("/api/admin/excel/info", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT COUNT(*) AS total, MAX(id) AS ultimo_id FROM necesidades");
+    res.json({ total: parseInt(result.rows[0].total), ultimoId: result.rows[0].ultimo_id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// Genera y descarga un archivo .xlsx con todos los registros de necesidades
+// El archivo mantiene el mismo formato del Excel original para que pueda re-subirse
+app.get("/api/admin/excel/descargar", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT
+         m.nombre  AS "Municipio", c.nombre  AS "Categoría",
+         s.nombre  AS "Subcategoría", e.nombre AS "Escuela",
+         n.propuesta AS "Propuesta", n.cantidad AS "Cantidad",
+         n.unidad AS "Unidad", n.detalles AS "Detalles", n.estado AS "Estado"
+       FROM necesidades n
+       JOIN escuelas      e ON n.escuela_id      = e.id
+       JOIN municipios    m ON e.municipio_id    = m.id
+       JOIN subcategorias s ON n.subcategoria_id = s.id
+       JOIN categorias    c ON s.categoria_id    = c.id
+       ORDER BY m.nombre, e.nombre, n.id`
+    );
+
+    const headers = ["Municipio","Categoría","Subcategoría","Escuela","Propuesta","Cantidad","Unidad","Detalles","Estado"];
+    const data    = result.rows.map(r => [r.Municipio, r.Categoría, r.Subcategoría, r.Escuela, r.Propuesta, r.Cantidad, r.Unidad, r.Detalles, r.Estado]);
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+
+    const headerStyle = {
+      fill: { fgColor: { rgb: "259D63" } },
+      font: { color: { rgb: "FFFFFF" }, bold: true, name: "Montserrat" },
+      alignment: { horizontal: "center", vertical: "center" }
+    };
+    const cellStyle = { font: { name: "Montserrat" } };
+
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const addr = XLSX.utils.encode_cell({ r: R, c: C });
+        if (!ws[addr]) continue;
+        ws[addr].s = R === 0 ? headerStyle : cellStyle;
+      }
+    }
+
+    ws["!cols"] = [{ wch:20 },{ wch:20 },{ wch:25 },{ wch:30 },{ wch:35 },{ wch:10 },{ wch:15 },{ wch:40 },{ wch:20 }];
+    XLSX.utils.book_append_sheet(wb, ws, "Necesidades");
+
+    const buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
+    const fecha  = new Date().toISOString().slice(0, 10);
+    res.setHeader("Content-Disposition", `attachment; filename="necesidades_${fecha}.xlsx"`);
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.send(buffer);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// Recibe un archivo .xlsx, borra todos los registros actuales de necesidades y los reemplaza con los del archivo
+// Columnas esperadas: Municipio, Categoría, Subcategoría, Escuela, Propuesta, Cantidad, Unidad, Detalles, Estado
+app.post("/api/admin/excel/subir", upload.single("archivo"), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No se recibió ningún archivo" });
+
+  try {
+    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+    const filas    = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+
+    if (filas.length === 0)  return res.status(400).json({ error: "El archivo no contiene datos" });
+    if (filas.length < 5)    return res.status(400).json({ error: "El archivo parece incompleto. Operación cancelada." });
+
+    const clean = v => v ? String(v).trim() : null;
+    const normalizeEstado = v => {
+      const s = String(v || "").toLowerCase().trim();
+      if (s === "cubierto")                                        return "Cubierto";
+      if (s === "cubierto parcialmente")                           return "Cubierto parcialmente";
+      if (s === "aun no cubierto" || s === "aún no cubierto")      return "Aun no cubierto";
+      return "Aun no cubierto";
+    };
+
+    const client = await pool.connect();
+    let insertados = 0;
+    let omitidos   = 0;
+
+    try {
+      await client.query("BEGIN");
+      await client.query("TRUNCATE TABLE necesidades RESTART IDENTITY CASCADE");
+
+      for (const fila of filas) {
+        const municipio    = clean(fila["Municipio"]);
+        const categoria    = clean(fila["Categoría"]    || fila["Categoria"]);
+        const subcategoria = clean(fila["Subcategoría"] || fila["Subcategoria"]);
+        const escuela      = clean(fila["Escuela"]);
+        const propuesta    = clean(fila["Propuesta"]);
+        const cantidad     = parseInt(fila["Cantidad"]) || 1;
+        const unidad       = clean(fila["Unidad"]);
+        const detalles     = clean(fila["Detalles"]);
+        const estado       = normalizeEstado(fila["Estado"]);
+
+        if (!municipio || !categoria || !subcategoria || !escuela || !propuesta) {
+          omitidos++;
+          continue;
+        }
+
+        const municipioId = (await client.query("SELECT id FROM municipios WHERE nombre = $1", [municipio])).rows[0]?.id
+          ?? (await client.query("INSERT INTO municipios (nombre) VALUES ($1) RETURNING id", [municipio])).rows[0].id;
+
+        const categoriaId = (await client.query("SELECT id FROM categorias WHERE nombre = $1", [categoria])).rows[0]?.id
+          ?? (await client.query("INSERT INTO categorias (nombre) VALUES ($1) RETURNING id", [categoria])).rows[0].id;
+
+        const subcategoriaId = (await client.query("SELECT id FROM subcategorias WHERE nombre = $1 AND categoria_id = $2", [subcategoria, categoriaId])).rows[0]?.id
+          ?? (await client.query("INSERT INTO subcategorias (nombre, categoria_id) VALUES ($1, $2) RETURNING id", [subcategoria, categoriaId])).rows[0].id;
+
+        const escuelaId = (await client.query("SELECT id FROM escuelas WHERE nombre = $1", [escuela])).rows[0]?.id
+          ?? (await client.query("INSERT INTO escuelas (nombre, municipio_id) VALUES ($1, $2) RETURNING id", [escuela, municipioId])).rows[0].id;
+
+        await client.query(
+          `INSERT INTO necesidades (escuela_id, subcategoria_id, propuesta, cantidad, unidad, estado, detalles)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [escuelaId, subcategoriaId, propuesta, cantidad, unidad, estado, detalles]
+        );
+        insertados++;
+      }
+
+      await client.query("COMMIT");
+      res.json({ message: `Importación completada: ${insertados} insertados, ${omitidos} omitidos.`, insertados, omitidos });
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error procesando el archivo: " + err.message });
+  }
+});
+
+
+// ─────────────────────────────────────────────────────────────
+// ADMIN — BANDEJA DE SOLICITUDES
+// ─────────────────────────────────────────────────────────────
+
+// Devuelve todas las solicitudes ordenadas por fecha descendente
+app.get("/api/admin/solicitudes", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT id, nombre_completo, tipo_instancia, nombre_instancia,
@@ -1267,175 +747,73 @@ app.get('/api/admin/solicitudes', async (req, res) => {
     res.json({ data: result.rows });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error en servidor' });
+    res.status(500).json({ error: "Error en servidor" });
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/solicitudes/:id/materiales
-   Materiales de una solicitud de tipo "pasos".
-   ══════════════════════════════════════════════════════════ */
-app.get('/api/admin/solicitudes/:id/materiales', async (req, res) => {
+// Devuelve los materiales asociados a una solicitud de tipo 'pasos'
+app.get("/api/admin/solicitudes/:id/materiales", async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT escuela, propuesta, cantidad, unidad
-       FROM solicitud_materiales
-       WHERE solicitud_id = $1`,
+      "SELECT escuela, propuesta, cantidad, unidad FROM solicitud_materiales WHERE solicitud_id = $1",
       [req.params.id]
     );
     res.json({ data: result.rows });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error en servidor' });
+    res.status(500).json({ error: "Error en servidor" });
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   PATCH /api/admin/solicitudes/:id/estado
-   Actualiza el estado de lectura (nueva / leida / archivada).
-   ══════════════════════════════════════════════════════════ */
-app.patch('/api/admin/solicitudes/:id/estado', async (req, res) => {
+// Actualiza el estado de lectura de una solicitud (nueva / leida / archivada)
+app.patch("/api/admin/solicitudes/:id/estado", async (req, res) => {
   try {
     const { estado_lectura } = req.body;
-    const validos = ['nueva', 'leida', 'archivada'];
+    const validos = ["nueva", "leida", "archivada"];
     if (!validos.includes(estado_lectura))
-      return res.status(400).json({ error: 'Estado inválido' });
-
+      return res.status(400).json({ error: "Estado inválido" });
     await pool.query(
-      'UPDATE solicitudes_donacion SET estado_lectura = $1 WHERE id = $2',
+      "UPDATE solicitudes_donacion SET estado_lectura = $1 WHERE id = $2",
       [estado_lectura, req.params.id]
     );
-    res.json({ message: 'Estado actualizado' });
+    res.json({ message: "Estado actualizado" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error en servidor' });
+    res.status(500).json({ error: "Error en servidor" });
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/panel/metricas
-   Métricas generales para el panel de administración.
-   ══════════════════════════════════════════════════════════ */
-app.get('/api/admin/panel/metricas', async (req, res) => {
-  try {
-    const [necesidades, solicitudes, donadores, porEstado, porEscuela] = await Promise.all([
 
-      // Total necesidades y cuántas están cubiertas
-      pool.query(`
-        SELECT
-          COUNT(*) AS total,
-          COUNT(*) FILTER (WHERE estado = 'Cubierto') AS cubiertas,
-          COUNT(*) FILTER (WHERE estado = 'Cubierto parcialmente') AS parciales,
-          COUNT(*) FILTER (WHERE estado = 'Aun no cubierto') AS pendientes
-        FROM necesidades
-      `),
+// ─────────────────────────────────────────────────────────────
+// ADMIN — GESTIÓN DE SOLICITUDES
+// ─────────────────────────────────────────────────────────────
 
-      // Solicitudes de donación
-      pool.query(`
-        SELECT
-          COUNT(*) AS total,
-          COUNT(*) FILTER (WHERE estado_lectura = 'nueva' OR estado_lectura IS NULL) AS nuevas,
-          COUNT(*) FILTER (WHERE estado_lectura = 'leida') AS leidas,
-          COUNT(*) FILTER (WHERE estado_lectura = 'archivada') AS archivadas,
-          COUNT(*) FILTER (WHERE tipo_donacion = 'Donación material') AS material,
-          COUNT(*) FILTER (WHERE tipo_donacion != 'Donación material' AND tipo_donacion IS NOT NULL) AS otras
-        FROM solicitudes_donacion
-      `),
-
-      // Donadores registrados
-      pool.query(`
-        SELECT id, nombre_completo, correo, estado, created_at
-        FROM donadores
-        ORDER BY created_at DESC
-        LIMIT 10
-      `),
-
-      // Necesidades por estado (para gráfica de dona)
-      pool.query(`
-        SELECT estado, COUNT(*) AS total
-        FROM necesidades
-        GROUP BY estado
-        ORDER BY total DESC
-      `),
-
-      // Top 8 escuelas con más necesidades pendientes
-      pool.query(`
-        SELECT e.nombre AS escuela,
-          COUNT(*) FILTER (WHERE n.estado = 'Cubierto') AS cubiertas,
-          COUNT(*) FILTER (WHERE n.estado = 'Cubierto parcialmente') AS parciales,
-          COUNT(*) FILTER (WHERE n.estado = 'Aun no cubierto') AS pendientes,
-          COUNT(*) AS total
-        FROM necesidades n
-        JOIN escuelas e ON n.escuela_id = e.id
-        GROUP BY e.nombre
-        ORDER BY pendientes DESC
-        LIMIT 8
-      `)
-    ]);
-
-    res.json({
-      necesidades:  necesidades.rows[0],
-      solicitudes:  solicitudes.rows[0],
-      donadores:    donadores.rows,
-      porEstado:    porEstado.rows,
-      porEscuela:   porEscuela.rows
-    });
-  } catch (err) {
-    console.error('Error en /api/admin/panel/metricas:', err);
-    res.status(500).json({ error: 'Error en servidor' });
-  }
-});
-
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/gestion-solicitudes
-   Todas las solicitudes con sus materiales agregados (para tabla).
-   ══════════════════════════════════════════════════════════ */
-app.get('/api/admin/gestion-solicitudes', async (req, res) => {
+// Devuelve solicitudes paginadas con filtros opcionales y sus materiales como JSON array
+app.get("/api/admin/gestion-solicitudes", async (req, res) => {
   try {
     const { busqueda, tipo, estatus, pagina = 1, limite = 15 } = req.query;
     const offset = (parseInt(pagina) - 1) * parseInt(limite);
 
     const conditions = [];
-    const values = [];
+    const values     = [];
+    if (busqueda) { values.push(`%${busqueda}%`); conditions.push(`(sd.nombre_completo ILIKE $${values.length} OR sd.correo ILIKE $${values.length})`); }
+    if (tipo)     { values.push(tipo);             conditions.push(`sd.tipo_donacion = $${values.length}`); }
+    if (estatus)  { values.push(estatus);           conditions.push(`sd.estatus_gestion = $${values.length}`); }
 
-    if (busqueda) {
-      values.push(`%${busqueda}%`);
-      conditions.push(`(sd.nombre_completo ILIKE $${values.length} OR sd.correo ILIKE $${values.length})`);
-    }
-    if (tipo) {
-      values.push(tipo);
-      conditions.push(`sd.tipo_donacion = $${values.length}`);
-    }
-    if (estatus) {
-      values.push(estatus);
-      conditions.push(`sd.estatus_gestion = $${values.length}`);
-    }
-
-    const where = conditions.length ? 'WHERE ' + conditions.join(' AND ') : '';
-
-    // Total para paginación
-    const totalRes = await pool.query(
-      `SELECT COUNT(*) FROM solicitudes_donacion sd ${where}`, values
-    );
-
-    // Datos paginados
-    const dataRes = await pool.query(
+    const where    = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
+    const totalRes = await pool.query(`SELECT COUNT(*) FROM solicitudes_donacion sd ${where}`, values);
+    const dataRes  = await pool.query(
       `SELECT
          sd.id, sd.nombre_completo, sd.tipo_instancia, sd.nombre_instancia,
          sd.correo, sd.telefono, sd.mensaje, sd.tipo_donacion,
          sd.origen_formulario, sd.estado_lectura, sd.created_at,
          COALESCE(sd.estatus_gestion, 'nueva') AS estatus_gestion,
-         COALESCE(sd.notas_admin, '') AS notas_admin,
-         -- Materiales agregados como JSON array
+         COALESCE(sd.notas_admin, '')          AS notas_admin,
          COALESCE(
-           json_agg(
-             json_build_object(
-               'escuela', sm.escuela,
-               'propuesta', sm.propuesta,
-               'cantidad', sm.cantidad,
-               'unidad', sm.unidad
-             )
-           ) FILTER (WHERE sm.id IS NOT NULL),
+           json_agg(json_build_object(
+             'escuela', sm.escuela, 'propuesta', sm.propuesta,
+             'cantidad', sm.cantidad, 'unidad', sm.unidad
+           )) FILTER (WHERE sm.id IS NOT NULL),
            '[]'
          ) AS materiales
        FROM solicitudes_donacion sd
@@ -1447,36 +825,25 @@ app.get('/api/admin/gestion-solicitudes', async (req, res) => {
       [...values, parseInt(limite), offset]
     );
 
-    res.json({
-      data:   dataRes.rows,
-      total:  parseInt(totalRes.rows[0].count),
-      pagina: parseInt(pagina),
-      limite: parseInt(limite)
-    });
+    res.json({ data: dataRes.rows, total: parseInt(totalRes.rows[0].count), pagina: parseInt(pagina), limite: parseInt(limite) });
   } catch (err) {
-    console.error('Error en gestion-solicitudes:', err);
-    res.status(500).json({ error: 'Error en servidor' });
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   PATCH /api/admin/gestion-solicitudes/:id
-   Actualizar estatus_gestion y/o notas_admin de una solicitud.
-   ══════════════════════════════════════════════════════════ */
-app.patch('/api/admin/gestion-solicitudes/:id', async (req, res) => {
+// Actualiza campos editables de una solicitud (estatus de gestión, notas y datos del solicitante)
+app.patch("/api/admin/gestion-solicitudes/:id", async (req, res) => {
   try {
     const { estatus_gestion, notas_admin, nombre_completo, correo, telefono, mensaje } = req.body;
-    const { id } = req.params;
-
-    const sets = [];
+    const sets   = [];
     const values = [];
 
     if (estatus_gestion !== undefined) {
-      const validos = ['nueva', 'en_proceso', 'pendiente', 'finalizada', 'cancelada'];
+      const validos = ["nueva", "en_proceso", "pendiente", "finalizada", "cancelada"];
       if (!validos.includes(estatus_gestion))
-        return res.status(400).json({ error: 'Estatus inválido' });
-      values.push(estatus_gestion);
-      sets.push(`estatus_gestion = $${values.length}`);
+        return res.status(400).json({ error: "Estatus inválido" });
+      values.push(estatus_gestion); sets.push(`estatus_gestion = $${values.length}`);
     }
     if (notas_admin     !== undefined) { values.push(notas_admin);     sets.push(`notas_admin = $${values.length}`); }
     if (nombre_completo !== undefined) { values.push(nombre_completo); sets.push(`nombre_completo = $${values.length}`); }
@@ -1484,102 +851,150 @@ app.patch('/api/admin/gestion-solicitudes/:id', async (req, res) => {
     if (telefono        !== undefined) { values.push(telefono);        sets.push(`telefono = $${values.length}`); }
     if (mensaje         !== undefined) { values.push(mensaje);         sets.push(`mensaje = $${values.length}`); }
 
-    if (sets.length === 0)
-      return res.status(400).json({ error: 'Nada que actualizar' });
+    if (sets.length === 0) return res.status(400).json({ error: "Nada que actualizar" });
 
-    values.push(id);
-    await pool.query(
-      `UPDATE solicitudes_donacion SET ${sets.join(', ')} WHERE id = $${values.length}`,
-      values
-    );
-
-    res.json({ message: 'Solicitud actualizada' });
+    values.push(req.params.id);
+    await pool.query(`UPDATE solicitudes_donacion SET ${sets.join(", ")} WHERE id = $${values.length}`, values);
+    res.json({ message: "Solicitud actualizada" });
   } catch (err) {
-    console.error('Error en PATCH gestion-solicitudes:', err);
-    res.status(500).json({ error: 'Error en servidor' });
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   GET /api/admin/equipo
-   ══════════════════════════════════════════════════════════ */
-app.get('/api/admin/equipo', async (req, res) => {
+
+// ─────────────────────────────────────────────────────────────
+// ADMIN — PANEL (MÉTRICAS)
+// ─────────────────────────────────────────────────────────────
+
+// Devuelve métricas generales para el dashboard: conteos de necesidades, solicitudes, donadores y gráficas
+app.get("/api/admin/panel/metricas", async (req, res) => {
   try {
-    const result = await pool.query(
-      `SELECT id, nombre, correo, rol, imagen FROM administradores ORDER BY id`
-    );
+    const [necesidades, solicitudes, donadores, porEstado, porEscuela] = await Promise.all([
+      pool.query(`
+        SELECT
+          COUNT(*) AS total,
+          COUNT(*) FILTER (WHERE estado = 'Cubierto')              AS cubiertas,
+          COUNT(*) FILTER (WHERE estado = 'Cubierto parcialmente') AS parciales,
+          COUNT(*) FILTER (WHERE estado = 'Aun no cubierto')       AS pendientes
+        FROM necesidades
+      `),
+      pool.query(`
+        SELECT
+          COUNT(*) AS total,
+          COUNT(*) FILTER (WHERE estado_lectura = 'nueva' OR estado_lectura IS NULL) AS nuevas,
+          COUNT(*) FILTER (WHERE estado_lectura = 'leida')     AS leidas,
+          COUNT(*) FILTER (WHERE estado_lectura = 'archivada') AS archivadas,
+          COUNT(*) FILTER (WHERE tipo_donacion = 'Donación material') AS material,
+          COUNT(*) FILTER (WHERE tipo_donacion != 'Donación material' AND tipo_donacion IS NOT NULL) AS otras
+        FROM solicitudes_donacion
+      `),
+      pool.query("SELECT id, nombre_completo, correo, estado, created_at FROM donadores ORDER BY created_at DESC LIMIT 10"),
+      pool.query("SELECT estado, COUNT(*) AS total FROM necesidades GROUP BY estado ORDER BY total DESC"),
+      pool.query(`
+        SELECT e.nombre AS escuela,
+          COUNT(*) FILTER (WHERE n.estado = 'Cubierto')              AS cubiertas,
+          COUNT(*) FILTER (WHERE n.estado = 'Cubierto parcialmente') AS parciales,
+          COUNT(*) FILTER (WHERE n.estado = 'Aun no cubierto')       AS pendientes,
+          COUNT(*) AS total
+        FROM necesidades n
+        JOIN escuelas e ON n.escuela_id = e.id
+        GROUP BY e.nombre
+        ORDER BY pendientes DESC
+        LIMIT 8
+      `)
+    ]);
+
+    res.json({
+      necesidades: necesidades.rows[0],
+      solicitudes: solicitudes.rows[0],
+      donadores:   donadores.rows,
+      porEstado:   porEstado.rows,
+      porEscuela:  porEscuela.rows
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+
+// ─────────────────────────────────────────────────────────────
+// ADMIN — EQUIPO ADMINISTRATIVO
+// ─────────────────────────────────────────────────────────────
+
+// Devuelve todos los administradores registrados
+app.get("/api/admin/equipo", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT id, nombre, correo, rol, imagen FROM administradores ORDER BY id");
     res.json({ data: result.rows });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error en servidor' });
+    res.status(500).json({ error: "Error en servidor" });
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   POST /api/admin/equipo
-   ══════════════════════════════════════════════════════════ */
-app.post('/api/admin/equipo', async (req, res) => {
+// Crea un nuevo administrador
+app.post("/api/admin/equipo", async (req, res) => {
   try {
     const { nombre, correo, password, rol } = req.body;
     if (!nombre || !correo || !password)
-      return res.status(400).json({ error: 'Nombre, correo y contraseña son requeridos.' });
+      return res.status(400).json({ error: "Nombre, correo y contraseña son requeridos." });
 
-    const existe = await pool.query('SELECT id FROM administradores WHERE correo = $1', [correo]);
+    const existe = await pool.query("SELECT id FROM administradores WHERE correo = $1", [correo]);
     if (existe.rows.length > 0)
-      return res.status(400).json({ error: 'Ya existe un administrador con ese correo.' });
+      return res.status(400).json({ error: "Ya existe un administrador con ese correo." });
 
     const result = await pool.query(
-      `INSERT INTO administradores (nombre, correo, password_hash, rol)
-       VALUES ($1, $2, $3, $4) RETURNING id`,
-      [nombre, correo, password, rol || 'admin']
+      "INSERT INTO administradores (nombre, correo, password_hash, rol) VALUES ($1, $2, $3, $4) RETURNING id",
+      [nombre, correo, password, rol || "admin"]
     );
-    res.status(201).json({ message: 'Administrador creado.', id: result.rows[0].id });
+    res.status(201).json({ message: "Administrador creado.", id: result.rows[0].id });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error en servidor' });
+    res.status(500).json({ error: "Error en servidor" });
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   PATCH /api/admin/equipo/:id
-   ══════════════════════════════════════════════════════════ */
-app.patch('/api/admin/equipo/:id', async (req, res) => {
+// Actualiza los datos de un administrador (solo los campos que vienen en el body)
+app.patch("/api/admin/equipo/:id", async (req, res) => {
   try {
     const { nombre, correo, password, rol } = req.body;
-    const sets = []; const values = [];
+    const sets   = [];
+    const values = [];
     if (nombre)   { values.push(nombre);   sets.push(`nombre = $${values.length}`); }
     if (correo)   { values.push(correo);   sets.push(`correo = $${values.length}`); }
     if (password) { values.push(password); sets.push(`password_hash = $${values.length}`); }
     if (rol)      { values.push(rol);      sets.push(`rol = $${values.length}`); }
-    if (sets.length === 0) return res.status(400).json({ error: 'Nada que actualizar.' });
+    if (sets.length === 0) return res.status(400).json({ error: "Nada que actualizar." });
     values.push(req.params.id);
-    await pool.query(`UPDATE administradores SET ${sets.join(', ')} WHERE id = $${values.length}`, values);
-    res.json({ message: 'Administrador actualizado.' });
+    await pool.query(`UPDATE administradores SET ${sets.join(", ")} WHERE id = $${values.length}`, values);
+    res.json({ message: "Administrador actualizado." });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error en servidor' });
+    res.status(500).json({ error: "Error en servidor" });
   }
 });
 
-/* ══════════════════════════════════════════════════════════
-   DELETE /api/admin/equipo/:id
-   ══════════════════════════════════════════════════════════ */
-app.delete('/api/admin/equipo/:id', async (req, res) => {
+// Elimina un administrador por ID
+app.delete("/api/admin/equipo/:id", async (req, res) => {
   try {
-    const result = await pool.query(
-      'DELETE FROM administradores WHERE id = $1 RETURNING id', [req.params.id]
-    );
+    const result = await pool.query("DELETE FROM administradores WHERE id = $1 RETURNING id", [req.params.id]);
     if (result.rows.length === 0)
-      return res.status(404).json({ error: 'Administrador no encontrado.' });
-    res.json({ message: 'Administrador eliminado.' });
+      return res.status(404).json({ error: "Administrador no encontrado." });
+    res.json({ message: "Administrador eliminado." });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error en servidor' });
+    res.status(500).json({ error: "Error en servidor" });
   }
 });
+
+
+// ─────────────────────────────────────────────────────────────
+// INICIO
+// ─────────────────────────────────────────────────────────────
 
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
