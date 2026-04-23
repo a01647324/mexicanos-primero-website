@@ -880,15 +880,18 @@ app.get("/api/admin/panel/metricas", async (req, res) => {
         FROM necesidades
       `),
       pool.query(`
-        SELECT
-          COUNT(*) AS total,
-          COUNT(*) FILTER (WHERE estado_lectura = 'nueva' OR estado_lectura IS NULL) AS nuevas,
-          COUNT(*) FILTER (WHERE estado_lectura = 'leida')     AS leidas,
-          COUNT(*) FILTER (WHERE estado_lectura = 'archivada') AS archivadas,
-          COUNT(*) FILTER (WHERE tipo_donacion = 'Donación material') AS material,
-          COUNT(*) FILTER (WHERE tipo_donacion != 'Donación material' AND tipo_donacion IS NOT NULL) AS otras
-        FROM solicitudes_donacion
-      `),
+      SELECT
+        COUNT(*) AS total,
+        COUNT(*) FILTER (WHERE estado_lectura = 'nueva' OR estado_lectura IS NULL) AS nuevas,
+        COUNT(*) FILTER (WHERE estado_lectura = 'leida')     AS leidas,
+        COUNT(*) FILTER (WHERE estado_lectura = 'archivada') AS archivadas,
+        COUNT(*) FILTER (WHERE tipo_donacion = 'Donación material')   AS material,
+        COUNT(*) FILTER (WHERE tipo_donacion = 'Donación económica')  AS economica,
+        COUNT(*) FILTER (WHERE tipo_donacion = 'Voluntariado')        AS voluntariado,
+        COUNT(*) FILTER (WHERE tipo_donacion = 'Brindar talleres')    AS talleres,
+        COUNT(*) FILTER (WHERE tipo_donacion = 'Vinculaciones')       AS vinculaciones
+      FROM solicitudes_donacion
+    `),
       pool.query("SELECT id, nombre_completo, correo, estado, created_at FROM donadores ORDER BY created_at DESC LIMIT 10"),
       pool.query("SELECT estado, COUNT(*) AS total FROM necesidades GROUP BY estado ORDER BY total DESC"),
       pool.query(`
