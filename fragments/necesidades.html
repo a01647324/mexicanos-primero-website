@@ -11,13 +11,11 @@
   <!-- Grid de las 3 secciones -->
   <div class="necesidades-grid">
 
-    <!-- ════════════════════════════════════════════
-         SECCIÓN 1: CONSULTA (READ) — Verde
-         ════════════════════════════════════════════ -->
+    <!-- SECCIÓN 1: CONSULTA (READ) -->
     <section class="panel-card panel-consulta">
 
       <div class="panel-header">
-        <div class="panel-icono panel-icono-verde">
+        <div class="panel-icono panel-icono-azul">
           <i class="bi bi-search"></i>
         </div>
         <div>
@@ -38,7 +36,7 @@
         <ul id="buscador-sugerencias" class="panel-sugerencias"></ul>
       </div>
 
-      <!-- Filtros (dropdowns) -->
+      <!-- Filtros - dropdowns -->
       <div class="panel-filtros">
         <select id="filtro-municipio" class="panel-select">
           <option value="">Todos los municipios</option>
@@ -54,7 +52,7 @@
         </select>
       </div>
 
-      <!-- Resultados: tarjetas -->
+      <!-- Resultados - tarjetas -->
       <div class="panel-resultados-info">
         <span id="contador-resultados">Usa los filtros o busca una escuela para ver registros</span>
       </div>
@@ -64,13 +62,11 @@
 
     </section>
 
-    <!-- ════════════════════════════════════════════
-         SECCIÓN 2: CREAR (CREATE) — Azul
-         ════════════════════════════════════════════ -->
+    <!-- SECCIÓN 2: CREAR (CREATE) -->
     <section class="panel-card panel-crear">
 
       <div class="panel-header">
-        <div class="panel-icono panel-icono-azul">
+        <div class="panel-icono panel-icono-verde">
           <i class="bi bi-plus-lg"></i>
         </div>
         <div>
@@ -110,7 +106,7 @@
         <div class="form-grupo">
           <label class="form-label">Subcategoría</label>
           <select id="crear-subcategoria" name="subcategoria" class="panel-select" required>
-            <option value="">Selecciona primero una categoría</option>
+            <option value="">Primero selecciona una categoría</option>
           </select>
         </div>
 
@@ -148,16 +144,14 @@
 
         <button type="submit" class="panel-btn panel-btn-azul form-grupo-completo">
           <i class="bi bi-plus-lg"></i>
-          Guardar Registro
+          Crear Registro
         </button>
 
       </form>
 
     </section>
 
-    <!-- ════════════════════════════════════════════
-         SECCIÓN 3: SINCRONIZACIÓN EXCEL — Naranja
-         ════════════════════════════════════════════ -->
+    <!-- SECCIÓN 3: SINCRONIZACIÓN EXCEL -->
     <section class="panel-card panel-carga">
 
       <div class="panel-header">
@@ -165,12 +159,12 @@
           <i class="bi bi-arrow-down-up"></i>
         </div>
         <div>
-          <h2 class="panel-titulo">Sincronización Excel</h2>
+          <h2 class="panel-titulo">Sincronización Con Excel</h2>
           <p class="panel-descripcion">Descarga el archivo actualizado o sube cambios masivos.</p>
         </div>
       </div>
 
-      <!-- Flujo de trabajo recomendado -->
+      <!-- Flujo de trabajo -->
       <div class="panel-flujo">
         <div class="flujo-paso">
           <span class="flujo-numero">1</span>
@@ -275,22 +269,16 @@
 </div>
 
 <script>
-// ============================================================
-// LÓGICA DE GESTIÓN DE NECESIDADES
-// Envuelto en IIFE para no contaminar el scope global
-// ============================================================
+// Envuelto en IIFE para evitar contaminacion global
 
 (function() {
 
   var API_URL = "http://localhost:3000/api";
 
-  // ── Estado ──
   var todasSubcatsAdmin = [];
   var resultadosActuales = [];
 
-  // ══════════════════════════════════════════════════════════
   // ARRANQUE
-  // ══════════════════════════════════════════════════════════
 
   function iniciarNecesidades() {
     cargarFiltrosAdmin();
@@ -300,9 +288,7 @@
     configurarSincronizacion(); 
   }
 
-  // ══════════════════════════════════════════════════════════
   // CARGA DE FILTROS
-  // ══════════════════════════════════════════════════════════
 
   async function cargarFiltrosAdmin() {
     try {
@@ -343,9 +329,7 @@
     }
   }
 
-  // ══════════════════════════════════════════════════════════
   // SUBCATEGORÍAS
-  // ══════════════════════════════════════════════════════════
 
   function renderSubcatAdmin(subcats) {
     var sel = document.getElementById("filtro-subcategoria");
@@ -372,9 +356,7 @@
     }
   }
 
-  // ══════════════════════════════════════════════════════════
   // EVENTOS DE FILTROS
-  // ══════════════════════════════════════════════════════════
 
   function configurarEventosFiltros() {
     document.getElementById("filtro-categoria").addEventListener("change", function() {
@@ -386,9 +368,7 @@
     document.getElementById("filtro-escuela").addEventListener("change", buscarRegistros);
   }
 
-  // ══════════════════════════════════════════════════════════
   // BUSCADOR CON AUTOCOMPLETADO
-  // ══════════════════════════════════════════════════════════
 
   function configurarBuscadorEscuela() {
     var input = document.getElementById("buscador-escuela");
@@ -453,9 +433,7 @@
     }
   }
 
-  // ══════════════════════════════════════════════════════════
   // BÚSQUEDA DE REGISTROS (READ)
-  // ══════════════════════════════════════════════════════════
 
   async function buscarRegistros() {
     var params = new URLSearchParams();
@@ -491,9 +469,7 @@
     }
   }
 
-  // ══════════════════════════════════════════════════════════
   // RENDER DE TARJETAS
-  // ══════════════════════════════════════════════════════════
 
   function renderTarjetas(registros) {
     var lista = document.getElementById("lista-registros");
@@ -502,7 +478,7 @@
 
     if (registros.length === 0) {
       contador.textContent = "Sin resultados";
-      lista.innerHTML = '<div class="lista-registros-vacio">No se encontraron registros con estos filtros.</div>';
+      lista.innerHTML = '<div class="lista-registros-vacio">No se encontraron registros con los filtros seleccionados.</div>';
       return;
     }
 
@@ -524,9 +500,7 @@
     });
   }
 
-  // ══════════════════════════════════════════════════════════
   // MODAL DE DETALLE (READ)
-  // ══════════════════════════════════════════════════════════
 
   async function abrirModalDetalle(id) {
     try {
@@ -587,9 +561,7 @@
     });
   }
 
-  // ══════════════════════════════════════════════════════════
   // MODAL DE EDICIÓN (UPDATE)
-  // ══════════════════════════════════════════════════════════
 
   function mostrarModalEdicion(reg) {
     var modal = document.getElementById("modal-detalle");
@@ -612,7 +584,7 @@
         '<div class="form-grupo">' +
           '<label class="form-label">Categoría</label>' +
           '<input type="text" class="panel-input" id="edit-categoria" value="' + reg["Categoría"] + '">' +
-          '<small class="form-ayuda">Categoría real de la BD (no la del catálogo visual)</small>' +
+          '<small class="form-ayuda">Categoría real del archivo excel</small>' +
         '</div>' +
         '<div class="form-grupo">' +
           '<label class="form-label">Subcategoría</label>' +
@@ -702,9 +674,7 @@
     });
   }
 
-  // ══════════════════════════════════════════════════════════
   // ELIMINAR (DELETE)
-  // ══════════════════════════════════════════════════════════
 
   function mostrarConfirmacionEliminar(reg) {
     if (!confirm('¿Estás seguro de que deseas eliminar este registro?\n\n"' + reg.Propuesta + '" de ' + reg.Escuela + '\n\nEsta acción no se puede deshacer.')) {
@@ -730,11 +700,8 @@
     });
   }
 
-  // ══════════════════════════════════════════════════════════
   // FORMULARIO CREAR (CREATE)
-  // ══════════════════════════════════════════════════════════
 
-  // Variable de módulo para guardar todas las subcategorías reales
   var todasSubcatsReales = [];
 
   function configurarFormCrear() {
@@ -841,7 +808,6 @@
   }
 
   // Carga las categorías reales de la BD en el select de Categoría.
-  // Cuando el usuario selecciona una, se filtran las subcategorías.
   async function cargarCategoriasReales() {
     try {
       var res = await fetch(API_URL + "/admin/categorias-reales");
@@ -885,7 +851,7 @@
 
       if (filtradas.length === 0) {
         selSub.innerHTML =
-          '<option value="">Sin subcategorías para esta categoría</option>';
+          '<option value="">No hay subcategorías para esta categoría</option>';
         return;
       }
 
@@ -926,7 +892,7 @@
 
             if (!data.data || data.data.length === 0) {
               lista.innerHTML =
-                '<li class="sugerencia-vacia">No encontrado — se creará nuevo</li>';
+                '<li class="sugerencia-vacia">No se encontraron resultados — se creará nuevo</li>';
               lista.classList.add("visible");
               return;
             }
@@ -959,9 +925,7 @@
     });
   }
 
-  // ══════════════════════════════════════════════════════════
   // SINCRONIZACIÓN EXCEL
-  // ══════════════════════════════════════════════════════════
 
   function configurarSincronizacion() {
     cargarInfoExcel();
@@ -969,8 +933,7 @@
     configurarDropzone();
   }
 
-  // Carga el contador de registros y el ID máximo para mostrar
-  // en el label "Última actualización en sistema".
+  // Carga el contador de registros y el ID máximo para mostrar el label "Última actualización en sistema".
   async function cargarInfoExcel() {
     try {
       var res = await fetch(API_URL + "/admin/excel/info");
@@ -986,9 +949,7 @@
     }
   }
 
-  // Al hacer clic en "Descargar Excel Actual", hace fetch al endpoint
-  // y fuerza la descarga en el navegador usando un <a> temporal.
-  // No abre una pestaña nueva — descarga directamente.
+  // Descarga el Excel actual vía fetch sin abrir pestañas
   function configurarDescarga() {
     var btn = document.getElementById("btn-descargar");
     if (!btn) return;
@@ -1025,11 +986,7 @@
   }
 
   // Maneja la zona de drop y el input de archivo.
-  // - Click en dropzone → abre el selector de archivo
-  // - Drag & drop → carga el archivo
-  // - Muestra el nombre y tamaño del archivo seleccionado
-  // - Habilita el botón "Procesar Archivo" solo cuando hay archivo
-  // - Al procesar, envía el archivo via FormData al endpoint POST
+  // Al procesar, envía el archivo via FormData al endpoint POST
   function configurarDropzone() {
     var dropzone   = document.getElementById("dropzone");
     var inputFile  = document.getElementById("input-excel");
@@ -1043,12 +1000,10 @@
 
     var archivoSeleccionado = null;
 
-    // Click en dropzone → abre selector de archivo
     dropzone.addEventListener("click", function() {
       inputFile.click();
     });
 
-    // Drag over → estilo visual
     dropzone.addEventListener("dragover", function(e) {
       e.preventDefault();
       dropzone.classList.add("dropzone-activa");
@@ -1070,12 +1025,10 @@
       if (inputFile.files[0]) seleccionarArchivo(inputFile.files[0]);
     });
 
-    // Botón quitar archivo
     btnQuitar.addEventListener("click", function() {
       limpiarArchivo();
     });
 
-    // Botón procesar
     btnProcesar.addEventListener("click", function() {
       if (!archivoSeleccionado) return;
       procesarArchivo(archivoSeleccionado);
@@ -1104,10 +1057,9 @@
     }
 
     // Envía el archivo al servidor usando FormData (multipart/form-data).
-    // multer en el servidor espera el campo llamado "archivo".
     function procesarArchivo(archivo) {
       if (!confirm(
-        "¿Confirmas que deseas procesar este archivo?\n\n" +
+        "¿Confirmas que deseas procesar el siguiente archivo?\n\n" +
         archivo.name + "\n\n" +
         "Los registros del archivo se agregarán a la base de datos."
       )) return;
@@ -1116,12 +1068,11 @@
       btnProcesar.innerHTML = '<i class="bi bi-hourglass-split"></i> Procesando...';
 
       var formData = new FormData();
-      formData.append("archivo", archivo); // "archivo" debe coincidir con upload.single("archivo") del server
+      formData.append("archivo", archivo);
 
       fetch(API_URL + "/admin/excel/subir", {
         method: "POST",
         body: formData
-        // NO pongas Content-Type aquí — el navegador lo pone solo con el boundary correcto
       })
       .then(function(res) {
         return res.json().then(function(data) {
@@ -1133,7 +1084,7 @@
         alert("✅ " + data.message);
         limpiarArchivo();
         cargarInfoExcel();   // Actualizar el contador
-        buscarRegistros();   // Refrescar el Read si hay filtros activos
+        buscarRegistros(); 
       })
       .catch(function(err) {
         console.error("Error procesando archivo:", err);
@@ -1146,9 +1097,7 @@
     }
   }
 
-  // ══════════════════════════════════════════════════════════
   // INICIAR
-  // ══════════════════════════════════════════════════════════
 
   iniciarNecesidades();
 
