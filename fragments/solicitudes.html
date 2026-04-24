@@ -22,7 +22,7 @@
     </div>
   </div>
 
-  <!-- contenedor de cards — el DOM ES la fuente de verdad -->
+  <!-- contenedor de cards -->
   <div id="sol-lista"></div>
 
 </div>
@@ -191,13 +191,28 @@
   padding: 0.22rem 0.7rem; border-radius: var(--radio-xl);
   font-size: 0.69rem; font-weight: 700;
 }
+
+.sol-btn-eliminar-bandeja {
+  color: var(--rojo);
+  background: var(--rojo-suave);
+  padding: 0.38rem 0.8rem;
+  border-radius: var(--radio-xl);
+  font-size: 0.72rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: var(--t);
+}
+.sol-btn-eliminar-bandeja:hover {
+  background: var(--rojo);
+  color: white;
+}
 </style>
 
 <script>
-// ─────────────────────────────────────────────────────────────
-// LÓGICA: el DOM es la fuente de verdad.
-// No hay variables globales de estado — todo se lee del DOM.
-// ─────────────────────────────────────────────────────────────
+// No hay variables globales de estado
 
 function solClaseTipo(tipo) {
   if (!tipo) return 'tipo-otro';
@@ -215,7 +230,7 @@ function solFecha(iso) {
   return new Date(iso).toLocaleDateString('es-MX', {day:'2-digit',month:'short',year:'numeric'});
 }
 
-// ── Tab activo ────────────────────────────────────────────────
+// Tab activo
 function solTab(btn) {
   document.querySelectorAll('.bandeja-tab').forEach(function(b){ b.classList.remove('activo'); });
   btn.classList.add('activo');
@@ -243,13 +258,11 @@ function solMostrarTab(tab) {
   document.getElementById('badge-archivada').textContent = counts.archivada;
   document.getElementById('badge-eliminada').textContent = counts.eliminada;
 
-  // Actualizar badge header y sidebar
   var hb = document.querySelector('.admin-badge');
   if (hb) hb.textContent = counts.nueva;
   var sb = document.querySelector('.sidebar-link[data-section="solicitudes"] .sidebar-contador');
   if (sb) sb.textContent = counts.nueva;
 
-  // Mostrar/ocultar según tab y tipo
   cards.forEach(function(c){
     var okTab  = c.dataset.estado === tab;
     var okTipo = !tipo || c.dataset.tipo === tipo;
@@ -277,21 +290,20 @@ function solFiltrarTipo(tipo) {
   solMostrarTab(solTabActual());
 }
 
-// ── Cambiar estado de una card — DOM first, fetch after ───────
+// Cambiar estado de una card — DOM first
 function solCambiarEstado(id, nuevoEstado) {
   var card = document.querySelector('.sol-card[data-id="' + id + '"]');
   if (!card) return;
 
-  // 1. Actualizar data-estado
+  // Actualizar data-estado
   card.dataset.estado = nuevoEstado;
 
-  // 2. Actualizar clase visual
   card.className = 'sol-card';
   if (nuevoEstado === 'leida')     card.classList.add('leida');
   if (nuevoEstado === 'archivada') card.classList.add('archivada');
   if (nuevoEstado === 'eliminada') card.classList.add('eliminada');
 
-  // 3. Regenerar botones según nuevo estado
+  // Regenerar botones
   var btnNueva    = nuevoEstado !== 'nueva'
     ? '<button class="sol-btn sol-btn-archivar" onclick="solAccion(event,'+id+',\'nueva\')" title="Mover a nuevas"><i class="bi bi-arrow-counterclockwise"></i></button>'
     : '';
@@ -306,9 +318,9 @@ function solCambiarEstado(id, nuevoEstado) {
     : '';
 
   if (nuevoEstado === 'eliminada') {
-    btnNueva    = '<button class="sol-btn sol-btn-leida" onclick="solAccion(event,'+id+',\'nueva\')" title="Restaurar"><i class="bi bi-arrow-counterclockwise"></i> Restaurar</button>';
+    btnNueva = '<button class="sol-btn sol-btn-leida" onclick="solAccion(event,'+id+',\'nueva\')" title="Restaurar"><i class="bi bi-arrow-counterclockwise"></i> Restaurar</button>';
     btnLeida    = '';
-    btnArchivar = '';
+    btnArchivar = '<button class="sol-btn sol-btn-eliminar-bandeja" onclick="solQuitarDeBandeja(event,' + id + ')" title="Eliminar de bandeja"><i class="bi bi-trash"></i> Eliminar de bandeja</button>';
   }
 
   var acciones = card.querySelector('.sol-acciones');
@@ -318,10 +330,8 @@ function solCambiarEstado(id, nuevoEstado) {
       btnNueva + btnLeida + btnArchivar + btnX;
   }
 
-  // 4. Re-aplicar visibilidad del tab actual
   solMostrarTab(solTabActual());
 
-  // 5. Persistir en background (solo estados válidos para la BD)
   if (nuevoEstado !== 'eliminada') {
     fetch('/api/admin/solicitudes/' + id + '/estado', {
       method: 'PATCH',
@@ -331,19 +341,18 @@ function solCambiarEstado(id, nuevoEstado) {
   }
 }
 
-// ── Eliminar card del DOM ─────────────────────────────────────
+// Eliminar card del DOM
 function solEliminar(e, id) {
   e.stopPropagation();
   solCambiarEstado(id, 'eliminada');
 }
 
-// ── Acción rápida desde botón en card ────────────────────────
 function solAccion(e, id, estado) {
   e.stopPropagation();
   solCambiarEstado(id, estado);
 }
 
-// ── Modal ─────────────────────────────────────────────────────
+// Modal 
 function solAbrirModal(id) {
   var card = document.querySelector('.sol-card[data-id="' + id + '"]');
   if (!card) return;
@@ -365,7 +374,7 @@ function solAbrirModal(id) {
   document.getElementById('sol-modal-btn-leida').style.display    = estado === 'leida'     ? 'none' : '';
   document.getElementById('sol-modal-btn-archivar').style.display = estado === 'archivada' ? 'none' : '';
 
-  // Guardar id activo en el modal
+  // Guardar id activo
   document.getElementById('sol-modal').dataset.id = id;
 
   // Materiales
@@ -387,7 +396,7 @@ function solAbrirModal(id) {
 
   document.getElementById('sol-modal').style.display = 'flex';
 
-  // Auto-marcar leída al abrir si es nueva
+  // Auto-marcar leída al abrir
   if (!estado || estado === 'nueva') {
     solCambiarEstado(id, 'leida');
     document.getElementById('sol-modal-btn-leida').style.display = 'none';
@@ -405,7 +414,7 @@ function solCerrarModal() {
   document.getElementById('sol-modal').style.display = 'none';
 }
 
-// ── Construir card HTML ───────────────────────────────────────
+// Construir card HTML
 function solBuildCard(s) {
   var estado = s.estado_lectura || 'nueva';
   var tipo   = s.tipo_donacion  || '';
@@ -426,7 +435,7 @@ function solBuildCard(s) {
   if (estado === 'eliminada') {
     btnNueva    = '<button class="sol-btn sol-btn-leida" onclick="solAccion(event,'+s.id+',\'nueva\')" title="Restaurar"><i class="bi bi-arrow-counterclockwise"></i> Restaurar</button>';
     btnLeida    = '';
-    btnArchivar = '';
+    btnArchivar = '<button class="sol-btn sol-btn-eliminar-bandeja" onclick="solQuitarDeBandeja(event,' + id + ')" title="Eliminar de bandeja"><i class="bi bi-trash"></i> Eliminar de bandeja</button>';
   }
 
   return '<div class="sol-card'+claseEstado+'" '+
@@ -460,7 +469,20 @@ function solBuildCard(s) {
   '</div>';
 }
 
-// ── Carga inicial ─────────────────────────────────────────────
+function solQuitarDeBandeja(e, id) {
+  e.stopPropagation();
+  fetch('/api/admin/solicitudes/' + id + '/estado', {
+    method: 'PATCH',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({estado_lectura: 'oculta'})
+  }).catch(function(err){ console.error(err); });
+
+  var card = document.querySelector('.sol-card[data-id="' + id + '"]');
+  if (card) card.remove();
+  solMostrarTab(solTabActual());
+}
+
+// Carga inicial
 document.getElementById('sol-lista').innerHTML = '<div class="sol-loading"><i class="bi bi-arrow-repeat spin"></i> Cargando...</div>';
 
 fetch('/api/admin/solicitudes')

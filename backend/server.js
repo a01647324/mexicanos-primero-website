@@ -742,6 +742,7 @@ app.get("/api/admin/solicitudes", async (req, res) => {
               correo, telefono, mensaje, origen_formulario,
               tipo_donacion, estado_lectura, created_at
        FROM solicitudes_donacion
+       WHERE estado_lectura != 'oculta'
        ORDER BY created_at DESC`
     );
     res.json({ data: result.rows });
@@ -769,7 +770,7 @@ app.get("/api/admin/solicitudes/:id/materiales", async (req, res) => {
 app.patch("/api/admin/solicitudes/:id/estado", async (req, res) => {
   try {
     const { estado_lectura } = req.body;
-    const validos = ["nueva", "leida", "archivada"];
+    const validos = ["nueva", "leida", "archivada", "oculta"];
     if (!validos.includes(estado_lectura))
       return res.status(400).json({ error: "Estado inválido" });
     await pool.query(
