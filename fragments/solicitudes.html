@@ -331,9 +331,10 @@ function solCambiarEstado(id, nuevoEstado) {
   }
 
   solMostrarTab(solTabActual());
+  aplicarRestriccionesLector();
 
   if (nuevoEstado !== 'eliminada') {
-    fetch('/api/admin/solicitudes/' + id + '/estado', {
+    adminFetch('/api/admin/solicitudes/' + id + '/estado', {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({estado_lectura: nuevoEstado})
@@ -401,6 +402,12 @@ function solAbrirModal(id) {
     solCambiarEstado(id, 'leida');
     document.getElementById('sol-modal-btn-leida').style.display = 'none';
   }
+
+  // Ocultar botones de acción del modal para lector
+  if (typeof adminPuedeEditar === 'function' && !adminPuedeEditar()) {
+    document.getElementById('sol-modal-btn-archivar').style.display = 'none';
+    document.getElementById('sol-modal-btn-leida').style.display    = 'none';
+  }
 }
 
 function solModalAccion(estado) {
@@ -435,7 +442,7 @@ function solBuildCard(s) {
   if (estado === 'eliminada') {
     btnNueva    = '<button class="sol-btn sol-btn-leida" onclick="solAccion(event,'+s.id+',\'nueva\')" title="Restaurar"><i class="bi bi-arrow-counterclockwise"></i> Restaurar</button>';
     btnLeida    = '';
-    btnArchivar = '<button class="sol-btn sol-btn-eliminar-bandeja" onclick="solQuitarDeBandeja(event,' + id + ')" title="Eliminar de bandeja"><i class="bi bi-trash"></i> Eliminar de bandeja</button>';
+    btnArchivar = '<button class="sol-btn" style="color:var(--rojo);background:var(--rojo-suave);padding:0.38rem 0.8rem;border-radius:var(--radio-xl);font-size:0.72rem;font-family:\'Montserrat\',sans-serif;font-weight:600;border:none;cursor:pointer;margin-left:0.5rem;" onclick="solQuitarDeBandeja(event,'+id+')" title="Eliminar de bandeja"><i class="bi bi-trash"></i> Eliminar de bandeja</button>';
   }
 
   return '<div class="sol-card'+claseEstado+'" '+
@@ -471,7 +478,7 @@ function solBuildCard(s) {
 
 function solQuitarDeBandeja(e, id) {
   e.stopPropagation();
-  fetch('/api/admin/solicitudes/' + id + '/estado', {
+  adminFetch('/api/admin/solicitudes/' + id + '/estado', {
     method: 'PATCH',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({estado_lectura: 'oculta'})
@@ -491,8 +498,17 @@ fetch('/api/admin/solicitudes')
     var lista = document.getElementById('sol-lista');
     lista.innerHTML = (data.data||[]).map(solBuildCard).join('');
     solMostrarTab('nueva');
+    aplicarRestriccionesLector();
   })
   .catch(function(){
     document.getElementById('sol-lista').innerHTML = '<div class="sol-vacio"><i class="bi bi-exclamation-circle"></i>Error al cargar solicitudes.</div>';
   });
+
+// Restricciones lector
+function aplicarRestriccionesLector() {
+  if (typeof adminPuedeEditar === 'function' && adminPuedeEditar()) return;
+  document.querySelectorAll(
+    '.sol-btn-leida, .sol-btn-archivar, .sol-btn-x, .sol-btn-eliminar-bandeja, .bandeja-tab[data-tab="eliminada"]'
+  ).forEach(function(el) { el.style.display = 'none'; });
+}
 </script>

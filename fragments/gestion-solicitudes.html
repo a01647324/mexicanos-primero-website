@@ -506,7 +506,7 @@ function gsGuardar() {
   btn.disabled = true;
   btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Guardando...';
 
-  fetch('/api/admin/gestion-solicitudes/' + gs_idActual, {
+  adminFetch('/api/admin/gestion-solicitudes/' + gs_idActual, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
@@ -527,4 +527,19 @@ function gsGuardar() {
 }
 
 gsCargar(1);
+
+// Restricciones lector 
+if (typeof adminPuedeEditar === 'function' && !adminPuedeEditar()) {
+  var btnGuardar = document.querySelector('#gs-modal .panel-btn-verde');
+  if (btnGuardar) btnGuardar.style.display = 'none';
+
+  var originalRender = gsRenderTabla;
+  gsRenderTabla = function(rows, total) {
+    originalRender(rows, total);
+    document.querySelectorAll('.gs-btn-editar').forEach(function(el){
+      el.style.display = 'none';
+    });
+  };
+}
+
 </script>

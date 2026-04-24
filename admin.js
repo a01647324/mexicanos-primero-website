@@ -1,28 +1,21 @@
-// ============================================================
-// admin.js — Lógica de navegación del sidebar con fetch
-// ============================================================
-
-// 1. Referencias a los elementos del DOM
-
 const links = document.querySelectorAll('.sidebar-link');
 const contenedor = document.getElementById('content');
 
-// 2. Función que cambia de sección
+// Función que cambia de sección
 
 function cambiarSeccion(seccion) {
 
-  // Quitar "active" de todos los links
+  // Quitar active de los links
   links.forEach(function(link) {
     link.classList.remove('active');
   });
 
-  // Poner "active" en el link correspondiente
   var linkActivo = document.querySelector('.sidebar-link[data-section="' + seccion + '"]');
   if (linkActivo) {
     linkActivo.classList.add('active');
   }
 
-  // Hacer fetch del fragmento HTML
+  // Fetch del fragmento HTML
   fetch('fragments/' + seccion + '.html')
     .then(function(respuesta) {
       if (!respuesta.ok) {
@@ -34,20 +27,17 @@ function cambiarSeccion(seccion) {
       // Inyectar el HTML
       contenedor.innerHTML = html;
 
-      // Buscar todos los <script> inyectados y ejecutarlos manualmente
+      // Buscar todos los <script> inyectados y ejecutarlos
       var scripts = contenedor.querySelectorAll('script');
       scripts.forEach(function(scriptViejo) {
         var scriptNuevo = document.createElement('script');
 
-        // Si el script tiene src (archivo externo), copiar el src
         if (scriptViejo.src) {
           scriptNuevo.src = scriptViejo.src;
         } else {
-          // Si es inline, copiar el contenido
           scriptNuevo.textContent = scriptViejo.textContent;
         }
 
-        // Reemplazar el script viejo (inerte) por el nuevo (ejecutable)
         scriptViejo.parentNode.replaceChild(scriptNuevo, scriptViejo);
       });
     })
@@ -56,8 +46,6 @@ function cambiarSeccion(seccion) {
       console.error(error);
     });
 }
-
-// 3. Escuchar clicks en cada link del sidebar
 
 links.forEach(function(link) {
 
@@ -71,11 +59,9 @@ links.forEach(function(link) {
   });
 });
 
-// 4. Cargar la sección por defecto al abrir la página
-
 cambiarSeccion('panel');
 
-// ── Cerrar sesión admin ───────────────────────────────────────
+// Cerrar sesión
 function adminCerrarSesion(e) {
   e.preventDefault();
   localStorage.removeItem('token');
@@ -85,25 +71,51 @@ function adminCerrarSesion(e) {
   window.location.href = 'login-admin.html';
 }
 
-// ── Poblar nombre e inicial del admin en el header ───────────
+function adminFetch(url, options) {
+  options = options || {};
+  options.headers = options.headers || {};
+  var token = localStorage.getItem('token');
+  if (token) options.headers['Authorization'] = 'Bearer ' + token;
+  return fetch(url, options);
+}
+
+var ADMIN_ROL = 'lector';
+
+function adminPuedeEditar() {
+  return ADMIN_ROL === 'admin';
+}
+
 (function() {
   var token = localStorage.getItem('token');
-  if (!token) return;
+  if (!token) { window.location.href = 'login-admin.html'; return; }
+
   try {
     var payload = JSON.parse(atob(token.split('.')[1]));
 
-    // Nombre en el header
+    if (payload.rol !== 'admin' && payload.rol !== 'lector') {
+      window.location.href = 'login-admin.html'; return;
+    }
+
+    ADMIN_ROL = payload.rol;
+
     var nombreEl = document.querySelector('.admin-nombre');
     if (nombreEl && payload.nombre) nombreEl.textContent = payload.nombre;
 
-    // Avatar: inicial + color (misma lógica que equipo.html)
     var avatarEl = document.getElementById('admin-avatar-inicial');
     if (avatarEl && payload.nombre) {
       var colores = ['#007526','#1C3661','#c47a0a','#6432a0','#EC671B','#dc2626','#0891b2'];
-      var inicial = payload.nombre.charAt(0).toUpperCase();
-      var color   = colores[payload.nombre.charCodeAt(0) % colores.length];
-      avatarEl.textContent       = inicial;
-      avatarEl.style.background  = color;
+      avatarEl.textContent      = payload.nombre.charAt(0).toUpperCase();
+      avatarEl.style.background = colores[payload.nombre.charCodeAt(0) % colores.length];
     }
-  } catch(e) {}
+
+    // Etiqueta "Solo lectura"
+    if (ADMIN_ROL === 'lector' && nombreEl) {
+      nombreEl.insertAdjacentHTML('afterend',
+        '<span style="font-size:.68rem;font-weight:700;background:rgba(28,54,97,.1);color:var(--azul);padding:.15rem .55rem;border-radius:50px;margin-left:.4rem;">Solo lectura</span>'
+      );
+    }
+
+  } catch(e) {
+    window.location.href = 'login-admin.html';
+  }
 })();

@@ -13,6 +13,26 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 const SECRET     = process.env.JWT_SECRET || "supersecretkey";
 
+// ── Middleware: verificar JWT ─────────────────────────────────
+function verificarToken(req, res, next) {
+  const auth = req.headers['authorization'];
+  if (!auth || !auth.startsWith('Bearer '))
+    return res.status(401).json({ error: 'No autorizado' });
+  try {
+    req.usuario = jwt.verify(auth.slice(7), SECRET);
+    next();
+  } catch {
+    return res.status(401).json({ error: 'Token inválido o expirado' });
+  }
+}
+
+// ── Middleware: solo admins con rol 'admin' pueden escribir ───
+function soloAdmin(req, res, next) {
+  if (!req.usuario || req.usuario.rol !== 'admin')
+    return res.status(403).json({ error: 'No tienes permisos para esta acción' });
+  next();
+}
+
 console.log("DB URL:", process.env.DATABASE_URL?.replace(/:[^:@]+@/, ":***@"));
 
 const app = express();
@@ -25,7 +45,6 @@ app.use(express.static(path.join(__dirname, "..")));
 // UTILIDADES
 // ─────────────────────────────────────────────────────────────
 
-// Valida los campos mínimos compartidos por /api/contacto y /api/solicitud-material
 function validarFormularioBase(body) {
   const { nombre_completo, correo, telefono, aviso_privacidad_aceptado } = body;
   if (!nombre_completo || !telefono)
@@ -51,7 +70,6 @@ app.get("/api/test", (req, res) => {
 // CATÁLOGO PÚBLICO
 // ─────────────────────────────────────────────────────────────
 
-// Devuelve todas las categorías del catálogo visual con su mapeo a la BD real
 app.get("/api/catalogo", async (req, res) => {
   try {
     const result = await pool.query(
@@ -70,7 +88,6 @@ app.get("/api/catalogo", async (req, res) => {
   }
 });
 
-// Devuelve las subcategorías visuales de una categoría del catálogo
 app.get("/api/catalogo/:id/subcategorias", async (req, res) => {
   try {
     const result = await pool.query(
@@ -95,8 +112,6 @@ app.get("/api/catalogo/:id/subcategorias", async (req, res) => {
   }
 });
 
-// Devuelve las opciones para los selects de filtrado (municipios, categorías, subcategorías, escuelas)
-// Las categorías y subcategorías vienen de las tablas de catálogo visual, no de las reales
 app.get("/api/filtros", async (req, res) => {
   try {
     const [municipios, categorias, subcategorias, escuelas] = await Promise.all([
@@ -128,8 +143,6 @@ app.get("/api/filtros", async (req, res) => {
   }
 });
 
-// Devuelve necesidades filtradas por municipio, escuela, categoria_id y subcategoria_id
-// Los IDs de categoría y subcategoría son del catálogo visual; se traducen a IDs reales internamente
 app.get("/api/data", async (req, res) => {
   try {
     const { municipio, escuela, categoria_id, subcategoria_id } = req.query;
@@ -187,7 +200,6 @@ app.get("/api/data", async (req, res) => {
 // FORMULARIOS PÚBLICOS
 // ─────────────────────────────────────────────────────────────
 
-// Guarda una solicitud del formulario de contacto (origen: 'contacto')
 app.post("/api/contacto", async (req, res) => {
   try {
     const error = validarFormularioBase(req.body);
@@ -217,8 +229,6 @@ app.post("/api/contacto", async (req, res) => {
   }
 });
 
-// Guarda una solicitud de donación material junto con los ítems del carrito (origen: 'pasos')
-// Usa una transacción: si falla algún ítem, todo se revierte
 app.post("/api/solicitud-material", async (req, res) => {
   const client = await pool.connect();
   try {
@@ -273,7 +283,6 @@ app.post("/api/solicitud-material", async (req, res) => {
 // AUTENTICACIÓN
 // ─────────────────────────────────────────────────────────────
 
-// Registra un nuevo donador
 app.post("/api/auth/register-donador", async (req, res) => {
   try {
     const { nombre_completo, correo, password, fecha_nacimiento, estado } = req.body;
@@ -296,7 +305,6 @@ app.post("/api/auth/register-donador", async (req, res) => {
   }
 });
 
-// Login de donador — devuelve JWT con rol 'donador'
 app.post("/api/auth/login-donador", async (req, res) => {
   try {
     const { correo, password } = req.body;
@@ -323,7 +331,7 @@ app.post("/api/auth/login-donador", async (req, res) => {
   }
 });
 
-// Login de administrador — devuelve JWT con rol 'admin'
+// Login de administrador — devuelve JWT con el rol real de la BD ('admin' o 'lector')
 app.post("/api/auth/login-admin", async (req, res) => {
   try {
     const { correo, password } = req.body;
@@ -339,11 +347,11 @@ app.post("/api/auth/login-admin", async (req, res) => {
       return res.status(401).json({ error: "Contraseña incorrecta." });
 
     const token = jwt.sign(
-      { id: user.id, correo: user.correo, rol: "admin", nombre: user.nombre },
+      { id: user.id, correo: user.correo, rol: user.rol, nombre: user.nombre },
       SECRET,
       { expiresIn: "4h" }
     );
-    res.json({ message: "Acceso concedido", token, rol: "admin" });
+    res.json({ message: "Acceso concedido", token, rol: user.rol });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error en servidor." });
@@ -355,8 +363,7 @@ app.post("/api/auth/login-admin", async (req, res) => {
 // ADMIN — NECESIDADES
 // ─────────────────────────────────────────────────────────────
 
-// Busca necesidades con filtros opcionales (municipio, escuela, categoria, subcategoria, busqueda por texto)
-// Requiere al menos un filtro; si no hay ninguno devuelve array vacío
+// GET — Busca necesidades con filtros (lectura, sin restricción de rol)
 app.get("/api/admin/necesidades", async (req, res) => {
   try {
     const { municipio, escuela, categoria_id, subcategoria_id, busqueda } = req.query;
@@ -411,7 +418,7 @@ app.get("/api/admin/necesidades", async (req, res) => {
   }
 });
 
-// Devuelve el detalle completo de una necesidad por ID
+// GET — Detalle de una necesidad por ID (lectura, sin restricción de rol)
 app.get("/api/admin/necesidades/:id", async (req, res) => {
   try {
     const result = await pool.query(
@@ -440,8 +447,8 @@ app.get("/api/admin/necesidades/:id", async (req, res) => {
   }
 });
 
-// Crea una nueva necesidad; busca o crea el municipio y la escuela si no existen
-app.post("/api/admin/necesidades", async (req, res) => {
+// POST — Crear necesidad (solo admin)
+app.post("/api/admin/necesidades", verificarToken, soloAdmin, async (req, res) => {
   try {
     const { escuela, municipio, subcategoria_id, propuesta, cantidad, unidad, estado, detalles } = req.body;
 
@@ -473,8 +480,8 @@ app.post("/api/admin/necesidades", async (req, res) => {
   }
 });
 
-// Actualiza una necesidad existente; solo modifica los campos que vienen en el body
-app.put("/api/admin/necesidades/:id", async (req, res) => {
+// PUT — Actualizar necesidad (solo admin)
+app.put("/api/admin/necesidades/:id", verificarToken, soloAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { escuela, municipio, subcategoria_id, propuesta, cantidad, unidad, estado, detalles } = req.body;
@@ -501,13 +508,13 @@ app.put("/api/admin/necesidades/:id", async (req, res) => {
 
     const sets   = [];
     const values = [];
-    if (escuelaId)            { values.push(escuelaId);       sets.push(`escuela_id = $${values.length}`); }
-    if (subcategoria_id)      { values.push(subcategoria_id); sets.push(`subcategoria_id = $${values.length}`); }
-    if (propuesta !== undefined){ values.push(propuesta);     sets.push(`propuesta = $${values.length}`); }
-    if (cantidad  !== undefined){ values.push(cantidad);      sets.push(`cantidad = $${values.length}`); }
-    if (unidad    !== undefined){ values.push(unidad);        sets.push(`unidad = $${values.length}`); }
-    if (estado    !== undefined){ values.push(estado);        sets.push(`estado = $${values.length}`); }
-    if (detalles  !== undefined){ values.push(detalles);      sets.push(`detalles = $${values.length}`); }
+    if (escuelaId)             { values.push(escuelaId);       sets.push(`escuela_id = $${values.length}`); }
+    if (subcategoria_id)       { values.push(subcategoria_id); sets.push(`subcategoria_id = $${values.length}`); }
+    if (propuesta !== undefined){ values.push(propuesta);      sets.push(`propuesta = $${values.length}`); }
+    if (cantidad  !== undefined){ values.push(cantidad);       sets.push(`cantidad = $${values.length}`); }
+    if (unidad    !== undefined){ values.push(unidad);         sets.push(`unidad = $${values.length}`); }
+    if (estado    !== undefined){ values.push(estado);         sets.push(`estado = $${values.length}`); }
+    if (detalles  !== undefined){ values.push(detalles);       sets.push(`detalles = $${values.length}`); }
 
     if (sets.length === 0)
       return res.status(400).json({ error: "No se enviaron campos para actualizar" });
@@ -521,8 +528,8 @@ app.put("/api/admin/necesidades/:id", async (req, res) => {
   }
 });
 
-// Elimina una necesidad por ID
-app.delete("/api/admin/necesidades/:id", async (req, res) => {
+// DELETE — Eliminar necesidad (solo admin)
+app.delete("/api/admin/necesidades/:id", verificarToken, soloAdmin, async (req, res) => {
   try {
     const result = await pool.query("DELETE FROM necesidades WHERE id = $1 RETURNING id", [req.params.id]);
     if (result.rows.length === 0)
@@ -534,7 +541,6 @@ app.delete("/api/admin/necesidades/:id", async (req, res) => {
   }
 });
 
-// Devuelve categorías y subcategorías reales de la BD (no del catálogo visual) para el formulario de crear necesidad
 app.get("/api/admin/categorias-reales", async (req, res) => {
   try {
     const [categorias, subcategorias] = await Promise.all([
@@ -548,7 +554,6 @@ app.get("/api/admin/categorias-reales", async (req, res) => {
   }
 });
 
-// Autocompletado de escuelas por texto (mínimo 2 caracteres, máximo 10 resultados)
 app.get("/api/admin/escuelas/buscar", async (req, res) => {
   try {
     const { q } = req.query;
@@ -564,7 +569,6 @@ app.get("/api/admin/escuelas/buscar", async (req, res) => {
   }
 });
 
-// Autocompletado de municipios por texto (mínimo 2 caracteres, máximo 10 resultados)
 app.get("/api/admin/municipios/buscar", async (req, res) => {
   try {
     const { q } = req.query;
@@ -585,7 +589,6 @@ app.get("/api/admin/municipios/buscar", async (req, res) => {
 // ADMIN — EXCEL (NECESIDADES)
 // ─────────────────────────────────────────────────────────────
 
-// Devuelve el total de necesidades y el ID más reciente (para el label de última actualización)
 app.get("/api/admin/excel/info", async (req, res) => {
   try {
     const result = await pool.query("SELECT COUNT(*) AS total, MAX(id) AS ultimo_id FROM necesidades");
@@ -596,8 +599,6 @@ app.get("/api/admin/excel/info", async (req, res) => {
   }
 });
 
-// Genera y descarga un archivo .xlsx con todos los registros de necesidades
-// El archivo mantiene el mismo formato del Excel original para que pueda re-subirse
 app.get("/api/admin/excel/descargar", async (req, res) => {
   try {
     const result = await pool.query(
@@ -650,9 +651,8 @@ app.get("/api/admin/excel/descargar", async (req, res) => {
   }
 });
 
-// Recibe un archivo .xlsx, borra todos los registros actuales de necesidades y los reemplaza con los del archivo
-// Columnas esperadas: Municipio, Categoría, Subcategoría, Escuela, Propuesta, Cantidad, Unidad, Detalles, Estado
-app.post("/api/admin/excel/subir", upload.single("archivo"), async (req, res) => {
+// POST — Subir Excel (solo admin)
+app.post("/api/admin/excel/subir", verificarToken, soloAdmin, upload.single("archivo"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No se recibió ningún archivo" });
 
   try {
@@ -734,7 +734,7 @@ app.post("/api/admin/excel/subir", upload.single("archivo"), async (req, res) =>
 // ADMIN — BANDEJA DE SOLICITUDES
 // ─────────────────────────────────────────────────────────────
 
-// Devuelve todas las solicitudes ordenadas por fecha descendente
+// GET — Todas las solicitudes excepto ocultas (lectura, sin restricción de rol)
 app.get("/api/admin/solicitudes", async (req, res) => {
   try {
     const result = await pool.query(
@@ -752,7 +752,7 @@ app.get("/api/admin/solicitudes", async (req, res) => {
   }
 });
 
-// Devuelve los materiales asociados a una solicitud de tipo 'pasos'
+// GET — Materiales de una solicitud (lectura, sin restricción de rol)
 app.get("/api/admin/solicitudes/:id/materiales", async (req, res) => {
   try {
     const result = await pool.query(
@@ -766,8 +766,8 @@ app.get("/api/admin/solicitudes/:id/materiales", async (req, res) => {
   }
 });
 
-// Actualiza el estado de lectura de una solicitud (nueva / leida / archivada)
-app.patch("/api/admin/solicitudes/:id/estado", async (req, res) => {
+// PATCH — Cambiar estado de lectura (solo admin)
+app.patch("/api/admin/solicitudes/:id/estado", verificarToken, soloAdmin, async (req, res) => {
   try {
     const { estado_lectura } = req.body;
     const validos = ["nueva", "leida", "archivada", "oculta"];
@@ -789,7 +789,7 @@ app.patch("/api/admin/solicitudes/:id/estado", async (req, res) => {
 // ADMIN — GESTIÓN DE SOLICITUDES
 // ─────────────────────────────────────────────────────────────
 
-// Devuelve solicitudes paginadas con filtros opcionales y sus materiales como JSON array
+// GET — Solicitudes paginadas con filtros (lectura, sin restricción de rol)
 app.get("/api/admin/gestion-solicitudes", async (req, res) => {
   try {
     const { busqueda, tipo, estatus, pagina = 1, limite = 15 } = req.query;
@@ -833,8 +833,8 @@ app.get("/api/admin/gestion-solicitudes", async (req, res) => {
   }
 });
 
-// Actualiza campos editables de una solicitud (estatus de gestión, notas y datos del solicitante)
-app.patch("/api/admin/gestion-solicitudes/:id", async (req, res) => {
+// PATCH — Editar solicitud (solo admin)
+app.patch("/api/admin/gestion-solicitudes/:id", verificarToken, soloAdmin, async (req, res) => {
   try {
     const { estatus_gestion, notas_admin, nombre_completo, correo, telefono, mensaje } = req.body;
     const sets   = [];
@@ -868,7 +868,6 @@ app.patch("/api/admin/gestion-solicitudes/:id", async (req, res) => {
 // ADMIN — PANEL (MÉTRICAS)
 // ─────────────────────────────────────────────────────────────
 
-// Devuelve métricas generales para el dashboard: conteos de necesidades, solicitudes, donadores y gráficas
 app.get("/api/admin/panel/metricas", async (req, res) => {
   try {
     const [necesidades, solicitudes, donadores, porEstado, porEscuela] = await Promise.all([
@@ -881,18 +880,18 @@ app.get("/api/admin/panel/metricas", async (req, res) => {
         FROM necesidades
       `),
       pool.query(`
-      SELECT
-        COUNT(*) AS total,
-        COUNT(*) FILTER (WHERE estado_lectura = 'nueva' OR estado_lectura IS NULL) AS nuevas,
-        COUNT(*) FILTER (WHERE estado_lectura = 'leida')     AS leidas,
-        COUNT(*) FILTER (WHERE estado_lectura = 'archivada') AS archivadas,
-        COUNT(*) FILTER (WHERE tipo_donacion = 'Donación material')   AS material,
-        COUNT(*) FILTER (WHERE tipo_donacion = 'Donación económica')  AS economica,
-        COUNT(*) FILTER (WHERE tipo_donacion = 'Voluntariado')        AS voluntariado,
-        COUNT(*) FILTER (WHERE tipo_donacion = 'Brindar talleres')    AS talleres,
-        COUNT(*) FILTER (WHERE tipo_donacion = 'Vinculaciones')       AS vinculaciones
-      FROM solicitudes_donacion
-    `),
+        SELECT
+          COUNT(*) AS total,
+          COUNT(*) FILTER (WHERE estado_lectura = 'nueva' OR estado_lectura IS NULL) AS nuevas,
+          COUNT(*) FILTER (WHERE estado_lectura = 'leida')     AS leidas,
+          COUNT(*) FILTER (WHERE estado_lectura = 'archivada') AS archivadas,
+          COUNT(*) FILTER (WHERE tipo_donacion = 'Donación material')   AS material,
+          COUNT(*) FILTER (WHERE tipo_donacion = 'Donación económica')  AS economica,
+          COUNT(*) FILTER (WHERE tipo_donacion = 'Voluntariado')        AS voluntariado,
+          COUNT(*) FILTER (WHERE tipo_donacion = 'Brindar talleres')    AS talleres,
+          COUNT(*) FILTER (WHERE tipo_donacion = 'Vinculaciones')       AS vinculaciones
+        FROM solicitudes_donacion
+      `),
       pool.query("SELECT id, nombre_completo, correo, estado, created_at FROM donadores ORDER BY created_at DESC LIMIT 10"),
       pool.query("SELECT estado, COUNT(*) AS total FROM necesidades GROUP BY estado ORDER BY total DESC"),
       pool.query(`
@@ -927,8 +926,8 @@ app.get("/api/admin/panel/metricas", async (req, res) => {
 // ADMIN — EQUIPO ADMINISTRATIVO
 // ─────────────────────────────────────────────────────────────
 
-// Devuelve todos los administradores registrados
-app.get("/api/admin/equipo", async (req, res) => {
+// GET — Ver equipo (cualquier admin autenticado, incluyendo lector)
+app.get("/api/admin/equipo", verificarToken, async (req, res) => {
   try {
     const result = await pool.query("SELECT id, nombre, correo, rol, imagen FROM administradores ORDER BY id");
     res.json({ data: result.rows });
@@ -938,8 +937,8 @@ app.get("/api/admin/equipo", async (req, res) => {
   }
 });
 
-// Crea un nuevo administrador
-app.post("/api/admin/equipo", async (req, res) => {
+// POST — Crear administrador (solo admin)
+app.post("/api/admin/equipo", verificarToken, soloAdmin, async (req, res) => {
   try {
     const { nombre, correo, password, rol } = req.body;
     if (!nombre || !correo || !password)
@@ -960,8 +959,8 @@ app.post("/api/admin/equipo", async (req, res) => {
   }
 });
 
-// Actualiza los datos de un administrador (solo los campos que vienen en el body)
-app.patch("/api/admin/equipo/:id", async (req, res) => {
+// PATCH — Editar administrador (solo admin)
+app.patch("/api/admin/equipo/:id", verificarToken, soloAdmin, async (req, res) => {
   try {
     const { nombre, correo, password, rol } = req.body;
     const sets   = [];
@@ -980,8 +979,8 @@ app.patch("/api/admin/equipo/:id", async (req, res) => {
   }
 });
 
-// Elimina un administrador por ID
-app.delete("/api/admin/equipo/:id", async (req, res) => {
+// DELETE — Eliminar administrador (solo admin)
+app.delete("/api/admin/equipo/:id", verificarToken, soloAdmin, async (req, res) => {
   try {
     const result = await pool.query("DELETE FROM administradores WHERE id = $1 RETURNING id", [req.params.id]);
     if (result.rows.length === 0)

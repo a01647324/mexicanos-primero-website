@@ -286,6 +286,23 @@
     configurarEventosFiltros();
     configurarFormCrear();
     configurarSincronizacion(); 
+
+    if (typeof adminPuedeEditar === 'function' && !adminPuedeEditar()) {
+      var seccionCrear = document.querySelector('.panel-crear');
+      if (seccionCrear) seccionCrear.style.display = 'none';
+
+      var seccionCarga = document.querySelector('.panel-carga');
+      if (seccionCarga) seccionCarga.style.display = 'none';
+
+      var originalModal = mostrarModalLectura;
+      mostrarModalLectura = function(reg) {
+        originalModal(reg);
+        var btnEditar   = document.getElementById('modal-btn-editar');
+        var btnEliminar = document.getElementById('modal-btn-eliminar');
+        if (btnEditar)   btnEditar.style.display   = 'none';
+        if (btnEliminar) btnEliminar.style.display = 'none';
+      };
+    }
   }
 
   // CARGA DE FILTROS
@@ -653,7 +670,7 @@
       return;
     }
 
-    fetch(API_URL + "/admin/necesidades/" + id, {
+    adminFetch(API_URL + "/admin/necesidades/" + id, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -681,7 +698,7 @@
       return;
     }
 
-    fetch(API_URL + "/admin/necesidades/" + reg.id, {
+    adminFetch(API_URL + "/admin/necesidades/" + reg.id, {
       method: "DELETE"
     })
     .then(function(res) {
@@ -780,7 +797,7 @@
         detalles
       };
 
-      fetch(API_URL + "/admin/necesidades", {
+      adminFetch(API_URL + "/admin/necesidades", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -1070,7 +1087,7 @@
       var formData = new FormData();
       formData.append("archivo", archivo);
 
-      fetch(API_URL + "/admin/excel/subir", {
+      adminFetch(API_URL + "/admin/excel/subir", {
         method: "POST",
         body: formData
       })

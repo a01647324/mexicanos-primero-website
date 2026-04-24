@@ -20,8 +20,7 @@
     <select class="panel-select eq-filter" id="eq-filtro-rol" onchange="eqFiltrar()">
       <option value="">Todos los roles</option>
       <option value="admin">Admin</option>
-      <option value="super_admin">Super Admin</option>
-      <option value="viewer">Viewer</option>
+      <option value="lector">Lector</option>
     </select>
     <span class="eq-total" id="eq-total">— miembros</span>
   </div>
@@ -55,7 +54,7 @@
 
 </div>
 
-<!-- ══ MODAL AGREGAR / EDITAR ════════════════════════════════ -->
+<!-- MODAL AGREGAR / EDITAR -->
 <div id="eq-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;align-items:center;justify-content:center;padding:2rem;" onclick="if(event.target===this)eqCerrarModal()">
   <div class="modal-caja" style="max-width:520px;width:100%;">
 
@@ -83,8 +82,7 @@
           <span class="modal-label">Rol *</span>
           <select id="eq-modal-rol" class="panel-select">
             <option value="admin">Admin</option>
-            <option value="super_admin">Super Admin</option>
-            <option value="viewer">Viewer</option>
+            <option value="lector">Lector</option>
           </select>
         </div>
       </div>
@@ -119,7 +117,7 @@
   </div>
 </div>
 
-<!-- ══ MODAL CONFIRMAR ELIMINAR ══════════════════════════════ -->
+<!-- MODAL CONFIRMAR ELIMINAR -->
 <div id="eq-modal-confirm" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3100;align-items:center;justify-content:center;padding:2rem;">
   <div class="modal-caja" style="max-width:400px;width:100%;text-align:center;">
     <div style="padding:2rem 1.75rem 1rem;">
@@ -137,7 +135,7 @@
 </div>
 
 <style>
-/* ── EQUIPO ADMINISTRATIVO ── */
+/* EQUIPO ADMINISTRATIVO */
 .eq-wrap { font-family:'Montserrat',sans-serif; color:var(--texto); display:flex; flex-direction:column; gap:1.1rem; }
 .eq-top  { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.65rem; }
 
@@ -256,28 +254,24 @@ var eq_idActual  = null; // id en edición
 var eq_modoEditar= false;
 var eq_colores   = ['#007526','#1C3661','#c47a0a','#6432a0','#EC671B','#dc2626','#0891b2'];
 
-// ── Color por inicial ─────────────────────────────────────────
 function eqColor(nombre) {
   var code = (nombre || 'A').charCodeAt(0);
   return eq_colores[code % eq_colores.length];
 }
 
-// ── Rol label + clase ─────────────────────────────────────────
 function eqRolInfo(rol) {
   var map = {
-    super_admin: { clase:'rol-super_admin', label:'Super Admin' },
-    admin:       { clase:'rol-admin',       label:'Admin' },
-    viewer:      { clase:'rol-viewer',      label:'Viewer' }
+    admin:  { clase:'rol-admin',  label:'Admin' },
+    lector: { clase:'rol-viewer', label:'Lector' }
   };
   return map[rol] || map['admin'];
 }
 
-// ── Cargar ────────────────────────────────────────────────────
 function eqCargar() {
   document.getElementById('eq-tbody').innerHTML =
     '<tr><td colspan="6" class="eq-loading"><i class="bi bi-arrow-repeat spin"></i> Cargando...</td></tr>';
 
-  fetch('/api/admin/equipo')
+  adminFetch('/api/admin/equipo')
     .then(function(r){ return r.json(); })
     .then(function(data) {
       eq_datos = data.data || [];
@@ -289,7 +283,7 @@ function eqCargar() {
     });
 }
 
-// ── Render tabla ──────────────────────────────────────────────
+// Render tabla
 function eqRenderTabla(rows) {
   var tbody = document.getElementById('eq-tbody');
   document.getElementById('eq-total').textContent = rows.length + ' miembro' + (rows.length !== 1 ? 's' : '');
@@ -326,9 +320,18 @@ function eqRenderTabla(rows) {
       '</td>' +
     '</tr>';
   }).join('');
+
+  if (typeof adminPuedeEditar === 'function' && !adminPuedeEditar()) {
+    document.querySelectorAll('.eq-btn-editar, .eq-btn-eliminar, .eq-check, #eq-check-all').forEach(function(el){
+      el.style.display = 'none';
+    });
+    var bulkBar = document.getElementById('eq-bulk-bar');
+    if (bulkBar) bulkBar.style.display = 'none';
+  }
+
 }
 
-// ── Filtrar local ─────────────────────────────────────────────
+// Filtrar local
 function eqFiltrar() {
   var q   = document.getElementById('eq-busqueda').value.toLowerCase();
   var rol = document.getElementById('eq-filtro-rol').value;
@@ -340,7 +343,6 @@ function eqFiltrar() {
   eqRenderTabla(filtrados);
 }
 
-// ── Select all ────────────────────────────────────────────────
 function eqSelectAll(cb) {
   document.querySelectorAll('.eq-check').forEach(function(c){ c.checked = cb.checked; });
   eqActualizarBulk();
@@ -363,7 +365,7 @@ function eqEliminarSeleccionados() {
   eqConfirmarEliminarMultiple(ids);
 }
 
-// ── Avatar dinámico en modal ──────────────────────────────────
+// Avatar dinámico en modal
 function eqActualizarAvatar() {
   var nombre  = document.getElementById('eq-modal-nombre').value;
   var inicial = (nombre || 'A').charAt(0).toUpperCase();
@@ -385,7 +387,7 @@ function eqTogglePass() {
   }
 }
 
-// ── Modal nuevo ───────────────────────────────────────────────
+// Modal nuevo
 function eqAbrirModalNuevo() {
   eq_modoEditar = false;
   eq_idActual   = null;
@@ -402,7 +404,7 @@ function eqAbrirModalNuevo() {
   document.getElementById('eq-modal').style.display = 'flex';
 }
 
-// ── Modal editar ──────────────────────────────────────────────
+// Modal editar
 function eqAbrirModalEditar(a) {
   eq_modoEditar = true;
   eq_idActual   = a.id;
@@ -414,7 +416,7 @@ function eqAbrirModalEditar(a) {
   document.getElementById('eq-modal-pass-label').textContent = 'Nueva contraseña';
   document.getElementById('eq-modal-pass-hint').style.display = '';
   document.getElementById('eq-modal-error').style.display  = 'none';
-  // Avatar
+  
   var color = eqColor(a.nombre);
   document.getElementById('eq-avatar-preview').style.background = color;
   document.getElementById('eq-avatar-inicial').textContent = (a.nombre||'A').charAt(0).toUpperCase();
@@ -425,7 +427,6 @@ function eqCerrarModal() {
   document.getElementById('eq-modal').style.display = 'none';
 }
 
-// ── Guardar ───────────────────────────────────────────────────
 function eqGuardar() {
   var nombre   = document.getElementById('eq-modal-nombre').value.trim();
   var correo   = document.getElementById('eq-modal-correo').value.trim();
@@ -457,7 +458,7 @@ function eqGuardar() {
   var url    = eq_modoEditar ? '/api/admin/equipo/' + eq_idActual : '/api/admin/equipo';
   var method = eq_modoEditar ? 'PATCH' : 'POST';
 
-  fetch(url, {
+  adminFetch(url, {
     method: method,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
@@ -482,7 +483,6 @@ function eqGuardar() {
   });
 }
 
-// ── Confirmar eliminar uno ────────────────────────────────────
 function eqConfirmarEliminar(id, nombre) {
   document.getElementById('eq-confirm-msg').textContent = 'Se eliminará a "' + nombre + '". Esta acción no se puede deshacer.';
   var btn = document.getElementById('eq-confirm-btn');
@@ -506,7 +506,7 @@ function eqCerrarConfirm() {
 function eqEliminar(ids) {
   eqCerrarConfirm();
   Promise.all(ids.map(function(id) {
-    return fetch('/api/admin/equipo/' + id, { method: 'DELETE' });
+    return adminFetch('/api/admin/equipo/' + id, { method: 'DELETE' });
   }))
   .then(function() {
     document.getElementById('eq-bulk-bar').style.display = 'none';
@@ -516,6 +516,12 @@ function eqEliminar(ids) {
   .catch(function() { alert('Error al eliminar. Intenta de nuevo.'); });
 }
 
-// ── Init ──────────────────────────────────────────────────────
 eqCargar();
+
+// Restricciones lector
+function aplicarRestriccionesLectorEq() {
+  if (typeof adminPuedeEditar === 'function' && adminPuedeEditar()) return;
+  document.querySelectorAll('.panel-btn-verde').forEach(function(el){ el.style.display='none'; });
+}
+aplicarRestriccionesLectorEq();
 </script>

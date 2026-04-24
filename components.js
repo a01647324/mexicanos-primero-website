@@ -142,7 +142,7 @@ async function loadComponent(selector, filePath) {
         document.getElementById('perfil-dropdown-correo').textContent = correo
       }
 
-    } else if (token && rol === 'admin') {
+    } else if (token && (rol === 'admin' || rol === 'lector')) {
       // ── Admin logueado: mostrar avatar y acceso al panel ──────
       btnLogin.style.display = 'none'
       perfil.style.display   = 'flex'
