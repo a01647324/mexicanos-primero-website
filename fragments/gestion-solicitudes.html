@@ -8,7 +8,7 @@
     </div>
   </div>
 
-  <!-- MÉTRICAS RÁPIDAS -->
+  <!-- MÉTRICAS -->
   <div class="gs-chips" id="gs-chips">
     <div class="gs-chip gs-chip-skeleton"></div>
     <div class="gs-chip gs-chip-skeleton"></div>
@@ -62,12 +62,12 @@
     </table>
   </div>
 
-  <!-- PAGINACIÓN -->
+  <!-- FOOTER -->
   <div class="gs-paginacion" id="gs-paginacion"></div>
 
 </div>
 
-<!-- ══ MODAL EDITAR ══════════════════════════════════════════ -->
+<!-- MODAL EDITAR -->
 <div id="gs-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:3000;align-items:center;justify-content:center;padding:2rem;" onclick="if(event.target===this)gsCerrarModal()">
   <div class="modal-caja" style="max-width:640px;width:100%;">
 
@@ -128,7 +128,7 @@
         <textarea id="gs-modal-msg" class="panel-input panel-textarea" rows="2"></textarea>
       </div>
 
-      <!-- Materiales (si aplica) -->
+      <!-- Materiales -->
       <div id="gs-modal-mat-wrap" style="display:none;">
         <hr style="border:none;border-top:1px solid var(--gris-claro);margin:.5rem 0">
         <p style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--texto-suave);margin-bottom:.75rem">Materiales solicitados</p>
@@ -295,7 +295,7 @@ var gs_totalPaginas = 1;
 var gs_debounceTimer = null;
 var gs_idActual = null;
 
-// ── Helpers ───────────────────────────────────────────────────
+// Etiquetas
 function gsClaseTipo(tipo) {
   if (!tipo) return 'tipo-otro';
   var t = tipo.toLowerCase();
@@ -328,7 +328,7 @@ function gsDebounce() {
   gs_debounceTimer = setTimeout(function(){ gsCargar(1); }, 400);
 }
 
-// ── Cargar datos ──────────────────────────────────────────────
+// Cargar datos
 function gsCargar(pagina) {
   gs_paginaActual = pagina || 1;
   var busqueda = document.getElementById('gs-busqueda').value.trim();
@@ -357,7 +357,7 @@ function gsCargar(pagina) {
     });
 }
 
-// ── Render tabla ──────────────────────────────────────────────
+// Render tabla
 function gsRenderTabla(rows, total) {
   var tbody = document.getElementById('gs-tbody');
   if (!rows || rows.length === 0) {
@@ -391,9 +391,9 @@ function gsRenderTabla(rows, total) {
   }).join('');
 }
 
-// ── Chips resumen ─────────────────────────────────────────────
+// Chips resumen
 function gsRenderChips(rows) {
-  // Hacemos una sola llamada sin filtros para obtener conteos reales
+  // Una sola llamada sin filtros para  conteos reales
   fetch('/api/admin/gestion-solicitudes?limite=1000')
     .then(function(r){ return r.json(); })
     .then(function(data) {
@@ -426,7 +426,7 @@ function gsFiltrarEstatus(val) {
   gsCargar(1);
 }
 
-// ── Paginación ────────────────────────────────────────────────
+// Paginación
 function gsRenderPaginacion(total) {
   var pag  = document.getElementById('gs-paginacion');
   var ini  = (gs_paginaActual - 1) * 15 + 1;
@@ -446,7 +446,7 @@ function gsRenderPaginacion(total) {
     '<div class="gs-paginacion-btns">'+btns+'</div>';
 }
 
-// ── Modal ─────────────────────────────────────────────────────
+// Modal
 function gsAbrirModal(s) {
   gs_idActual = s.id;
   document.getElementById('gs-modal-id').textContent      = '#' + s.id;
@@ -458,7 +458,7 @@ function gsAbrirModal(s) {
   document.getElementById('gs-modal-msg').value           = s.mensaje || '';
   document.getElementById('gs-modal-notas').value         = s.notas_admin || '';
 
-  // Seleccionar estatus activo
+  // Estatus activo
   document.querySelectorAll('.gs-estatus-btn').forEach(function(btn) {
     btn.classList.toggle('seleccionado', btn.dataset.val === (s.estatus_gestion || 'nueva'));
   });
@@ -526,6 +526,5 @@ function gsGuardar() {
   });
 }
 
-// ── Init ──────────────────────────────────────────────────────
 gsCargar(1);
 </script>
