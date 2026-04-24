@@ -92,17 +92,16 @@ app.get("/api/catalogo/:id/subcategorias", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT
-         sc.id, sc.nombre, sc.imagen,
-         sc.categoria_catalogo_id,
-         sc.subcategoria_real_id,
-         sc.categoria_real_id,
-         c.nombre AS categoria_real_nombre,
-         s.nombre AS subcategoria_real_nombre
-       FROM subcategorias_catalogo sc
-       LEFT JOIN categorias    c ON sc.categoria_real_id    = c.id
-       LEFT JOIN subcategorias s ON sc.subcategoria_real_id = s.id
-       WHERE sc.categoria_catalogo_id = $1
-       ORDER BY sc.id`,
+        sc.id, sc.nombre, sc.imagen,
+        sc.categoria_catalogo_id,
+        sc.subcategoria_real_id,
+        c.nombre AS categoria_real_nombre,
+        s.nombre AS subcategoria_real_nombre
+      FROM subcategorias_catalogo sc
+      LEFT JOIN subcategorias s ON sc.subcategoria_real_id = s.id
+      LEFT JOIN categorias    c ON s.categoria_id          = c.id
+      WHERE sc.categoria_catalogo_id = $1
+      ORDER BY sc.id`,
       [req.params.id]
     );
     res.json({ data: result.rows });
@@ -122,7 +121,6 @@ app.get("/api/filtros", async (req, res) => {
           sc.id, sc.nombre,
           sc.categoria_catalogo_id,
           sc.subcategoria_real_id,
-          sc.categoria_real_id,
           cc.nombre AS categoria_catalogo_nombre
         FROM subcategorias_catalogo sc
         JOIN categorias_catalogo cc ON sc.categoria_catalogo_id = cc.id
@@ -260,10 +258,30 @@ app.post("/api/solicitud-material", async (req, res) => {
     const solicitudId = solicitud.rows[0].id;
 
     for (const item of materiales) {
+      // 1. Intentar resolver escuela_id desde necesidad_id
+      let escuelaId = null;
+
+      if (item.id) {
+        const necRes = await client.query(
+          "SELECT escuela_id FROM necesidades WHERE id = $1",
+          [item.id]
+        );
+        escuelaId = necRes.rows[0]?.escuela_id || null;
+      }
+
+      // 2. Si no se resolvió, buscar por nombre de escuela
+      if (!escuelaId && item.escuela) {
+        const escRes = await client.query(
+          "SELECT id FROM escuelas WHERE TRIM(LOWER(nombre)) = TRIM(LOWER($1))",
+          [item.escuela]
+        );
+        escuelaId = escRes.rows[0]?.id || null;
+      }
+
       await client.query(
-        `INSERT INTO solicitud_materiales (solicitud_id, necesidad_id, escuela, propuesta, cantidad, unidad)
+        `INSERT INTO solicitud_materiales (solicitud_id, necesidad_id, escuela_id, propuesta, cantidad, unidad)
          VALUES ($1, $2, $3, $4, $5, $6)`,
-        [solicitudId, item.id||null, item.escuela||null, item.propuesta, item.cantidad, item.unidad||null]
+        [solicitudId, item.id||null, escuelaId, item.propuesta, item.cantidad, item.unidad||null]
       );
     }
 
@@ -285,7 +303,7 @@ app.post("/api/solicitud-material", async (req, res) => {
 
 app.post("/api/auth/register-donador", async (req, res) => {
   try {
-    const { nombre_completo, correo, password, fecha_nacimiento, estado } = req.body;
+    const { nombre_completo, correo, password, fecha_nacimiento, estado_geografico } = req.body;
     if (!nombre_completo || !correo || !password)
       return res.status(400).json({ error: "Nombre, correo y contraseña son requeridos." });
 
@@ -294,9 +312,9 @@ app.post("/api/auth/register-donador", async (req, res) => {
       return res.status(400).json({ error: "Ya existe una cuenta con ese correo." });
 
     await pool.query(
-      `INSERT INTO donadores (nombre_completo, correo, password_hash, fecha_nacimiento, estado)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [nombre_completo, correo, password, fecha_nacimiento||null, estado||null]
+      `INSERT INTO donadores (nombre_completo, correo, password_hash, fecha_nacimiento, estado_geografico)
+      VALUES ($1, $2, $3, $4, $5)`,
+      [nombre_completo, correo, password, fecha_nacimiento||null, estado_geografico||null]
     );
     res.status(201).json({ message: "Cuenta creada exitosamente." });
   } catch (err) {
@@ -756,7 +774,10 @@ app.get("/api/admin/solicitudes", async (req, res) => {
 app.get("/api/admin/solicitudes/:id/materiales", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT escuela, propuesta, cantidad, unidad FROM solicitud_materiales WHERE solicitud_id = $1",
+      `SELECT e.nombre AS escuela, sm.propuesta, sm.cantidad, sm.unidad
+       FROM solicitud_materiales sm
+       LEFT JOIN escuelas e ON sm.escuela_id = e.id
+       WHERE sm.solicitud_id = $1`,
       [req.params.id]
     );
     res.json({ data: result.rows });
@@ -770,9 +791,6 @@ app.get("/api/admin/solicitudes/:id/materiales", async (req, res) => {
 app.patch("/api/admin/solicitudes/:id/estado", verificarToken, soloAdmin, async (req, res) => {
   try {
     const { estado_lectura } = req.body;
-    const validos = ["nueva", "leida", "archivada", "oculta"];
-    if (!validos.includes(estado_lectura))
-      return res.status(400).json({ error: "Estado inválido" });
     await pool.query(
       "UPDATE solicitudes_donacion SET estado_lectura = $1 WHERE id = $2",
       [estado_lectura, req.params.id]
@@ -812,13 +830,14 @@ app.get("/api/admin/gestion-solicitudes", async (req, res) => {
          COALESCE(sd.notas_admin, '')          AS notas_admin,
          COALESCE(
            json_agg(json_build_object(
-             'escuela', sm.escuela, 'propuesta', sm.propuesta,
+             'escuela', e.nombre, 'propuesta', sm.propuesta,
              'cantidad', sm.cantidad, 'unidad', sm.unidad
            )) FILTER (WHERE sm.id IS NOT NULL),
            '[]'
          ) AS materiales
        FROM solicitudes_donacion sd
        LEFT JOIN solicitud_materiales sm ON sm.solicitud_id = sd.id
+       LEFT JOIN escuelas e ON sm.escuela_id = e.id
        ${where}
        GROUP BY sd.id
        ORDER BY sd.created_at DESC
@@ -841,9 +860,6 @@ app.patch("/api/admin/gestion-solicitudes/:id", verificarToken, soloAdmin, async
     const values = [];
 
     if (estatus_gestion !== undefined) {
-      const validos = ["nueva", "en_proceso", "pendiente", "finalizada", "cancelada"];
-      if (!validos.includes(estatus_gestion))
-        return res.status(400).json({ error: "Estatus inválido" });
       values.push(estatus_gestion); sets.push(`estatus_gestion = $${values.length}`);
     }
     if (notas_admin     !== undefined) { values.push(notas_admin);     sets.push(`notas_admin = $${values.length}`); }
@@ -892,7 +908,7 @@ app.get("/api/admin/panel/metricas", async (req, res) => {
           COUNT(*) FILTER (WHERE tipo_donacion = 'Vinculaciones')       AS vinculaciones
         FROM solicitudes_donacion
       `),
-      pool.query("SELECT id, nombre_completo, correo, estado, created_at FROM donadores ORDER BY created_at DESC LIMIT 10"),
+      pool.query("SELECT id, nombre_completo, correo, estado_geografico, created_at FROM donadores ORDER BY created_at DESC LIMIT 10"),
       pool.query("SELECT estado, COUNT(*) AS total FROM necesidades GROUP BY estado ORDER BY total DESC"),
       pool.query(`
         SELECT e.nombre AS escuela,
