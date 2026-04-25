@@ -71,231 +71,241 @@
     </div>
 </section>
  
-    </div><!-- /contacto-body -->
- 
-    <div class="modal-overlay" id="modal-terminos">
-        <div class="modal-caja">
-        <h2>Antes de continuar</h2>
-        <p style="color: var(--texto-suave); font-size: 0.88rem; margin-bottom: 1rem;">
-            Para llenar el formulario de contacto es necesario que aceptes nuestros términos y condiciones de privacidad.
-        </p>
- 
- 
-        <a class="btn-ver-mas" href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf" target="_blank">Aviso de Privacidad completo → </a>
- 
-        
- 
-        <label class="terminos-check">
-            <input type="checkbox" id="check-terminos"/>
-            <span>He leído y acepto los términos y condiciones de privacidad.</span>
-        </label>
- 
-        <button class="btn-aceptar" id="btn-aceptar-terminos" disabled>
-            Aceptar y continuar
-        </button>
-        <button class="btn-cancelar-modal" onclick="cerrarTerminos()">Cancelar</button>
-        </div>
-    </div>
- 
+</div><!-- /contacto-body -->
+
+<div class="modal-overlay" id="modal-terminos">
+    <div class="modal-caja">
+    <h2>Antes de continuar</h2>
+    <p style="color: var(--texto-suave); font-size: 0.88rem; margin-bottom: 1rem;">
+        Para llenar el formulario de contacto es necesario que aceptes nuestros términos y condiciones de privacidad.
+    </p>
+
+
+    <a class="btn-ver-mas" href="https://www.mexicanosprimerojalisco.org/pdf/aviso-privacidad-2023.pdf" target="_blank">Aviso de Privacidad completo → </a>
+
     
-    <div class="modal-overlay" id="modal-formulario">
-        <div class="modal-caja">
-        <h2 class="modal-titulo-centrado">Formulario de contacto</h2>
-        <p style="color: var(--texto-suave); font-size: 0.85rem; margin-bottom: 1.2rem;">
-            Completa tus datos y nuestro equipo se pondrá en contacto contigo a la brevedad.
-        </p>
-        
-        
-        <div id="resumen-carrito" class="resumen-carrito" style="display: none;"></div>
- 
-        <form id="contacto-donor">
-            <div class="form-grupo">
-                <label for="nombre">Nombre completo: </label>
-                <input id="nombre" name="nombre_completo" type="text" placeholder="Tu nombre completo" required/>
-            </div>
-            <div class="form-grupo">
-                    <label for="instancia">Tipo de instancia desde la que nos contactas:</label>
-                    <select
-                    id="instancia" 
-                    name="tipo_instancia"> 
-                    <option value="">Selecciona</option>
-                    <option value="Empresa">Empresa</option>
-                    <option value="Organizacion">Organización de la sociedad civil</option>
-                    <option value="Institucion">Institución educativa</option>
-                    <option value="Gobierno">Gobierno municipal</option>
-                    <option value="noAplica">No represento una instancia</option>
-                    <option value="Otro:">Otro:</option>
-                    </select>
-                </div>
 
-                <div class="form-grupo" id="grupo-tipo-donacion" style="display: none;">
-                    <label for="tipoDonacionSelect">Tipo de apoyo:</label>
-                    <select id="tipoDonacionSelect" name="tipo_donacion">
-                        <option value="">Selecciona una opción</option>
-                        <option value="Voluntariado">Voluntariado</option>
-                        <option value="Donación económica">Donación económica</option>
-                        <option value="Brindar talleres">Brindar talleres</option>
-                        <option value="Vinculaciones">Vinculaciones</option>
-                        <option value="Otro">Otro</option>
-                    </select>
-                </div>
- 
-                <div class="form-grupo">
-                    <label for="nombreInstancia">Nombre de la instancia de la que nos contactas (si aplica):</label>
-                    <input id="nombreInstancia" name="nombre_instancia" type="text" placeholder="Nombre de la instancia"/>
-                </div>
+    <label class="terminos-check">
+        <input type="checkbox" id="check-terminos"/>
+        <span>He leído y acepto los términos y condiciones de privacidad.</span>
+    </label>
 
-
-                <div class="form-grupo">
-                    <label for="correo">Correo electrónico: </label>
-                    <input id="correo" name="correo" type="email" placeholder="tucorreo@ejemplo.com" required/>
-                </div>
- 
-                <div class="form-grupo">
-                    <label for="telefono">Teléfono</label>
-                    <input id="telefono" name="telefono" type="tel" placeholder="33 1234 5678" required/>
-                </div>
- 
-                
-                <div class="form-grupo">
-                    <label for="mensaje">Mensaje adicional</label>
-                    <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos cómo deseas apoyar..."></textarea>
-                </div>
-        </form>
- 
-        <button class="btn-aceptar" onclick="enviarFormulario()">Enviar información / solicitud</button>
-        <button class="btn-cancelar-modal" onclick="cerrarFormulario()">Cancelar</button>
-        </div>
+    <button class="btn-aceptar" id="btn-aceptar-terminos" disabled>
+        Aceptar y continuar
+    </button>
+    <button class="btn-cancelar-modal" onclick="cerrarTerminos()">Cancelar</button>
     </div>
-    <div id="footer-placeholder"></div>
-    <script src="components.js"></script>
-        
+</div>
 
 
-    <script>
-        /* TERMINOS Y CONDICIONES FORMULARIO */
-        const modalTerminos   = document.getElementById('modal-terminos');
-        const checkTerminos   = document.getElementById('check-terminos');
-        const btnAceptar      = document.getElementById('btn-aceptar-terminos');
-        const modalFormulario = document.getElementById('modal-formulario');
+<div class="modal-overlay" id="modal-formulario">
+    <div class="modal-caja">
+    <h2 class="modal-titulo-centrado">Formulario de contacto</h2>
+    <p style="color: var(--texto-suave); font-size: 0.85rem; margin-bottom: 1.2rem;">
+        Completa tus datos y nuestro equipo se pondrá en contacto contigo a la brevedad.
+    </p>
+    
+    
+    <div id="resumen-carrito" class="resumen-carrito" style="display: none;"></div>
 
-        window.abrirTerminos = function() {
-        if (!modalTerminos) return;
-        modalTerminos.classList.add('activo');
-        if (checkTerminos) checkTerminos.checked = false;
-        if (btnAceptar)    btnAceptar.disabled = true;
-        };
-
-        window.cerrarTerminos = function() {
-        if (modalTerminos) modalTerminos.classList.remove('activo');
-        };
-
-        if (checkTerminos) {
-        checkTerminos.addEventListener('change', function() {
-            btnAceptar.disabled = !checkTerminos.checked;
-        });
-        }
-
-        if (btnAceptar) {
-        btnAceptar.addEventListener('click', function() {
-            cerrarTerminos();
-            if (modalFormulario) modalFormulario.classList.add('activo');
-        });
-        }
-
-        if (modalTerminos) {
-        modalTerminos.addEventListener('click', function(e) {
-            if (e.target === modalTerminos) cerrarTerminos();
-        });
-        }
-
-
-        window.cerrarFormulario = function() {
-        if (modalFormulario) modalFormulario.classList.remove('activo');
-        };
-
-        if (modalFormulario) {
-        modalFormulario.addEventListener('click', function(e) {
-            if (e.target === modalFormulario) cerrarFormulario();
-        });
-        }
-
-        const origenFormulario = sessionStorage.getItem("origen_formulario");
-        const tipoDonacion = sessionStorage.getItem("tipo_donacion");
-        const carritoGuardado = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
-
-        const resumenTipo = document.getElementById("resumen-tipo-donacion");
-        const resumenCarrito = document.getElementById("resumen-carrito");
-
-        const grupoTipoDonacion = document.getElementById("grupo-tipo-donacion");
-        const tipoDonacionSelect = document.getElementById("tipoDonacionSelect");
-        
-
-        function generarResumenCarritoHTML(items) {
-        if (!items.length) {
-            return `
-            <div class="resumen-vacio">
-                <p>No hay materiales seleccionados todavía.</p>
+    <form id="contacto-donor">
+        <div class="form-grupo">
+            <label for="nombre">Nombre completo: </label>
+            <input id="nombre" name="nombre_completo" type="text" placeholder="Tu nombre completo" required/>
+        </div>
+        <div class="form-grupo">
+                <label for="instancia">Tipo de instancia desde la que nos contactas:</label>
+                <select
+                id="instancia" 
+                name="tipo_instancia"> 
+                <option value="">Selecciona</option>
+                <option value="Empresa">Empresa</option>
+                <option value="Organizacion">Organización de la sociedad civil</option>
+                <option value="Institucion">Institución educativa</option>
+                <option value="Gobierno">Gobierno municipal</option>
+                <option value="noAplica">No represento una instancia</option>
+                <option value="Otro:">Otro:</option>
+                </select>
             </div>
-            `;
-        }
 
-        return `
-            <h3 class="resumen-titulo">Materiales seleccionados</h3>
-            <div class="resumen-lista">
-            ${items.map(item => `
-                <div class="resumen-item">
-                <p class="resumen-escuela">${item.escuela}</p>
-                <p class="resumen-material">${item.propuesta}</p>
-                <p class="resumen-cantidad"><strong>Cantidad:</strong> ${item.cantidad} ${item.unidad || ""}</p>
-                </div>
-            `).join("")}
+            <div class="form-grupo" id="grupo-tipo-donacion" style="display: none;">
+                <label for="tipoDonacionSelect">Tipo de apoyo:</label>
+                <select id="tipoDonacionSelect" name="tipo_donacion">
+                    <option value="">Selecciona una opción</option>
+                    <option value="Voluntariado">Voluntariado</option>
+                    <option value="Donación económica">Donación económica</option>
+                    <option value="Brindar talleres">Brindar talleres</option>
+                    <option value="Vinculaciones">Vinculaciones</option>
+                    <option value="Otro">Otro</option>
+                </select>
             </div>
-        `;
-        }
 
-      if (origenFormulario === "catalogo") {
-            if (resumenCarrito) {
-                resumenCarrito.style.display = "block";
-                resumenCarrito.innerHTML = generarResumenCarritoHTML(carritoGuardado);
-            }
+            <div class="form-grupo">
+                <label for="nombreInstancia">Nombre de la instancia de la que nos contactas (si aplica):</label>
+                <input id="nombreInstancia" name="nombre_instancia" type="text" placeholder="Nombre de la instancia"/>
+            </div>
 
-            if (grupoTipoDonacion) {
-                grupoTipoDonacion.style.display = "none";
-            }
-        } else if (tipoDonacion) {
-            if (resumenCarrito) {
-                resumenCarrito.style.display = "none";
-            }
 
-            if (grupoTipoDonacion && tipoDonacionSelect) {
-                grupoTipoDonacion.style.display = "block";
-                tipoDonacionSelect.value = tipoDonacion;
-            }
-        }
+            <div class="form-grupo">
+                <label for="correo">Correo electrónico: </label>
+                <input id="correo" name="correo" type="email" placeholder="tucorreo@ejemplo.com" required/>
+            </div>
 
-        window.enviarFormulario = async function() {
-        const payload = {
-        nombre_completo: document.getElementById("nombre").value.trim(),
-        tipo_instancia: document.getElementById("instancia").value,
-        nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
-        correo: document.getElementById("correo").value.trim(),
-        telefono: document.getElementById("telefono").value.trim(),
-        mensaje: document.getElementById("mensaje").value.trim(),
-        aviso_privacidad_aceptado: document.getElementById("check-terminos").checked,
-        origen_formulario: sessionStorage.getItem("origen_formulario"),
-        tipo_donacion: document.getElementById("tipoDonacionSelect")?.value || sessionStorage.getItem("tipo_donacion")
-        };
-  if (!payload.nombre_completo || !payload.telefono || !payload.correo) {
-        alert("Completa nombre, correo y teléfono.");
-        return;
+            <div class="form-grupo">
+                <label for="telefono">Teléfono</label>
+                <input id="telefono" name="telefono" type="tel" placeholder="33 1234 5678" required/>
+            </div>
+
+            
+            <div class="form-grupo">
+                <label for="mensaje">Mensaje adicional</label>
+                <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos cómo deseas apoyar..."></textarea>
+            </div>
+    </form>
+
+    <button class="btn-aceptar" onclick="enviarFormulario()">Enviar información / solicitud</button>
+    <button class="btn-cancelar-modal" onclick="cerrarFormulario()">Cancelar</button>
+    </div>
+</div>
+<div id="footer-placeholder"></div>
+<script src="components.js"></script>
+    
+<script>
+/* TERMINOS Y CONDICIONES FORMULARIO */
+const modalTerminos   = document.getElementById('modal-terminos');
+const checkTerminos   = document.getElementById('check-terminos');
+const btnAceptar      = document.getElementById('btn-aceptar-terminos');
+const modalFormulario = document.getElementById('modal-formulario');
+
+window.abrirTerminos = function() {
+if (!modalTerminos) return;
+modalTerminos.classList.add('activo');
+if (checkTerminos) checkTerminos.checked = false;
+if (btnAceptar)    btnAceptar.disabled = true;
+};
+
+window.cerrarTerminos = function() {
+if (modalTerminos) modalTerminos.classList.remove('activo');
+};
+
+if (checkTerminos) {
+checkTerminos.addEventListener('change', function() {
+    btnAceptar.disabled = !checkTerminos.checked;
+});
 }
+
+if (btnAceptar) {
+btnAceptar.addEventListener('click', function() {
+    cerrarTerminos();
+    if (modalFormulario) modalFormulario.classList.add('activo');
+});
+}
+
+if (modalTerminos) {
+modalTerminos.addEventListener('click', function(e) {
+    if (e.target === modalTerminos) cerrarTerminos();
+});
+}
+
+
+window.cerrarFormulario = function() {
+if (modalFormulario) modalFormulario.classList.remove('activo');
+};
+
+if (modalFormulario) {
+modalFormulario.addEventListener('click', function(e) {
+    if (e.target === modalFormulario) cerrarFormulario();
+});
+}
+
+const origenFormulario = sessionStorage.getItem("origen_formulario");
+const tipoDonacion = sessionStorage.getItem("tipo_donacion");
+const carritoGuardado = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
+
+const resumenTipo = document.getElementById("resumen-tipo-donacion");
+const resumenCarrito = document.getElementById("resumen-carrito");
+
+const grupoTipoDonacion = document.getElementById("grupo-tipo-donacion");
+const tipoDonacionSelect = document.getElementById("tipoDonacionSelect");
+
+
+function generarResumenCarritoHTML(items) {
+if (!items.length) {
+    return `
+    <div class="resumen-vacio">
+        <p>No hay materiales seleccionados todavía.</p>
+    </div>
+    `;
+}
+
+return `
+    <h3 class="resumen-titulo">Materiales seleccionados</h3>
+    <div class="resumen-lista">
+    ${items.map(item => `
+        <div class="resumen-item">
+        <p class="resumen-escuela">${item.escuela}</p>
+        <p class="resumen-material">${item.propuesta}</p>
+        <p class="resumen-cantidad"><strong>Cantidad:</strong> ${item.cantidad} ${item.unidad || ""}</p>
+        </div>
+    `).join("")}
+    </div>
+`;
+}
+
+if (origenFormulario === "catalogo") {
+    if (resumenCarrito) {
+        resumenCarrito.style.display = "block";
+        resumenCarrito.innerHTML = generarResumenCarritoHTML(carritoGuardado);
+    }
+
+    if (grupoTipoDonacion) {
+        grupoTipoDonacion.style.display = "none";
+    }
+} else if (tipoDonacion) {
+    if (resumenCarrito) {
+        resumenCarrito.style.display = "none";
+    }
+
+    if (grupoTipoDonacion && tipoDonacionSelect) {
+        grupoTipoDonacion.style.display = "block";
+        tipoDonacionSelect.value = tipoDonacion;
+    }
+}
+
+window.enviarFormulario = async function() {
+  // Verificar sesión
+  const token = localStorage.getItem('token');
+  const rol   = localStorage.getItem('rol');
+  if (!token || rol !== 'donador') {
+    alert('Debes iniciar sesión para enviar una donación.');
+    localStorage.setItem('loginOrigen', window.location.href);
+    window.location.href = 'login-donador.html';
+    return;
+  }
+
+  const payload = {
+    nombre_completo: document.getElementById("nombre").value.trim(),
+    tipo_instancia: document.getElementById("instancia").value,
+    nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
+    correo: document.getElementById("correo").value.trim(),
+    telefono: document.getElementById("telefono").value.trim(),
+    mensaje: document.getElementById("mensaje").value.trim(),
+    aviso_privacidad_aceptado: document.getElementById("check-terminos").checked,
+    origen_formulario: sessionStorage.getItem("origen_formulario"),
+    tipo_donacion: document.getElementById("tipoDonacionSelect")?.value || sessionStorage.getItem("tipo_donacion")
+  };
+
+  if (!payload.nombre_completo || !payload.telefono || !payload.correo) {
+    alert("Completa nombre, correo y teléfono.");
+    return;
+  }
 
   try {
     const res = await fetch("http://localhost:3000/api/contacto", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(payload)
     });
@@ -315,6 +325,6 @@
     alert("Error de conexión con el servidor.");
   }
 };
-    </script>
+</script>
 </body>
 </html>

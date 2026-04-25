@@ -208,16 +208,27 @@ app.post("/api/contacto", async (req, res) => {
       correo, telefono, mensaje, aviso_privacidad_aceptado, tipo_donacion
     } = req.body;
 
+    // Extraer donador_id del JWT si viene autenticado
+    let donadorId = null;
+    const auth = req.headers['authorization'];
+    if (auth && auth.startsWith('Bearer ')) {
+      try {
+        const decoded = jwt.verify(auth.slice(7), SECRET);
+        if (decoded.rol === 'donador') donadorId = decoded.id;
+      } catch { /* token inválido, se ignora */ }
+    }
+
     const result = await pool.query(
       `INSERT INTO solicitudes_donacion (
          nombre_completo, tipo_instancia, nombre_instancia,
          correo, telefono, mensaje, origen_formulario,
-         aviso_privacidad_aceptado, tipo_donacion
+         aviso_privacidad_aceptado, tipo_donacion, donador_id
        )
-       VALUES ($1, $2, $3, $4, $5, $6, 'contacto', $7, $8)
+       VALUES ($1, $2, $3, $4, $5, $6, 'contacto', $7, $8, $9)
        RETURNING id`,
       [nombre_completo, tipo_instancia||null, nombre_instancia||null,
-       correo||null, telefono, mensaje||null, aviso_privacidad_aceptado, tipo_donacion||null]
+       correo||null, telefono, mensaje||null, aviso_privacidad_aceptado, 
+       tipo_donacion||null, donadorId]
     );
 
     res.status(201).json({ message: "Formulario guardado.", solicitud_id: result.rows[0].id });
@@ -233,6 +244,15 @@ app.post("/api/solicitud-material", async (req, res) => {
     const error = validarFormularioBase(req.body);
     if (error) return res.status(400).json({ error });
 
+    let donadorId = null;
+    const auth = req.headers['authorization'];
+    if (auth && auth.startsWith('Bearer ')) {
+      try {
+        const decoded = jwt.verify(auth.slice(7), SECRET);
+        if (decoded.rol === 'donador') donadorId = decoded.id;
+      } catch { /* token inválido, se ignora */ }
+    }
+
     const {
       nombre_completo, tipo_instancia, nombre_instancia,
       correo, telefono, mensaje, aviso_privacidad_aceptado, materiales
@@ -245,14 +265,14 @@ app.post("/api/solicitud-material", async (req, res) => {
 
     const solicitud = await client.query(
       `INSERT INTO solicitudes_donacion (
-         nombre_completo, tipo_instancia, nombre_instancia,
-         correo, telefono, mensaje, origen_formulario,
-         aviso_privacidad_aceptado, tipo_donacion
-       )
-       VALUES ($1, $2, $3, $4, $5, $6, 'pasos', $7, 'Donación material')
-       RETURNING id`,
+        nombre_completo, tipo_instancia, nombre_instancia,
+        correo, telefono, mensaje, origen_formulario,
+        aviso_privacidad_aceptado, tipo_donacion, donador_id
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, 'pasos', $7, 'Donación material', $8)
+      RETURNING id`,
       [nombre_completo, tipo_instancia||null, nombre_instancia||null,
-       correo||null, telefono, mensaje||null, aviso_privacidad_aceptado]
+      correo||null, telefono, mensaje||null, aviso_privacidad_aceptado, donadorId]
     );
 
     const solicitudId = solicitud.rows[0].id;
@@ -1008,10 +1028,40 @@ app.delete("/api/admin/equipo/:id", verificarToken, soloAdmin, async (req, res) 
   }
 });
 
+// GET — Historial de donaciones del donador autenticado
+app.get("/api/donador/historial", verificarToken, async (req, res) => {
+  try {
+    if (req.usuario.rol !== 'donador')
+      return res.status(403).json({ error: 'No autorizado' });
 
-// ─────────────────────────────────────────────────────────────
+    const result = await pool.query(
+      `SELECT
+         sd.id, sd.tipo_donacion, sd.origen_formulario,
+         sd.estatus_gestion, sd.created_at,
+         COALESCE(
+           json_agg(json_build_object(
+             'escuela', e.nombre, 'propuesta', sm.propuesta,
+             'cantidad', sm.cantidad, 'unidad', sm.unidad
+           )) FILTER (WHERE sm.id IS NOT NULL),
+           '[]'
+         ) AS materiales
+       FROM solicitudes_donacion sd
+       LEFT JOIN solicitud_materiales sm ON sm.solicitud_id = sd.id
+       LEFT JOIN escuelas e ON sm.escuela_id = e.id
+       WHERE sd.donador_id = $1
+       GROUP BY sd.id
+       ORDER BY sd.created_at DESC`,
+      [req.usuario.id]
+    );
+
+    res.json({ data: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
 // INICIO
-// ─────────────────────────────────────────────────────────────
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

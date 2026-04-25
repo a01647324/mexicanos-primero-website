@@ -244,6 +244,16 @@ if (resumen) {
 // ── ENVÍO DEL FORMULARIO ───────────────────────
 
 window.enviarFormulario = async function() {
+  // Verificar sesión
+  const token = localStorage.getItem('token');
+  const rol   = localStorage.getItem('rol');
+  if (!token || rol !== 'donador') {
+    alert('Debes iniciar sesión para enviar una donación.');
+    localStorage.setItem('loginOrigen', window.location.href);
+    window.location.href = 'login-donador.html';
+    return;
+  }
+
   const materiales = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
 
   const payload = {
@@ -276,7 +286,8 @@ window.enviarFormulario = async function() {
     const res = await fetch("http://localhost:3000/api/solicitud-material", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(payload)
     });
