@@ -481,8 +481,8 @@ try {
     document.getElementById('det-propuesta').textContent    = necesidad.propuesta;
     document.getElementById('det-escuela').textContent      = necesidad.escuela;
     document.getElementById('det-municipio').textContent    = necesidad.municipio;
-    document.getElementById('det-categoria').textContent    = necesidad.categoría;
-    document.getElementById('det-subcategoria').textContent = necesidad.subcategoría;
+    document.getElementById('det-categoria').textContent    = necesidad.categoria;
+    document.getElementById('det-subcategoria').textContent = necesidad.subcategoria;
     document.getElementById('det-cantidad').textContent     = `${necesidad.cantidad} ${necesidad.unidad || ''}`;
 
     // Nivel de necesidad
@@ -549,7 +549,7 @@ try {
       const { data } = await res.json();
 
       const total    = data.length;
-      const cubiertas = data.filter(d => d.Estado === 'Cubierto').length;
+      const cubiertas = data.filter(d => d.estado === 'Cubierto').length;
       const pct       = total > 0 ? Math.round((cubiertas / total) * 100) : 0;
 
       // Animar barra
