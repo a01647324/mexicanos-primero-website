@@ -186,8 +186,13 @@ if (subcategoriaRealId){ values.push(subcategoriaRealId);conditions.push(`subcat
 // FORMULARIOS PÚBLICOS
 // ─────────────────────────────────────────────────────────────
 
-app.post("/api/contacto", async (req, res) => {
+app.post("/api/contacto", verificarToken, async (req, res) => {
   try {
+    // Validar que sea donador
+    if (req.usuario.rol !== 'donador') {
+      return res.status(403).json({ error: 'Solo donadores pueden enviar solicitudes' });
+    }
+
     const error = validarFormularioBase(req.body);
     if (error) return res.status(400).json({ error });
 
@@ -196,15 +201,8 @@ app.post("/api/contacto", async (req, res) => {
       correo, telefono, mensaje, aviso_privacidad_aceptado, tipo_donacion
     } = req.body;
 
-    // Extraer donador_id del JWT si viene autenticado
-    let donadorId = null;
-    const auth = req.headers['authorization'];
-    if (auth && auth.startsWith('Bearer ')) {
-      try {
-        const decoded = jwt.verify(auth.slice(7), SECRET);
-        if (decoded.rol === 'donador') donadorId = decoded.id;
-      } catch { /* token inválido, se ignora */ }
-    }
+    // donadorId siempre existe y es válido
+    const donadorId = req.usuario.id;
 
     const result = await pool.query(
       `INSERT INTO solicitudes_donacion (
@@ -226,19 +224,15 @@ app.post("/api/contacto", async (req, res) => {
   }
 });
 
-app.post("/api/solicitud-material", async (req, res) => {
+app.post("/api/solicitud-material", verificarToken, async (req, res) => {
   try {
+    // Validar que sea donador
+    if (req.usuario.rol !== 'donador') {
+      return res.status(403).json({ error: 'Solo donadores pueden enviar solicitudes' });
+    }
+
     const error = validarFormularioBase(req.body);
     if (error) return res.status(400).json({ error });
-
-    let donadorId = null;
-    const auth = req.headers['authorization'];
-    if (auth && auth.startsWith('Bearer ')) {
-      try {
-        const decoded = jwt.verify(auth.slice(7), SECRET);
-        if (decoded.rol === 'donador') donadorId = decoded.id;
-      } catch { /* ignorar */ }
-    }
 
     const {
       nombre_completo, tipo_instancia, nombre_instancia,
@@ -248,6 +242,9 @@ app.post("/api/solicitud-material", async (req, res) => {
 
     if (!Array.isArray(materiales) || materiales.length === 0)
       return res.status(400).json({ error: "Debes enviar al menos un material." });
+
+    // donadorId siempre existe y es válido
+    const donadorId = req.usuario.id;
 
     // Una sola llamada reemplaza todo el BEGIN/FOR/COMMIT
     const result = await pool.query(
@@ -681,17 +678,13 @@ app.post("/api/admin/excel/subir", verificarToken, soloAdmin, upload.single("arc
           continue;
         }
 
-        const municipioId = (await client.query("SELECT id FROM municipios WHERE nombre = $1", [municipio])).rows[0]?.id
-          ?? (await client.query("INSERT INTO municipios (nombre) VALUES ($1) RETURNING id", [municipio])).rows[0].id;
-
         const categoriaId = (await client.query("SELECT id FROM categorias WHERE nombre = $1", [categoria])).rows[0]?.id
           ?? (await client.query("INSERT INTO categorias (nombre) VALUES ($1) RETURNING id", [categoria])).rows[0].id;
 
         const subcategoriaId = (await client.query("SELECT id FROM subcategorias WHERE nombre = $1 AND categoria_id = $2", [subcategoria, categoriaId])).rows[0]?.id
           ?? (await client.query("INSERT INTO subcategorias (nombre, categoria_id) VALUES ($1, $2) RETURNING id", [subcategoria, categoriaId])).rows[0].id;
 
-        const escuelaId = (await client.query("SELECT id FROM escuelas WHERE nombre = $1", [escuela])).rows[0]?.id
-          ?? (await client.query("INSERT INTO escuelas (nombre, municipio_id) VALUES ($1, $2) RETURNING id", [escuela, municipioId])).rows[0].id;
+        const escuelaId = (await client.query("SELECT fn_upsert_escuela($1, $2) AS escuela_id", [municipio, escuela])).rows[0].escuela_id;
 
         await client.query(
           `INSERT INTO necesidades (escuela_id, subcategoria_id, propuesta, cantidad, unidad, estado, detalles)

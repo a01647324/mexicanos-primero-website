@@ -343,5 +343,44 @@ window.enviarFormulario = async function() {
   }
 };
 </script>
+
+<script>
+// Verificar login y auto-llenar al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+  verificarLoginYAutoLlenar();
+});
+
+function verificarLoginYAutoLlenar() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Debes iniciar sesión para enviar una solicitud');
+    window.location.href = '/login-donador.html';
+    return;
+  }
+  
+  // Auto-llenar datos del donador
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    
+    const nombreField = document.querySelector('input[name="nombre_completo"]');
+    const correoField = document.querySelector('input[name="correo"]');
+    
+    if (nombreField && payload.nombre) {
+      nombreField.value = payload.nombre;
+      nombreField.readOnly = true;
+      nombreField.style.backgroundColor = '#f8f9fa';
+    }
+    
+    if (correoField && payload.correo) {
+      correoField.value = payload.correo;
+      correoField.readOnly = true;
+      correoField.style.backgroundColor = '#f8f9fa';
+    }
+  } catch (err) {
+    console.error('Error decodificando token:', err);
+  }
+}
+</script>
+
 </body>
 </html>
