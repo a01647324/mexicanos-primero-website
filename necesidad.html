@@ -470,34 +470,34 @@ try {
      RENDER DETALLE
      ══════════════════════════════════════════════════════════ */
   function renderDetalle() {
-    document.title = `${necesidad.Propuesta} – Mi Escuela Primero`;
+    document.title = `${necesidad.propuesta} – Mi Escuela Primero`;
 
     // Banner: imagen por categoría
-    const imgSrc = imagenesCategoria[necesidad.Categoría] || 'images/otros.png';
+    const imgSrc = imagenesCategoria[necesidad.categoria] || 'images/otros.png';
     document.getElementById('banner-img').src = imgSrc;
-    document.getElementById('banner-badge').textContent = necesidad.Categoría;
+    document.getElementById('banner-badge').textContent = necesidad.categoria;
 
     // Info
-    document.getElementById('det-propuesta').textContent    = necesidad.Propuesta;
-    document.getElementById('det-escuela').textContent      = necesidad.Escuela;
-    document.getElementById('det-municipio').textContent    = necesidad.Municipio;
-    document.getElementById('det-categoria').textContent    = necesidad.Categoría;
-    document.getElementById('det-subcategoria').textContent = necesidad.Subcategoría;
-    document.getElementById('det-cantidad').textContent     = `${necesidad.Cantidad} ${necesidad.Unidad || ''}`;
+    document.getElementById('det-propuesta').textContent    = necesidad.propuesta;
+    document.getElementById('det-escuela').textContent      = necesidad.escuela;
+    document.getElementById('det-municipio').textContent    = necesidad.municipio;
+    document.getElementById('det-categoria').textContent    = necesidad.categoría;
+    document.getElementById('det-subcategoria').textContent = necesidad.subcategoría;
+    document.getElementById('det-cantidad').textContent     = `${necesidad.cantidad} ${necesidad.unidad || ''}`;
 
     // Nivel de necesidad
-    const nivel = calcularNivel(necesidad.Cantidad);
+    const nivel = calcularNivel(necesidad.cantidad);
     document.getElementById('nivel-chip-wrap').innerHTML =
       `<span class="nivel-chip ${nivel.claseBase}">${nivel.label}</span>`;
 
     // Mapa — Google Maps embed buscando nombre de escuela + municipio
    const query = encodeURIComponent(
-  `${necesidad.Escuela}, ${necesidad.Municipio}, Jalisco, México`
+  `${necesidad.escuela}, ${necesidad.municipio}, Jalisco, México`
 );
     document.getElementById('mapa-iframe').src =
   `https://www.google.com/maps?q=${query}&output=embed`;
     
-    generarPresets(parseInt(necesidad.Cantidad) || 0);
+    generarPresets(parseInt(necesidad.cantidad) || 0);
   }
 
   function calcularNivel(cantidad) {
@@ -526,7 +526,7 @@ try {
     opciones.forEach(val => {
       const btn = document.createElement('button');
       btn.className = `preset-btn${val === defecto ? ' activo' : ''}`;
-      btn.textContent = `${val} ${necesidad.Unidad || 'uds.'}`;
+      btn.textContent = `${val} ${necesidad.unidad || 'uds.'}`;
       btn.onclick = () => {
         document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('activo'));
         btn.classList.add('activo');
@@ -543,7 +543,7 @@ try {
   async function cargarProgresoEscuela() {
     try {
       const res = await fetch(
-        `${API_URL}/data?escuela=${encodeURIComponent(necesidad.Escuela)}`
+        `${API_URL}/data?escuela=${encodeURIComponent(necesidad.escuela)}`
       );
       if (!res.ok) return;
       const { data } = await res.json();
@@ -592,16 +592,16 @@ try {
     if (existente) {
       existente.cantidad = Math.min(
         existente.cantidad + cantidadSeleccionada,
-        parseInt(necesidad.Cantidad)
+        parseInt(necesidad.cantidad)
       );
     } else {
       carrito.push({
         id:        necesidad.id,
-        escuela:   necesidad.Escuela,
-        propuesta: necesidad.Propuesta,
+        escuela:   necesidad.escuela,
+        propuesta: necesidad.propuesta,
         cantidad:  cantidadSeleccionada,
-        max:       parseInt(necesidad.Cantidad),
-        unidad:    necesidad.Unidad || ''
+        max:       parseInt(necesidad.cantidad),
+        unidad:    necesidad.unidad || ''
       });
     }
 
@@ -624,16 +624,16 @@ function agregarAlCarrito(cantidad) {
     if (existente) {
         existente.cantidad = Math.min(
             existente.cantidad + cantidad,
-            parseInt(necesidad.Cantidad)
+            parseInt(necesidad.cantidad)
         );
     } else {
         carrito.push({
             id:        necesidad.id,
-            escuela:   necesidad.Escuela,
-            propuesta: necesidad.Propuesta,
+            escuela:   necesidad.escuela,
+            propuesta: necesidad.propuesta,
             cantidad:  cantidad,
-            max:       parseInt(necesidad.Cantidad),
-            unidad:    necesidad.Unidad || ''
+            max:       parseInt(necesidad.cantidad),
+            unidad:    necesidad.unidad || ''
         });
     }
 
