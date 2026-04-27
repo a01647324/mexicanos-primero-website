@@ -82,7 +82,13 @@
     
  
     <div class="contacto-btn-wrap">
-        <a href="index.html" class="btn btn-borde">Cancelar solicitud</a>
+        <button onclick="cancelarSolicitud()" class="btn btn-borde">
+            Cancelar solicitud
+        </button>
+
+        <button onclick="modificarCarrito()" class="btn btn-verde">
+            Modificar carrito
+        </button>
     </div>
  
     <div class="modal-overlay" id="modal-terminos">
@@ -240,7 +246,14 @@ function generarResumenHTML(items) {
 if (resumen) {
   resumen.innerHTML = generarResumenHTML(carritoGuardado);
 }
+function cancelarSolicitud() {
+  sessionStorage.removeItem("carrito_donacion");
+  window.location.href = "index.html";
+}
 
+function modificarCarrito() {
+  window.location.href = "filtrado.html";
+}
 // ── ENVÍO DEL FORMULARIO ───────────────────────
 
 window.enviarFormulario = async function() {
