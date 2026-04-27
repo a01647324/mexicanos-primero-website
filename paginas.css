@@ -2258,19 +2258,19 @@
 .support-hero {
     position: relative;
     margin-top: 0px;
-    min-height: 380px;
+    min-height: 460px;
     display: flex;
     align-items: center;
     justify-content: center;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    border-bottom: none;
+    border-bottom: 3px solid var(--naranja);
     overflow: hidden;
 }
 
 .support-hero--economica {
-    background-image: url("images/doneco2.jpg");
+    background-image: url("images/doneco.jpg");
     background-position: center 32%;
 }
 
@@ -2293,33 +2293,17 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(
-        90deg,
-        rgba(28,54,97,0.68), 
-        rgba(0,117,38,0.48)  
-    );
-}
-
-.support-hero::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 70px;
-    background: linear-gradient(
         to bottom,
-        rgba(240,247,241,0) 0%,
-        rgba(240,247,241,0.78) 80%,
-        var(--fondo) 100%
+        rgba(27,107,53,0.35), 
+        rgba(27,107,53,0.62)  
     );
 }
-
 
 .support-hero-content {
     position: relative;
     z-index: 1;
     width: min(100%, 1240px);
-    padding: 72px 24px 84px;
+    padding: 7rem 1.5rem 6rem;
     text-align: center;
     color: white;
     display: flex;
@@ -2343,34 +2327,34 @@
 }
 
 .support-hero-content h1 {
-    font-size: clamp(2.4rem, 5.6vw, 4.5rem);
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
     font-weight: 900;
     letter-spacing: -1px;
-    line-height: 0.98;
-    text-shadow: 0 3px 24px rgba(0,0,0,0.18);
+    line-height: 1.05;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.18);
     max-width: 980px;
+    margin-bottom: 0.8rem
 }
 
 .support-hero-content p {
-    margin-top: 16px;
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-style: italic;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0;
-    color: rgba(255,255,255,0.9);
+    color: rgba(255,255,255,0.82);
     max-width: 760px;
 }
 
 .support-page {
     background: var(--fondo);
     padding: 0 24px 72px;
-    margin-top: 18px;
+    margin-top: 48px;
     position: relative;
     z-index: 3;
 }
 
 .support-section {
-    margin: 0 0 24px;
+    margin: 0 0 42px;
 }
 
 .support-container {
@@ -2425,7 +2409,7 @@
     padding: 0;
     position: relative;
     text-align: center;
-    cursor: pointer;
+    cursor: default;
     min-height: 300px;
     display: flex;
     flex-direction: column;
@@ -2786,7 +2770,7 @@
     }
 
     .support-hero {
-        margin-top: 82px;
+        margin-top: 0px;
         min-height: 310px;
     }
 
@@ -2834,11 +2818,11 @@
     }
 
     .support-hero-content {
-        padding: 48px 16px 56px;
+        padding: 5.5rem 1.25rem 4.5rem;
     }
 
     .support-hero-content h1 {
-        font-size: 2.25rem;
+        font-size: clamp(2.2rem, 7vw, 3.4rem);
     }
 
     .support-hero-content p {
@@ -2859,7 +2843,14 @@
     }
 
     .support-donation-grid--three {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 18px;
+    }
+
+    .support-donation-grid--three .support-donation-card {
+        flex: 0 0 calc(50% - 9px);
     }
 
     .support-contact-box,
