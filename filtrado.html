@@ -355,20 +355,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
  
     for (const item of filtered) {
-      const nivel = calcularNivel(item.Cantidad);
+      const nivel = calcularNivel(item.cantidad);
  
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
         <div class="card-header">
-          <h3>${item.Escuela}</h3>
+          <h3>${item.escuela}</h3>
           <span class="nivel-badge ${nivel.clase}">${nivel.label}</span>
         </div>
-        <p><strong>Municipio:</strong> ${item.Municipio}</p>
-        <p><strong>Categoría:</strong> ${item.Categoría}</p>
-        <p><strong>Subcategoría:</strong> ${item.Subcategoría}</p>
-        <p><strong>Propuesta:</strong> ${item.Propuesta}</p>
-        <p><strong>Cantidad requerida:</strong> ${item.Cantidad} ${item.Unidad || ''}</p>
+        <p><strong>Municipio:</strong> ${item.municipio}</p>
+        <p><strong>Categoría:</strong> ${item.categoria}</p>
+        <p><strong>Subcategoría:</strong> ${item.subcategoria}</p>
+        <p><strong>Propuesta:</strong> ${item.propuesta}</p>
+        <p><strong>Cantidad requerida:</strong> ${item.cantidad} ${item.unidad || ''}</p>
         <div class="card-acciones">
           <button class="btn-donar" onclick="abrirModalDonar(${item.id})">♡ Donar</button>
           <button class="btn-info"  onclick="verNecesidad(${item.id})">ⓘ Más información</button>
@@ -401,15 +401,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const existente = carrito.find(c => c.id === id);
     if (existente) {
       // Si ya existe, actualizar cantidad
-      existente.cantidad = Math.min(existente.cantidad + cantidad, parseInt(item.Cantidad));
+      existente.cantidad = Math.min(existente.cantidad + cantidad, parseInt(item.cantidad));
     } else {
       carrito.push({
         id:        item.id,
-        escuela:   item.Escuela,
-        propuesta: item.Propuesta,
+        escuela:   item.escuela,
+        propuesta: item.propuesta,
         cantidad:  cantidad,
-        max:       parseInt(item.Cantidad),
-        unidad:    item.Unidad || ''
+        max:       parseInt(item.cantidad),
+        unidad:    item.unidad || ''
       });
     }
     renderCarrito();
@@ -479,14 +479,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const item = dataGlobal.find(d => d.id === id);
     if (!item) return;
     const modal = document.getElementById('modal-donar');
-    document.getElementById('modal-donar-titulo').textContent = item.Escuela;
+    document.getElementById('modal-donar-titulo').textContent = item.escuela;
     document.getElementById('modal-donar-lista').innerHTML =
-      "<p><strong>Material:</strong> " + item.Propuesta + "</p>" +
-      "<p><strong>Categoría:</strong> " + item.Categoría + "</p>" +
-      "<p><strong>Cantidad requerida:</strong> " + item.Cantidad + " " + item.Unidad + "</p>";
+      "<p><strong>Material:</strong> " + item.propuesta + "</p>" +
+      "<p><strong>Categoría:</strong> " + item.categoria + "</p>" +
+      "<p><strong>Cantidad requerida:</strong> " + item.cantidad + " " + item.unidad + "</p>";
     document.getElementById('modal-donar-cantidad').value = '';
     modal.dataset.id = id;
-    document.getElementById('modal-donar-cantidad').max = item.Cantidad;
+    document.getElementById('modal-donar-cantidad').max = item.cantidad;
     modal.classList.add('activo');
   }
  
@@ -498,7 +498,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cantidad = parseInt(document.getElementById('modal-donar-cantidad').value);
     const item     = dataGlobal.find(d => d.id === id);
     if (!item) return;
-    const max = parseInt(item.Cantidad);
+    const max = parseInt(item.cantidad);
     if (!cantidad || cantidad < 1) return alert('Cantidad inválida');
     if (cantidad > max) return alert('Máximo: ' + max);
     agregarAlCarrito(id, cantidad);

@@ -159,33 +159,21 @@ app.get("/api/data", async (req, res) => {
 
     const conditions = [];
     const values     = [];
-    if (municipio)         { values.push(municipio);         conditions.push(`m.nombre = $${values.length}`); }
-    if (escuela)           { values.push(escuela);           conditions.push(`e.nombre = $${values.length}`); }
-    if (categoriaRealId)   { values.push(categoriaRealId);   conditions.push(`c.id = $${values.length}`); }
-    if (subcategoriaRealId){ values.push(subcategoriaRealId);conditions.push(`s.id = $${values.length}`); }
+if (municipio)         { values.push(municipio);         conditions.push(`municipio = $${values.length}`); }
+if (escuela)           { values.push(escuela);           conditions.push(`escuela = $${values.length}`); }
+if (categoriaRealId)   { values.push(categoriaRealId);   conditions.push(`categoria_id = $${values.length}`); }
+if (subcategoriaRealId){ values.push(subcategoriaRealId);conditions.push(`subcategoria_id = $${values.length}`); }
+
 
     const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
 
     const result = await pool.query(
-      `SELECT
-         n.id          AS "id",
-         e.nombre      AS "Escuela",
-         m.nombre      AS "Municipio",
-         c.nombre      AS "Categoría",
-         s.nombre      AS "Subcategoría",
-         n.propuesta   AS "Propuesta",
-         n.cantidad    AS "Cantidad",
-         n.unidad      AS "Unidad",
-         n.estado      AS "Estado"
-       FROM necesidades n
-       JOIN escuelas     e ON n.escuela_id     = e.id
-       JOIN municipios   m ON e.municipio_id   = m.id
-       JOIN subcategorias s ON n.subcategoria_id = s.id
-       JOIN categorias   c ON s.categoria_id   = c.id
-       ${where}
-       ORDER BY n.id`,
-      values
-    );
+  `SELECT *
+   FROM vista_necesidades_completa
+   ${where}
+   ORDER BY id`,
+  values
+);
     res.json({ data: result.rows });
   } catch (err) {
     console.error(err);
@@ -239,7 +227,6 @@ app.post("/api/contacto", async (req, res) => {
 });
 
 app.post("/api/solicitud-material", async (req, res) => {
-  const client = await pool.connect();
   try {
     const error = validarFormularioBase(req.body);
     if (error) return res.status(400).json({ error });
@@ -250,69 +237,35 @@ app.post("/api/solicitud-material", async (req, res) => {
       try {
         const decoded = jwt.verify(auth.slice(7), SECRET);
         if (decoded.rol === 'donador') donadorId = decoded.id;
-      } catch { /* token inválido, se ignora */ }
+      } catch { /* ignorar */ }
     }
 
     const {
       nombre_completo, tipo_instancia, nombre_instancia,
-      correo, telefono, mensaje, aviso_privacidad_aceptado, materiales
+      correo, telefono, mensaje,
+      aviso_privacidad_aceptado, materiales
     } = req.body;
 
     if (!Array.isArray(materiales) || materiales.length === 0)
       return res.status(400).json({ error: "Debes enviar al menos un material." });
 
-    await client.query("BEGIN");
-
-    const solicitud = await client.query(
-      `INSERT INTO solicitudes_donacion (
-        nombre_completo, tipo_instancia, nombre_instancia,
-        correo, telefono, mensaje, origen_formulario,
-        aviso_privacidad_aceptado, tipo_donacion, donador_id
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, 'pasos', $7, 'Donación material', $8)
-      RETURNING id`,
-      [nombre_completo, tipo_instancia||null, nombre_instancia||null,
-      correo||null, telefono, mensaje||null, aviso_privacidad_aceptado, donadorId]
+    // Una sola llamada reemplaza todo el BEGIN/FOR/COMMIT
+    const result = await pool.query(
+      `CALL sp_registrar_solicitud_material($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb, NULL)`,
+      [
+        nombre_completo, tipo_instancia || null, nombre_instancia || null,
+        correo || null, telefono, mensaje || null,
+        aviso_privacidad_aceptado, donadorId,
+        JSON.stringify(materiales)
+      ]
     );
 
-    const solicitudId = solicitud.rows[0].id;
-
-    for (const item of materiales) {
-      // 1. Intentar resolver escuela_id desde necesidad_id
-      let escuelaId = null;
-
-      if (item.id) {
-        const necRes = await client.query(
-          "SELECT escuela_id FROM necesidades WHERE id = $1",
-          [item.id]
-        );
-        escuelaId = necRes.rows[0]?.escuela_id || null;
-      }
-
-      // 2. Si no se resolvió, buscar por nombre de escuela
-      if (!escuelaId && item.escuela) {
-        const escRes = await client.query(
-          "SELECT id FROM escuelas WHERE TRIM(LOWER(nombre)) = TRIM(LOWER($1))",
-          [item.escuela]
-        );
-        escuelaId = escRes.rows[0]?.id || null;
-      }
-
-      await client.query(
-        `INSERT INTO solicitud_materiales (solicitud_id, necesidad_id, escuela_id, propuesta, cantidad, unidad)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
-        [solicitudId, item.id||null, escuelaId, item.propuesta, item.cantidad, item.unidad||null]
-      );
-    }
-
-    await client.query("COMMIT");
+    const solicitudId = result.rows[0].p_solicitud_id;
     res.status(201).json({ message: "Solicitud guardada.", solicitud_id: solicitudId });
+
   } catch (err) {
-    await client.query("ROLLBACK");
     console.error(err);
-    res.status(500).json({ error: "Error al guardar la solicitud." });
-  } finally {
-    client.release();
+    res.status(500).json({ error: err.message || "Error al guardar la solicitud." });
   }
 });
 
@@ -493,15 +446,11 @@ app.post("/api/admin/necesidades", verificarToken, soloAdmin, async (req, res) =
     if (!escuela || !municipio || !subcategoria_id || !propuesta || cantidad == null || !unidad)
       return res.status(400).json({ error: "Faltan campos obligatorios" });
 
-    let munRes = await pool.query("SELECT id FROM municipios WHERE nombre = $1", [municipio]);
-    const municipioId = munRes.rows.length > 0
-      ? munRes.rows[0].id
-      : (await pool.query("INSERT INTO municipios (nombre) VALUES ($1) RETURNING id", [municipio])).rows[0].id;
-
-    let escRes = await pool.query("SELECT id FROM escuelas WHERE nombre = $1", [escuela]);
-    const escuelaId = escRes.rows.length > 0
-      ? escRes.rows[0].id
-      : (await pool.query("INSERT INTO escuelas (nombre, municipio_id) VALUES ($1, $2) RETURNING id", [escuela, municipioId])).rows[0].id;
+    const escuelaRes = await pool.query(
+      "SELECT fn_upsert_escuela($1, $2) AS escuela_id",
+      [municipio, escuela]
+    );
+    const escuelaId = escuelaRes.rows[0].escuela_id;
 
     const estadosValidos = ["Cubierto", "Aun no cubierto", "Cubierto parcialmente"];
     const estadoFinal    = estadosValidos.includes(estado) ? estado : "Aun no cubierto";
@@ -509,8 +458,9 @@ app.post("/api/admin/necesidades", verificarToken, soloAdmin, async (req, res) =
     const result = await pool.query(
       `INSERT INTO necesidades (escuela_id, subcategoria_id, propuesta, cantidad, unidad, estado, detalles)
        VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-      [escuelaId, subcategoria_id, propuesta, cantidad, unidad, estadoFinal, detalles||null]
+      [escuelaId, subcategoria_id, propuesta, cantidad, unidad, estadoFinal, detalles || null]
     );
+
     res.status(201).json({ id: result.rows[0].id, message: "Necesidad creada exitosamente" });
   } catch (err) {
     console.error(err);
@@ -528,37 +478,35 @@ app.put("/api/admin/necesidades/:id", verificarToken, soloAdmin, async (req, res
     if (existe.rows.length === 0)
       return res.status(404).json({ error: "Necesidad no encontrada" });
 
+    // fn_upsert_escuela solo si vienen ambos campos
     let escuelaId = null;
     if (escuela && municipio) {
-      let munRes = await pool.query("SELECT id FROM municipios WHERE nombre = $1", [municipio]);
-      const municipioId = munRes.rows.length > 0
-        ? munRes.rows[0].id
-        : (await pool.query("INSERT INTO municipios (nombre) VALUES ($1) RETURNING id", [municipio])).rows[0].id;
-
-      let escRes = await pool.query("SELECT id FROM escuelas WHERE nombre = $1", [escuela]);
-      if (escRes.rows.length > 0) {
-        escuelaId = escRes.rows[0].id;
-        await pool.query("UPDATE escuelas SET municipio_id = $1 WHERE id = $2", [municipioId, escuelaId]);
-      } else {
-        escuelaId = (await pool.query("INSERT INTO escuelas (nombre, municipio_id) VALUES ($1, $2) RETURNING id", [escuela, municipioId])).rows[0].id;
-      }
+      const escuelaRes = await pool.query(
+        "SELECT fn_upsert_escuela($1, $2) AS escuela_id",
+        [municipio, escuela]
+      );
+      escuelaId = escuelaRes.rows[0].escuela_id;
     }
 
     const sets   = [];
     const values = [];
-    if (escuelaId)             { values.push(escuelaId);       sets.push(`escuela_id = $${values.length}`); }
-    if (subcategoria_id)       { values.push(subcategoria_id); sets.push(`subcategoria_id = $${values.length}`); }
-    if (propuesta !== undefined){ values.push(propuesta);      sets.push(`propuesta = $${values.length}`); }
-    if (cantidad  !== undefined){ values.push(cantidad);       sets.push(`cantidad = $${values.length}`); }
-    if (unidad    !== undefined){ values.push(unidad);         sets.push(`unidad = $${values.length}`); }
-    if (estado    !== undefined){ values.push(estado);         sets.push(`estado = $${values.length}`); }
-    if (detalles  !== undefined){ values.push(detalles);       sets.push(`detalles = $${values.length}`); }
+    if (escuelaId)              { values.push(escuelaId);       sets.push(`escuela_id = $${values.length}`); }
+    if (subcategoria_id)        { values.push(subcategoria_id); sets.push(`subcategoria_id = $${values.length}`); }
+    if (propuesta  !== undefined){ values.push(propuesta);      sets.push(`propuesta = $${values.length}`); }
+    if (cantidad   !== undefined){ values.push(cantidad);       sets.push(`cantidad = $${values.length}`); }
+    if (unidad     !== undefined){ values.push(unidad);         sets.push(`unidad = $${values.length}`); }
+    if (estado     !== undefined){ values.push(estado);         sets.push(`estado = $${values.length}`); }
+    if (detalles   !== undefined){ values.push(detalles);       sets.push(`detalles = $${values.length}`); }
 
     if (sets.length === 0)
       return res.status(400).json({ error: "No se enviaron campos para actualizar" });
 
     values.push(id);
-    await pool.query(`UPDATE necesidades SET ${sets.join(", ")} WHERE id = $${values.length}`, values);
+    await pool.query(
+      `UPDATE necesidades SET ${sets.join(", ")} WHERE id = $${values.length}`,
+      values
+    );
+
     res.json({ message: "Necesidad actualizada exitosamente" });
   } catch (err) {
     console.error(err);
@@ -779,8 +727,7 @@ app.get("/api/admin/solicitudes", async (req, res) => {
       `SELECT id, nombre_completo, tipo_instancia, nombre_instancia,
               correo, telefono, mensaje, origen_formulario,
               tipo_donacion, estado_lectura, created_at
-       FROM solicitudes_donacion
-       WHERE estado_lectura != 'oculta'
+       FROM vista_solicitudes_completa
        ORDER BY created_at DESC`
     );
     res.json({ data: result.rows });
@@ -812,8 +759,8 @@ app.patch("/api/admin/solicitudes/:id/estado", verificarToken, soloAdmin, async 
   try {
     const { estado_lectura } = req.body;
     await pool.query(
-      "UPDATE solicitudes_donacion SET estado_lectura = $1 WHERE id = $2",
-      [estado_lectura, req.params.id]
+      "CALL sp_cambiar_estado_lectura($1, $2)",
+      [req.params.id, estado_lectura]
     );
     res.json({ message: "Estado actualizado" });
   } catch (err) {
