@@ -80,7 +80,7 @@
 #results { display: grid; gap: 24px; max-width: 1360px; margin: 0 auto; }
 
 /* ── TARJETA DE RESULTADO (.card) ── */
-.card {
+.resultado-card {
     background: var(--blanco);
     border-radius: var(--radio);
     box-shadow: var(--sombra-m);
@@ -96,7 +96,7 @@
     align-self: start;
 }
 
-.card::before {
+.resultado-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -108,11 +108,11 @@
     border-radius: var(--radio) var(--radio) 0 0;
 }
 
-.card:hover { transform: translateY(-6px) scale(1.02); box-shadow: var(--sombra-hover); border-color: rgba(0,153,51,0.11); z-index: 2; }
-.card:hover::before { transform: scaleX(1); }
+.resultado-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: var(--sombra-hover); border-color: rgba(0,153,51,0.11); z-index: 2; }
+.resultado-card:hover::before { transform: scaleX(1); }
 
-.card h3 { margin: 0 0 10px; color: var(--verde-oscuro); font-size: 16px; font-weight: 800; line-height: 1.3; }
-.card p  { margin: 4px 0; color: var(--gris-medio); font-size: 13px; font-weight: 500; line-height: 1.6; }
+.resultado-card h3 { margin: 0 0 10px; color: var(--verde-oscuro); font-size: 16px; font-weight: 800; line-height: 1.3; }
+.resultado-card p  { margin: 4px 0; color: var(--gris-medio); font-size: 13px; font-weight: 500; line-height: 1.6; }
 
 /* ── HEADER ACCIONES ── */
 .header-acciones { display: flex; align-items: center; gap: 12px; justify-self: end; }
@@ -233,7 +233,7 @@
 }
  
 /* ── CARD ACTUALIZADA (2 botones) ── */
-.card {
+.resultado-card {
   background: white;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 4px 20px rgba(0,0,0,0.04);
@@ -243,12 +243,12 @@
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
  
-.card:hover {
+.resultado-card:hover {
   box-shadow: 0 8px 28px rgba(0,0,0,0.10);
   transform: translateY(-2px);
 }
  
-.card-header {
+.resultado-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -256,7 +256,7 @@
   gap: 12px;
 }
  
-.card-header h3 {
+.resultado-card-header h3 {
   font-size: 1rem;
   font-weight: 800;
   color: #1B6B35;
@@ -759,8 +759,10 @@
 @media (max-width: 480px) {
     h1 { font-size: 24px; letter-spacing: -0.4px; }
     #school-finder-wrapper { margin: -44px 8px 0; border-radius: 22px 22px 0 0; padding: 28px 14px; }
-    .card { padding: 20px 16px; }
+    .resultado-card { padding: 20px 16px; }
 }
+
+
 
 /* ── NAVBAR PERFIL DONADOR ── */
 .navbar-perfil {

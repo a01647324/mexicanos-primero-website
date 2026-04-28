@@ -7,6 +7,9 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="catalogo.css">
   <link rel="stylesheet" href="filtrado.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+rel="stylesheet">
+
   <style>
     .btn-ayudar-fixed { display: none; }
   </style>
@@ -140,7 +143,8 @@
          GET /api/filtros  → opciones para los <select> (una sola vez)
          GET /api/data?municipio=X&categoria=Y&... → resultados filtrados
   -->
-
+<script
+src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
   /* ══════════════════════════════════════════════════════════
      CONFIG
@@ -358,7 +362,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const nivel = calcularNivel(item.cantidad);
  
       const card = document.createElement("div");
-      card.className = "card";
+      card.className = "resultado-card";
       card.innerHTML = `
         <div class="card-header">
           <h3>${item.escuela}</h3>
@@ -465,11 +469,28 @@ document.addEventListener("DOMContentLoaded", () => {
   
   function irADonar() {
     if (carrito.length === 0) {
-      alert('Agrega al menos una donación antes de continuar.');
+      
+      mostrarAlerta('Agrega al menos una donación antes de continuar.');
       return;
     }
     sessionStorage.setItem('carrito_donacion', JSON.stringify(carrito));
     location.href = 'pasos.html';
+  }
+
+  function mostrarAlerta(mensaje) {
+    const prev = document.getElementById('alerta-carrito');
+    if (prev) prev.remove();
+
+    const alerta = document.createElement('div');
+    alerta.id = 'alerta-carrito';
+    alerta.className = 'alert alert-danger alert-dismissible fade show';
+    alerta.style.cssText = 'position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:9999; min-width:320px; text-align:center;';
+    alerta.innerHTML = `
+      ${mensaje}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alerta);
+    setTimeout(() => alerta.remove(), 4000);
   }
  
   /* ══════════════════════════════════════════════════════════
