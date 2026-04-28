@@ -104,28 +104,11 @@ rel="stylesheet">
 
   <!-- ── FOOTER ── -->
   <div id="footer-placeholder"></div>
-
-  <!-- NOTA PARA EL EQUIPO (filtrado por HTTP):
-       Los datos se piden por HTTP a http://localhost:3000. CADA VEZ 
-       que el usuario cambia un filtro se hace un nuevo fetch con query 
-       params, y es la base de datos la que filtra (con un WHERE dinámico). 
-       El navegador solo muestra lo que le devuelve la API.
-
-       Hay dos endpoints:
-         GET /api/filtros  → opciones para los <select> (una sola vez)
-         GET /api/data?municipio=X&categoria=Y&... → resultados filtrados
-  -->
 <script
 src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-  /* ══════════════════════════════════════════════════════════
-     CONFIG
-     ══════════════════════════════════════════════════════════ */
+
   const API_URL = "http://localhost:3000/api";
- 
-  /* ══════════════════════════════════════════════════════════
-     ESTADO GLOBAL
-     ══════════════════════════════════════════════════════════ */
   let dataGlobal= [];
   let todasSubcats = [];   // todas las subcategorias_catalogo (para filtrar por categoría)
   let carrito    = [];
@@ -134,12 +117,11 @@ src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.j
     if (guardado) carrito = JSON.parse(guardado);
 } catch(e) { carrito = []; }
 
-// Mostrar el contador actualizado al cargar
 document.addEventListener("DOMContentLoaded", () => {
-    renderCarrito(); // actualiza el badge del contador
+    renderCarrito(); 
 });
   /* ══════════════════════════════════════════════════════════
-     NIVEL DE NECESIDAD
+     NIVEL DE NECESIDAD-este no es backend-!!!! esto se hace solo en el frontend
      Calcula nivel basado en la cantidad (campo de la BD).
      Umbral: >50 = Urgente, 10-50 = Moderado, <10 = Bajo
      ══════════════════════════════════════════════════════════ */
@@ -149,9 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (n > 10) return { label: 'Moderado', clase: 'nivel-moderado' };
     return          { label: 'Bajo',      clase: 'nivel-bajo' };
   }
-  /* ══════════════════════════════════════════════════════════
-     ARRANQUE
-     ══════════════════════════════════════════════════════════ */
+
   document.addEventListener("DOMContentLoaded", iniciarApp);
  
   async function iniciarApp() {
@@ -159,11 +139,9 @@ document.addEventListener("DOMContentLoaded", () => {
       await cargarFiltros();
       aplicarPreseleccionDesdeLocalStorage();
       await buscarYRenderizar();
- 
-      // Eventos
+
       document.getElementById("searchForm").addEventListener("submit", buscarYRenderizar);
- 
-      // Cuando cambia la categoría → filtrar subcategorías del dropdown
+
       document.getElementById("categoriaSelect")
         .addEventListener("change", () => {
           actualizarDropdownSubcategorias();
@@ -183,15 +161,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
  
-  /* ══════════════════════════════════════════════════════════
-     CARGA DE FILTROS desde tablas catálogo
-     ══════════════════════════════════════════════════════════ */
+
   async function cargarFiltros() {
     const res = await fetch(`${API_URL}/filtros`);
     if (!res.ok) throw new Error(`GET /filtros falló: ${res.status}`);
     const filtros = await res.json();
  
-    // ── Municipios (nombres directos) ──
+    //Municipios 
     const selMun = document.getElementById("municipioSelect");
     filtros.municipios.forEach(n => {
       const o = document.createElement("option");
@@ -199,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
       selMun.appendChild(o);
     });
  
-    // ── Escuelas (nombres directos) ──
+    //Escuelas
     const selEsc = document.getElementById("escuelaSelect");
     filtros.escuelas.forEach(n => {
       const o = document.createElement("option");
@@ -207,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
       selEsc.appendChild(o);
     });
  
-    // ── Categorías catálogo (ID como value, nombre como texto) ──
+    // Categorías catálogo 
     const selCat = document.getElementById("categoriaSelect");
     filtros.categorias.forEach(cat => {
       const o = document.createElement("option");
@@ -217,9 +193,8 @@ document.addEventListener("DOMContentLoaded", () => {
       selCat.appendChild(o);
     });
  
-    // ── Subcategorías catálogo — guardamos todas en memoria ──
+    //Subcategorías catálogo
     todasSubcats = filtros.subcategorias;
-    // Pintamos todas inicialmente
     renderSubcatOpciones(todasSubcats);
   }
  
@@ -240,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (v) sel.value = v;
   }
  
-  /* Cuando cambia la categoría → mostrar solo subcats de esa categoría */
+  /* Cuando cambia la categoría ahora solo se muestran sussubcats*/
   function actualizarDropdownSubcategorias() {
     const categoriaId = document.getElementById("categoriaSelect").value;
     if (!categoriaId) {
@@ -253,18 +228,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
  
-  /* ══════════════════════════════════════════════════════════
-     PRE-SELECCIÓN DESDE LOCALSTORAGE
-     (viene desde catalogo.html o categoria.html)
-     ══════════════════════════════════════════════════════════ */
+//cuando viene de categoria se guarda a que le pico para que ya venga con filtros preseleccionados
+//y cuando viene de necesidad ahora se guardan sus filtros
   function aplicarPreseleccionDesdeLocalStorage() {
+    const filtrosGuardados = sessionStorage.getItem('filtros_guardados');
+    if (filtrosGuardados) {
+        try {
+            const f = JSON.parse(filtrosGuardados);
+            sessionStorage.removeItem('filtros_guardados');
+            if (f.categoria) {
+                document.getElementById("categoriaSelect").value = f.categoria;
+                actualizarDropdownSubcategorias();
+            }
+            if (f.subcategoria) document.getElementById("subcategoriaSelect").value = f.subcategoria;
+            if (f.municipio)    document.getElementById("municipioSelect").value    = f.municipio;
+            if (f.escuela)      document.getElementById("escuelaSelect").value      = f.escuela;
+
+        } catch(e) { console.warn('Error restaurando filtros:', e); }
+        return;
+    }
+
     const catId = localStorage.getItem('filtro_categoria_id');
     const subId = localStorage.getItem('filtro_subcategoria_id');
  
     if (catId) {
       const selCat = document.getElementById("categoriaSelect");
       selCat.value = catId;
-      // Actualizar subcategorías filtradas para esa categoría
       actualizarDropdownSubcategorias();
       localStorage.removeItem('filtro_categoria_id');
     }
@@ -276,10 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
  
-  /* ══════════════════════════════════════════════════════════
-     BÚSQUEDA — envía IDs catálogo al backend
-     El backend los traduce a IDs reales internamente
-     ══════════════════════════════════════════════════════════ */
   async function buscarYRenderizar(event) {
     if (event) event.preventDefault();
  
@@ -292,8 +277,8 @@ document.addEventListener("DOMContentLoaded", () => {
  
     if (municipio)   params.set("municipio",       municipio);
     if (escuela)     params.set("escuela",          escuela);
-    if (categoriaId) params.set("categoria_id",     categoriaId);   // ID catálogo
-    if (subcatId)    params.set("subcategoria_id",  subcatId);      // ID catálogo
+    if (categoriaId) params.set("categoria_id",     categoriaId);   
+    if (subcatId)    params.set("subcategoria_id",  subcatId);   
  
     const url = `${API_URL}/data${params.toString() ? '?' + params.toString() : ''}`;
  
@@ -318,9 +303,6 @@ document.addEventListener("DOMContentLoaded", () => {
       "</div>";
   }
  
-  /* ══════════════════════════════════════════════════════════
-     RENDER DE RESULTADOS
-     ══════════════════════════════════════════════════════════ */
   function renderResults(filtered) {
     const results = document.getElementById("results");
     results.innerHTML = "";
@@ -353,22 +335,22 @@ document.addEventListener("DOMContentLoaded", () => {
       results.appendChild(card);
     }
   }
- /* ══════════════════════════════════════════════════════════
-     VER NECESIDAD — navega a necesidad.html?id=X
-     ══════════════════════════════════════════════════════════ */
+ 
   function verNecesidad(id) {
-    // Guardamos los datos del item en localStorage para que
-    // necesidad.html los lea sin hacer un fetch extra
+    // guardamos la info para que necesidan no haga fetch de nuevo
     const item = dataGlobal.find(d => d.id === id);
     if (!item) return;
     localStorage.setItem('necesidad_actual', JSON.stringify(item));
+    //guardar filtros para cuando regrese de necesidad a filtrado
+    sessionStorage.setItem('filtros_guardados', JSON.stringify({
+        categoria:    document.getElementById("categoriaSelect").value,
+        subcategoria: document.getElementById("subcategoriaSelect").value,
+        municipio:    document.getElementById("municipioSelect").value,
+        escuela:      document.getElementById("escuelaSelect").value
+    }));
+
     location.href = `necesidad.html?id=${id}`;
   }
- 
-  /* ══════════════════════════════════════════════════════════
-     CARRITO
-     ══════════════════════════════════════════════════════════ */
- 
  
   function agregarAlCarrito(id, cantidad) {
     const item = dataGlobal.find(d => d.id === id);
@@ -376,7 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
  
     const existente = carrito.find(c => c.id === id);
     if (existente) {
-      // Si ya existe, actualizar cantidad
+      // si se habia puesto en el carrito antes,actualizamos cantidad
       existente.cantidad = Math.min(existente.cantidad + cantidad, parseInt(item.cantidad));
     } else {
       carrito.push({
@@ -405,7 +387,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
  
   function renderCarrito() {
-    sessionStorage.setItem('carrito_donacion', JSON.stringify(carrito)); // ← AGREGA ESTA LÍNEA
+    sessionStorage.setItem('carrito_donacion', JSON.stringify(carrito)); 
     
     const lista = document.getElementById("carrito-lista");
     lista.innerHTML = "";
@@ -464,10 +446,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(alerta);
     setTimeout(() => alerta.remove(), 4000);
   }
- 
-  /* ══════════════════════════════════════════════════════════
-     MODAL DONAR
-     ══════════════════════════════════════════════════════════ */
+//DONAR CANTIDAD
   function abrirModalDonar(id) {
     const item = dataGlobal.find(d => d.id === id);
     if (!item) return;

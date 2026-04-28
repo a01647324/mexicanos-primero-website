@@ -211,7 +211,7 @@
                     </div>
                     <div class="dato-info">
                         <p class="dato-label">Estudiantes</p>
-                        <p class="dato-numero">2,770</p>
+                        <p class="dato-numero">2,660</p>
                     </div>
                 </div>
     
@@ -455,8 +455,77 @@
     <!-- ── FOOTER ── -->
     <div id="footer-placeholder"></div>
     <script src="components.js"></script>
+    <script>
+        const API_URL = "http://localhost:3000/api";
+        
+        async function cargarProgresoGlobalIndex() {
+          const res = await fetch(`${API_URL}/data`);
+          if (!res.ok) throw new Error("No se pudieron cargar los datos");
+        
+          const { data } = await res.json();
+        
+          const total = data.length;
+          const cubiertas = data.filter(d => d.estado === "Cubierto").length;
+          const pctGlobal = total > 0 ? Math.round((cubiertas / total) * 100) : 0;
+        
+          document.getElementById("barra-principal").dataset.objetivo = pctGlobal;
+        
+          actualizarMiniBarras(data, "categoria", ".mini-card:nth-child(1)");
+          actualizarMiniBarras(data, "municipio", ".mini-card:nth-child(2)");
+        }
+        
+        function actualizarMiniBarras(data, campo, cardSelector) {
+          const card = document.querySelector(cardSelector);
+          if (!card) return;
+        
+          const grupos = {};
+        
+          data.forEach(item => {
+            const key = item[campo] || "Sin dato";
+        
+            if (!grupos[key]) {
+              grupos[key] = { total: 0, cubiertas: 0 };
+            }
+        
+            grupos[key].total++;
+        
+            if (item.estado === "Cubierto") {
+              grupos[key].cubiertas++;
+            }
+          });
+        
+          const filas = Object.entries(grupos)
+            .map(([nombre, valores]) => {
+              const pct = valores.total > 0
+                ? Math.round((valores.cubiertas / valores.total) * 100)
+                : 0;
+        
+              return { nombre, pct };
+            })
+            .sort((a, b) => b.pct - a.pct)
+            .slice(0, 4);
+        
+          const titulo = card.querySelector("h4")?.outerHTML || "";
+          card.innerHTML = titulo;
+        
+          filas.forEach(fila => {
+            card.innerHTML += `
+              <div class="barra-fila">
+                <span class="barra-etiqueta">${fila.nombre}</span>
+                <div class="barra-mini-pista">
+                  <div class="barra-mini" data-w="${fila.pct}"></div>
+                </div>
+                <span class="barra-pct">${fila.pct}%</span>
+              </div>
+            `;
+          });
+        }
+        </script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+        await cargarProgresoGlobalIndex();
+
         /* ── BARRA DE PROGRESO PRINCIPAL ── */
         const barraPrincipal = document.getElementById('barra-principal');
         const etiquetaPct    = document.getElementById('pct-label');
@@ -630,6 +699,7 @@
 
             renderGaleria();
         }
+    });
     </script>
 </body>
 </html>

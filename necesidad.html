@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detalle de Necesidad – Mi Escuela Primero</title>
   <link rel="icon" type="image/png" href="img/logo.png"/>
-  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="catalogo.css">
@@ -158,7 +157,6 @@
       font-size: 0.82rem; color: #6b8575; margin-bottom: 20px;
     }
 
-    /* Barra estilo imagen compartida: verde con thumb blanco */
     .barra-wrap {
       background: #e8f0ea;
       border-radius: 50px;
@@ -201,7 +199,6 @@
       margin-top: 10px; font-size: 0.8rem; color: #6b8575; font-weight: 600;
     }
 
-    /* ── PRESETS (inspirado imagen) ── */
     .presets-row {
       display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
     }
@@ -217,7 +214,6 @@
       background: #7b61b9; color: white; border-color:#7b61b9;
     }
 
-    /* ── BOTÓN DONAR FINAL ── */
     .btn-donar-final {
       display: block; width: 100%;
       background: #EC671B;
@@ -239,7 +235,7 @@
       box-shadow: 0 10px 28px rgba(236,103,27,0.40);
     }
 
-    /* ── DIVIDER SEPARADOR ── */
+    /* ── DIVIDER ── */
     .divider { border: none; border-top: 1px solid #e8f0ea; margin: 0; }
 
     @media (max-width: 768px) {
@@ -273,15 +269,12 @@
     <span class="banner-badge" id="banner-badge">Cargando...</span>
   </div>
 
-  <!-- CARD PRINCIPAL -->
   <div class="container" style="max-width: 960px;">
     <div class="necesidad-card">
 
-      <!-- SECCIÓN INTERMEDIA: info + mapa -->
       <div class="seccion-info">
         <div class="row g-4">
 
-          <!-- IZQUIERDA: información -->
           <div class="col-lg-6">
             <div id="nivel-chip-wrap" style="margin-bottom:16px;"></div>
 
@@ -304,7 +297,6 @@
             <div class="info-valor" id="det-cantidad">—</div>
           </div>
 
-          <!-- DERECHA: mapa -->
           <div class="col-lg-6">
             <p class="info-label" style="margin-bottom:8px;">Ubicación de la escuela</p>
             <div class="mapa-wrapper" id="mapa-wrapper">
@@ -323,20 +315,19 @@
 
       <hr class="divider">
 
-      <!-- SECCIÓN INFERIOR: barra de progreso de donaciones -->
+      <!-- barra de progreso de donaciones -->
       <div class="seccion-progreso">
         <div class="progreso-titulo">Necesidades cubiertas de esta escuela</div>
         <div class="progreso-subtitulo" id="progreso-subtitulo">
           Calculando datos de la escuela...
         </div>
 
-        <!-- Presets de cantidad a donar (inspirado en imagen) -->
+        <!-- presets de cantidad a donar-->
         <p class="info-label" style="margin-bottom:8px;">¿Cuánto quieres donar?</p>
         <div class="presets-row" id="presets-row">
-          <!-- Se llena dinámicamente según la cantidad disponible -->
         </div>
 
-        <!-- Barra de progreso -->
+        <!-- barra de progreso -->
         <p class="info-label" style="margin-bottom:8px; margin-top: 16px;">Progreso de donaciones</p>
         <div class="barra-wrap">
           <div class="barra-fill" id="barra-fill" style="width: 0%;">
@@ -389,9 +380,6 @@
     </div>
   </div>
   <div id="footer-placeholder"></div>
-
-
-  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="components.js"></script>
   <script>
@@ -413,11 +401,6 @@
   <script>
   const API_URL = "http://localhost:3000/api";
 
-  /* ══════════════════════════════════════════════════════════
-     LEER DATOS DE LA NECESIDAD
-     Primero intenta localStorage (puesto por filtrado.html),
-     luego hace fetch al backend como fallback.
-     ══════════════════════════════════════════════════════════ */
   const urlParams = new URLSearchParams(window.location.search);
   const necesidadId = urlParams.get('id');
 
@@ -429,7 +412,6 @@ try {
     if (guardado) carrito = JSON.parse(guardado);
 } catch(e) { carrito = []; }
 
-  // Imágenes por categoría (usa las que ya tienes)
   const imagenesCategoria = {
     'Material':         'images/fotocarr2.JPG',
     'Infraestructura':  'images/infraF.jpg',
@@ -438,7 +420,7 @@ try {
   };
 
   async function iniciar() {
-    // 1. Intentar leer de localStorage
+    // primero se inntenta leer de localStorage
     const guardado = localStorage.getItem('necesidad_actual');
     if (guardado) {
       try {
@@ -447,7 +429,7 @@ try {
       } catch(e) { necesidad = null; }
     }
 
-    // 2. Fallback: fetch por ID
+    // si no se logra ahora se hace fetch por ID
     if (!necesidad && necesidadId) {
       try {
         const res = await fetch(`${API_URL}/data`);
@@ -473,18 +455,11 @@ try {
     await cargarNavbarCategorias();
   }
 
-  /* ══════════════════════════════════════════════════════════
-     RENDER DETALLE
-     ══════════════════════════════════════════════════════════ */
   function renderDetalle() {
     document.title = `${necesidad.propuesta} – Mi Escuela Primero`;
-
-    // Banner: imagen por categoría
     const imgSrc = imagenesCategoria[necesidad.categoria] || 'images/otros.png';
     document.getElementById('banner-img').src = imgSrc;
     document.getElementById('banner-badge').textContent = necesidad.categoria;
-
-    // Info
     document.getElementById('det-propuesta').textContent    = necesidad.propuesta;
     document.getElementById('det-escuela').textContent      = necesidad.escuela;
     document.getElementById('det-municipio').textContent    = necesidad.municipio;
@@ -492,12 +467,11 @@ try {
     document.getElementById('det-subcategoria').textContent = necesidad.subcategoria;
     document.getElementById('det-cantidad').textContent     = `${necesidad.cantidad} ${necesidad.unidad || ''}`;
 
-    // Nivel de necesidad
     const nivel = calcularNivel(necesidad.cantidad);
     document.getElementById('nivel-chip-wrap').innerHTML =
       `<span class="nivel-chip ${nivel.claseBase}">${nivel.label}</span>`;
 
-    // Mapa — Google Maps embed buscando nombre de escuela + municipio
+    // google mapa
    const query = encodeURIComponent(
   `${necesidad.escuela}, ${necesidad.municipio}, Jalisco, México`
 );
@@ -518,7 +492,7 @@ try {
     const row = document.getElementById('presets-row');
     row.innerHTML = '';
 
-    // Generar opciones: 10%, 25%, 50%, 75%, 90%, 100% de la cantidad
+    //opciones para escoger de cantidad
     const porcentajes = [10, 25, 50, 75, 90, 100];
     const opciones = [...new Set(
       porcentajes.map(p => Math.max(1, Math.round(max * p / 100)))
@@ -526,7 +500,7 @@ try {
 
     
 
-    // Selección por defecto: 25%
+    // por defecto selecciona una para que se vea bonito
     const defecto = opciones[1] || opciones[0] || 1;
     cantidadSeleccionada = defecto;
 
@@ -543,10 +517,6 @@ try {
     });
   }
 
-  /* ══════════════════════════════════════════════════════════
-     PROGRESO DE LA ESCUELA
-     Calcula cuántas de sus necesidades están cubiertas vs total
-     ══════════════════════════════════════════════════════════ */
   async function cargarProgresoEscuela() {
     try {
       const res = await fetch(
@@ -559,7 +529,6 @@ try {
       const cubiertas = data.filter(d => d.estado === 'Cubierto').length;
       const pct       = total > 0 ? Math.round((cubiertas / total) * 100) : 0;
 
-      // Animar barra
       requestAnimationFrame(() => {
         setTimeout(() => {
           document.getElementById('barra-fill').style.width = `${pct}%`;
@@ -578,16 +547,14 @@ try {
     }
   }
 
-  /* ══════════════════════════════════════════════════════════
-     DONAR DESDE DETALLE
-     ══════════════════════════════════════════════════════════ */
+ //donar desde esta pag
   function donarDesdeDetalle() {
     if (!cantidadSeleccionada || cantidadSeleccionada < 1) {
       alert('Selecciona una cantidad primero');
       return;
     }
 
-    // Leer carrito existente o crear nuevo
+    //leer carrito existente o crear nuevo
     let carrito = [];
     try {
         const guardado = sessionStorage.getItem('carrito_donacion');
@@ -615,10 +582,6 @@ try {
     sessionStorage.setItem('carrito_donacion', JSON.stringify(carrito));
     location.href = 'pasos.html';
   }
-/* ══════════════════════════════════════════════════════════
-     CARRITO
-     ══════════════════════════════════════════════════════════ */
- 
 
 function agregarAlCarrito(cantidad) {
     if (!necesidad) return;
@@ -644,8 +607,8 @@ function agregarAlCarrito(cantidad) {
         });
     }
 
-    renderCarrito(); // esto ya guarda en sessionStorage
-    abrirCarrito();  // abre el panel lateral
+    renderCarrito(); 
+    abrirCarrito();  
 }
   
   function cambiarCantidadCarrito(id, delta) {
@@ -701,6 +664,7 @@ function agregarAlCarrito(cantidad) {
      mostrarAlerta('Agrega al menos una donación antes de continuar.');
       return;
     }
+    sessionStorage.removeItem('filtros_guardados'); 
     sessionStorage.setItem('carrito_donacion', JSON.stringify(carrito));
     location.href = 'pasos.html';
   }
@@ -720,17 +684,14 @@ function agregarAlCarrito(cantidad) {
 
     setTimeout(() => alerta.remove(), 4000);
   }
-  /* ══════════════════════════════════════════════════════════
-     MODAL DONAR
-*/
  
   function confirmarModalDonar() {
     agregarAlCarrito(cantidadSeleccionada);
 }
-  // DESPUÉS:
+
 document.addEventListener('DOMContentLoaded', () => {
-    renderCarrito();   // pinta badge con carrito existente
-    iniciar();         // carga los datos de la necesidad
+    renderCarrito();   
+    iniciar();         
 });
   </script>
 </body>
