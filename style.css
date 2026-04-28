@@ -1148,3 +1148,32 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
   height: 80px;
   object-fit: contain;
 }
+
+@media (max-width: 1024px) {
+  .navbar {
+    overflow: visible;
+  }
+
+  .navbar-logo {
+    position: absolute;
+    left: 1rem;
+    top: 14px;
+  }
+
+  .logo-img {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar-logo {
+    top: 18px;
+    left: 0.8rem;
+  }
+
+  .logo-img {
+    width: 125px;
+    height: 125px;
+  }
+}
