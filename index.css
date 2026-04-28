@@ -477,7 +477,7 @@
   grid-template-columns: 1.2fr 1fr;
   gap: 1.5rem;
   margin-top: 2rem;
-  align-items: start;
+  align-items: center;
 }
 
 .datos-mapa-card,
