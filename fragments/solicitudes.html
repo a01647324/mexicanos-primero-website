@@ -64,7 +64,6 @@
 </div>
 
 <style>
-/* ── BANDEJA DE SOLICITUDES ── */
 .bandeja-tabs {
   display: flex; align-items: center; gap: 0.35rem;
   margin-bottom: 1.1rem;
@@ -95,10 +94,8 @@
 .bandeja-tab-badge.leidas    { background: var(--verde); }
 .bandeja-tab-badge.archivadas{ background: var(--gris-medio); }
 
-/* Lista */
 #sol-lista { display: flex; flex-direction: column; gap: 0.45rem; }
 
-/* Card */
 .sol-card {
   display: flex; align-items: center; gap: 0.9rem;
   padding: 0.9rem 1.1rem;
@@ -133,7 +130,6 @@
 }
 .sol-meta-item { display: flex; align-items: center; gap: 0.28rem; }
 
-/* Tipo badge */
 .sol-tipo {
   display: inline-flex; align-items: center;
   padding: 0.22rem 0.7rem; border-radius: var(--radio-xl);
@@ -146,7 +142,6 @@
 .tipo-vinculacion  { background: rgba(100,50,150,0.08); color: #5a2a90; }
 .tipo-otro         { background: var(--gris-claro);     color: var(--texto-suave); }
 
-/* Acciones */
 .sol-acciones { display: flex; gap: 0.35rem; flex-shrink: 0; }
 .sol-btn {
   display: inline-flex; align-items: center; gap: 0.3rem;
@@ -208,6 +203,37 @@
 .sol-btn-eliminar-bandeja:hover {
   background: var(--rojo);
   color: white;
+}
+
+@media (max-width: 640px) {
+  .bandeja-tabs { gap: .25rem; padding-bottom: .5rem; }
+  .bandeja-tab  { padding: .38rem .65rem; font-size: .72rem; }
+  .bandeja-tab span.bandeja-tab-badge { display: none; }
+
+  .bandeja-tabs > div[style] { order: 10; width: 100%; margin-top: .3rem; }
+  .bandeja-tabs > div[style] select { width: 100% !important; min-width: unset !important; }
+
+  .sol-card { flex-wrap: wrap; gap: .5rem; padding: .75rem .85rem; }
+  .sol-info  { width: 100%; min-width: 0; }
+  .sol-nombre { font-size: .82rem; white-space: normal; }
+  .sol-meta { flex-wrap: wrap; gap: .3rem .65rem; }
+
+  .sol-tipo { order: 2; }
+
+  .sol-acciones {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: .3rem;
+  }
+  .sol-btn {
+    font-size: .68rem;
+    padding: .3rem .6rem;
+  }
+  .sol-btn-x {
+    margin-left: auto;
+  }
 }
 </style>
 

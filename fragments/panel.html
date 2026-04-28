@@ -85,7 +85,6 @@
 </div>
 
 <style>
-/* ── PANEL GENERAL ── */
 .panel-wrap {
   font-family: 'Montserrat', sans-serif;
   color: var(--texto);
@@ -94,7 +93,6 @@
   gap: 1.5rem;
 }
 
-/* TOP */
 .panel-top {
   display: flex;
   align-items: flex-end;
@@ -125,7 +123,6 @@
   border-radius: var(--radio-xl);
 }
 
-/* MÉTRICAS */
 .panel-metricas {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -208,7 +205,6 @@
 }
 @keyframes shimmer { 0%,100%{ opacity:1 } 50%{ opacity:0.45 } }
 
-/* GRÁFICAS */
 .panel-graficas {
   display: grid;
   grid-template-columns: 1fr 210px 210px;
@@ -239,7 +235,6 @@
 }
 .ley-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-/* Barras */
 .panel-barras-wrap { overflow-x: auto; padding-bottom: 0.4rem; }
 .panel-barras {
   display: flex;
@@ -294,7 +289,6 @@
   width: 100%;
 }
 
-/* Dona */
 .panel-dona-wrap {
   display: flex; align-items: center; gap: 0.85rem;
   flex-wrap: wrap; justify-content: center;
@@ -307,7 +301,6 @@
 .dona-ley-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 .dona-ley-num { font-weight: 700; margin-left: auto; padding-left: 0.5rem; }
 
-/* Donadores */
 .panel-donadores-card {
   background: var(--blanco);
   border-radius: var(--radio-lg);
@@ -364,6 +357,21 @@
 @media (max-width: 640px) {
   .panel-metricas { grid-template-columns: 1fr 1fr; }
   .panel-graficas { grid-template-columns: 1fr; }
+
+  .panel-top { flex-direction: column; align-items: flex-start; }
+  .panel-fecha { align-self: flex-start; }
+
+  .panel-metric-valor { font-size: 1.45rem; }
+  .panel-chart-card { padding: .9rem; }
+  .panel-chart-titulo { font-size: .82rem; }
+
+  .panel-dona-wrap { flex-direction: column; align-items: center; }
+  .panel-dona-leyenda { flex-direction: row; flex-wrap: wrap; gap: .4rem .9rem; justify-content: center; }
+
+  .panel-barras { gap: .85rem; }
+  .barra-stack { width: 44px; }
+
+  .panel-donadores-lista { grid-template-columns: 1fr; max-height: 220px; }
 }
 </style>
 
@@ -404,22 +412,28 @@ function dibujarDona(svgId, leyId, datos, colores) {
   var html = '';
 
   datos.forEach(function(d, i) {
-    var pct    = parseInt(d.total) / total;
-    var span   = pct * 2 * Math.PI;
-    var x1     = cx + r * Math.cos(angulo);
-    var y1     = cy + r * Math.sin(angulo);
-    var x2     = cx + r * Math.cos(angulo + span);
-    var y2     = cy + r * Math.sin(angulo + span);
-    var xi1    = cx + ri * Math.cos(angulo);
-    var yi1    = cy + ri * Math.sin(angulo);
-    var xi2    = cx + ri * Math.cos(angulo + span);
-    var yi2    = cy + ri * Math.sin(angulo + span);
-    var large  = span > Math.PI ? 1 : 0;
-    var path   = 'M '+x1+' '+y1+' A '+r+' '+r+' 0 '+large+' 1 '+x2+' '+y2+
+    var pct   = parseInt(d.total) / total;
+    var color = colores[i % colores.length];
+
+    if (pct >= 1) {
+      svg.innerHTML += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+color+'" opacity="0.9"/>' +
+        '<circle cx="'+cx+'" cy="'+cy+'" r="'+ri+'" fill="white"/>';
+    } else {
+      var span = pct * 2 * Math.PI;
+      var x1  = cx + r  * Math.cos(angulo);
+      var y1  = cy + r  * Math.sin(angulo);
+      var x2  = cx + r  * Math.cos(angulo + span);
+      var y2  = cy + r  * Math.sin(angulo + span);
+      var xi1 = cx + ri * Math.cos(angulo);
+      var yi1 = cy + ri * Math.sin(angulo);
+      var xi2 = cx + ri * Math.cos(angulo + span);
+      var yi2 = cy + ri * Math.sin(angulo + span);
+      var large = span > Math.PI ? 1 : 0;
+      var path = 'M '+x1+' '+y1+' A '+r+' '+r+' 0 '+large+' 1 '+x2+' '+y2+
                  ' L '+xi2+' '+yi2+' A '+ri+' '+ri+' 0 '+large+' 0 '+xi1+' '+yi1+' Z';
-    var color  = colores[i % colores.length];
-    svg.innerHTML += '<path d="'+path+'" fill="'+color+'" opacity="0.9"/>';
-    angulo += span;
+      svg.innerHTML += '<path d="'+path+'" fill="'+color+'" opacity="0.9"/>';
+      angulo += span;
+    }
 
     html += '<div class="dona-ley-item">' +
       '<span class="dona-ley-dot" style="background:'+color+'"></span>' +
