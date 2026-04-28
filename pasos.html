@@ -7,7 +7,7 @@
     <title>Siguientes Pasos</title>
     <link rel="icon" type="image/png" href="img/logo.png"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="paginas.css">
  
@@ -63,14 +63,14 @@
 </div>
 
 <p class="pasos-texto-ayuda">
-    Presiona <strong>Finalizar</strong> para aceptar los términos y continuar con el formulario.
+    Presiona <strong>Continuar al formulario</strong> para aceptar los términos y continuar con el formulario.
 </p>
 
 <div id="resumen-carrito" class="resumen-carrito"></div>
 
  
         <div>
-            <button class="btn btn-verde" onclick="abrirTerminos()">📋 Finalizar</button>
+            <button class="btn btn-verde" onclick="abrirTerminos()">📋 Continuar al formulario</button>
         </div>
 
     
@@ -97,7 +97,7 @@
         <div class="modal-caja">
         <h2>Antes de continuar</h2>
         <p style="color: var(--texto-suave); font-size: 0.85rem; margin-bottom: 1.2rem;">
-            Para llenar el formulario de contacto es necesario que aceptes nuestros términos y condiciones de privacidad.
+            Para completar el formulario de contacto, es necesario que aceptes nuestros términos y condiciones de privacidad.
         </p>
         
 
@@ -165,7 +165,15 @@
 
         <div class="form-grupo mb-3">
             <label for="correo" class="form-label">Correo electrónico:</label>
-            <input type="email" id="correo" name="correo" class="form-control" placeholder="tucorreo@ejemplo.com" required>
+            <input
+              type="email"
+              id="correo"
+              name="correo"
+              class="form-control"
+              placeholder="tucorreo@ejemplo.com"
+              pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$"
+              required
+            >
             <div class="invalid-feedback">
                 Ingresa un correo electrónico válido.
             </div>
@@ -173,10 +181,21 @@
 
         <div class="form-grupo mb-3">
             <label for="telefono" class="form-label">Teléfono:</label>
-            <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="33 1234 5678" required>
-            <div class="invalid-feedback">
-                Ingresa tu teléfono.
-            </div>
+            <input
+            id="telefono"
+            name="telefono"
+            type="tel"
+            class="form-control"
+            placeholder="33 1234 5678"
+            pattern="[0-9]{10}"
+            minlength="10"
+            maxlength="10"
+            inputmode="numeric"
+            required
+          >
+          <div class="invalid-feedback">
+            Ingresa un teléfono válido de 10 dígitos.
+        </div>
         </div>
 
         <div class="form-grupo mb-3">
@@ -192,12 +211,12 @@
         
  
  
-    <!-- ── FOOTER ── -->
     <div id="footer-placeholder"></div>
     <script src="components.js"></script>
-   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-      // ── MODAL TÉRMINOS ─────────────────────────────
+      // modal de terminos
       function abrirTerminos() {
         document.getElementById("modal-terminos").classList.add("activo");
       }
@@ -206,7 +225,6 @@
         document.getElementById("modal-terminos").classList.remove("activo");
       }
 
-      // ── ACTIVAR BOTÓN DE ACEPTAR ───────────────────
       const checkbox = document.getElementById("check-terminos");
       const btnAceptar = document.getElementById("btn-aceptar-terminos");
 
@@ -216,7 +234,6 @@
         });
       }
 
-      // ── ABRIR FORMULARIO ───────────────────────────
       if (btnAceptar) {
         btnAceptar.addEventListener("click", () => {
           cerrarTerminos();
@@ -228,10 +245,9 @@
         document.getElementById("modal-formulario").classList.remove("activo");
       }
 
-      // ── RESUMEN DEL CARRITO ────────────────────────
+      // carrito
       const carritoGuardado = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
       const resumen = document.getElementById("resumen-carrito");
-
 
       function generarResumenHTML(items) {
         if (!items.length) {
@@ -259,6 +275,7 @@
       if (resumen) {
         resumen.innerHTML = generarResumenHTML(carritoGuardado);
       }
+
       function cancelarSolicitud() {
         sessionStorage.removeItem("carrito_donacion");
         window.location.href = "index.html";
@@ -267,31 +284,27 @@
       function modificarCarrito() {
         window.location.href = "filtrado.html";
       }
-      // ── ENVÍO DEL FORMULARIO ───────────────────────
 
+      // validacion del telefono
+      const telefonoInput = document.getElementById("telefono");
+
+      if (telefonoInput) {
+        telefonoInput.addEventListener("input", function () {
+          this.value = this.value.replace(/\D/g, "").slice(0, 10);
+        });
+      }
+
+      // envio del formulario
       window.enviarFormulario = async function() {
-        // Verificar sesión
-        const token = localStorage.getItem('token');
-        const rol   = localStorage.getItem('rol');
-        if (!token || rol !== 'donador') {
-          alert('Debes iniciar sesión para enviar una donación.');
-          localStorage.setItem('loginOrigen', window.location.href);
-          window.location.href = 'login-donador.html';
+        const token = localStorage.getItem("token");
+        const rol = localStorage.getItem("rol");
+
+        if (!token || rol !== "donador") {
+          alert("Debes iniciar sesión para enviar una donación.");
+          localStorage.setItem("loginOrigen", window.location.href);
+          window.location.href = "login-donador.html";
           return;
         }
-
-        const materiales = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
-
-        const payload = {
-
-          tipo_instancia: document.getElementById("instancia").value,
-          nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
-          correo: document.getElementById("correo").value.trim(),
-          telefono: document.getElementById("telefono").value.trim(),
-          mensaje: document.getElementById("mensaje").value.trim(),
-          aviso_privacidad_aceptado: document.getElementById("check-terminos").checked,
-          materiales
-        };
 
         const form = document.getElementById("contacto-donor");
 
@@ -300,13 +313,45 @@
           return;
         }
 
-        if (!payload.aviso_privacidad_aceptado) {
-          alert("Debes aceptar el aviso de privacidad.");
+        const correo = document.getElementById("correo").value.trim();
+        const telefono = document.getElementById("telefono").value.trim();
+
+        const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo);
+        const telefonoValido = /^[0-9]{10}$/.test(telefono);
+
+        if (!correoValido || !telefonoValido) {
+          form.classList.add("was-validated");
+
+          if (!correoValido) {
+            document.getElementById("correo").classList.add("is-invalid");
+          }
+
+          if (!telefonoValido) {
+            document.getElementById("telefono").classList.add("is-invalid");
+          }
+
           return;
         }
 
+        const materiales = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
+
         if (materiales.length === 0) {
           alert("No hay materiales en el carrito.");
+          return;
+        }
+
+        const payload = {
+          tipo_instancia: document.getElementById("instancia").value,
+          nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
+          correo,
+          telefono,
+          mensaje: document.getElementById("mensaje").value.trim(),
+          aviso_privacidad_aceptado: document.getElementById("check-terminos").checked,
+          materiales
+        };
+
+        if (!payload.aviso_privacidad_aceptado) {
+          alert("Debes aceptar el aviso de privacidad.");
           return;
         }
 
@@ -329,26 +374,41 @@
 
           alert("¡Gracias! Tu solicitud fue enviada correctamente.");
           sessionStorage.removeItem("carrito_donacion");
-          document.getElementById("contacto-donor").reset();
+          form.reset();
           cerrarFormulario();
           window.location.href = "index.html";
-
         } catch (error) {
           console.error(error);
           alert("Error de conexión con el servidor.");
         }
       };
-      </script>
-        <script src="main.js"></script>
+      function mostrarToast(mensaje, tipo = "danger") {
+      const toastEl = document.getElementById("liveToast");
+      const toastMsg = document.getElementById("toast-msg");
 
-      <script>
+      toastMsg.textContent = mensaje;
+      toastEl.className = `toast text-bg-${tipo} border-0`;
+
+      const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+      toast.show();
+    }
+    </script>
+
+    <script src="main.js"></script>
+
+    <script>
+      // datos de la cuenta
       document.addEventListener("DOMContentLoaded", function () {
         const token = localStorage.getItem("token");
         const rol = localStorage.getItem("rol");
 
         if (!token || rol !== "donador") {
-          alert("Debes iniciar sesión para enviar una solicitud de materiales");
-          window.location.href = "/login-donador.html";
+          mostrarToast("Debes iniciar sesión para enviar una solicitud de materiales.");
+
+          setTimeout(() => {
+            window.location.href = "login-donador.html";
+          }, 2200);
+
           return;
         }
 
@@ -365,13 +425,19 @@
           if (correoField && payload.correo) {
             correoField.value = payload.correo;
           }
-
         } catch (err) {
           console.error("Error leyendo token:", err);
         }
       });
-      </script>
-
-</body>
+    </script>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="liveToast" class="toast text-bg-danger border-0">
+        <div class="d-flex">
+          <div class="toast-body" id="toast-msg"></div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      </div>
+    </div>
+  </body>
 
 </html>

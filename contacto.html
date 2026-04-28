@@ -18,7 +18,7 @@
     <div class="hero-contenido">
         <span class="info-badge">Contáctanos</span>
         <h1>Información de contacto</h1>
-        <p>Contáctate y únete a una red que quiere transformar la educación.</p>
+        <p>Contáctanos y únete a una red que quiere transformar la educación.</p>
     </div>
 </div>
  
@@ -78,7 +78,7 @@
     <div class="modal-caja">
     <h2>Antes de continuar</h2>
     <p style="color: var(--texto-suave); font-size: 0.88rem; margin-bottom: 1rem;">
-        Para llenar el formulario de contacto es necesario que aceptes nuestros términos y condiciones de privacidad.
+        Para completar el formulario de contacto, es necesario que aceptes nuestros términos y condiciones de privacidad.
     </p>
 
 
@@ -161,18 +161,37 @@
 
     <div class="form-grupo mb-3">
         <label for="correo" class="form-label">Correo electrónico:</label>
-        <input id="correo" name="correo" type="email" class="form-control" placeholder="tucorreo@ejemplo.com" required>
+        <input
+        id="correo"
+        name="correo"
+        type="email"
+        class="form-control"
+        placeholder="tucorreo@ejemplo.com"
+        pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$"
+        required
+        >
         <div class="invalid-feedback">
-            Ingresa un correo electrónico válido.
-        </div>
+        Ingresa un correo electrónico válido.
+    </div>
     </div>
 
     <div class="form-grupo mb-3">
         <label for="telefono" class="form-label">Teléfono:</label>
-        <input id="telefono" name="telefono" type="tel" class="form-control" placeholder="33 1234 5678" required>
+        <input
+        id="telefono"
+        name="telefono"
+        type="tel"
+        class="form-control"
+        placeholder="33 1234 5678"
+        pattern="[0-9]{10}"
+        minlength="10"
+        maxlength="10"
+        inputmode="numeric"
+        required
+        >
         <div class="invalid-feedback">
-            Ingresa tu teléfono.
-        </div>
+        Ingresa un teléfono válido de 10 dígitos.
+    </div>
     </div>
 
     <div class="form-grupo mb-3">
@@ -180,200 +199,288 @@
         <textarea id="mensaje" name="mensaje" class="form-control" placeholder="Cuéntanos cómo deseas apoyar..."></textarea>
     </div>
 </form>
-    <button class="btn-aceptar" onclick="enviarFormulario()">Enviar información / solicitud</button>
+    <button class="btn-aceptar" onclick="enviarFormulario()">Enviar información</button>
     <button class="btn-cancelar-modal" onclick="cerrarFormulario()">Cancelar</button>
     </div>
 </div>
 <div id="footer-placeholder"></div>
 <script src="components.js"></script>
-    
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-/* TERMINOS Y CONDICIONES FORMULARIO */
-const modalTerminos   = document.getElementById('modal-terminos');
-const checkTerminos   = document.getElementById('check-terminos');
-const btnAceptar      = document.getElementById('btn-aceptar-terminos');
-const modalFormulario = document.getElementById('modal-formulario');
+  // abrir/cerrar terminos
+  const modalTerminos   = document.getElementById('modal-terminos');
+  const checkTerminos   = document.getElementById('check-terminos');
+  const btnAceptar      = document.getElementById('btn-aceptar-terminos');
+  const modalFormulario = document.getElementById('modal-formulario');
 
-window.abrirTerminos = function() {
-if (!modalTerminos) return;
-modalTerminos.classList.add('activo');
-if (checkTerminos) checkTerminos.checked = false;
-if (btnAceptar)    btnAceptar.disabled = true;
-};
+  window.abrirTerminos = function() {
+    // checar login antes de abrir el formulario
+    const token = localStorage.getItem("token");
+    const rol = localStorage.getItem("rol");
 
-window.cerrarTerminos = function() {
-if (modalTerminos) modalTerminos.classList.remove('activo');
-};
+    if (!token || rol !== "donador") {
+        mostrarToast("Debes iniciar sesión para llenar el formulario.");
+        localStorage.setItem("loginOrigen", window.location.href);
 
-if (checkTerminos) {
-checkTerminos.addEventListener('change', function() {
-    btnAceptar.disabled = !checkTerminos.checked;
-});
-}
+        setTimeout(() => {
+        window.location.href = "login-donador.html";
+        }, 2000);
 
-if (btnAceptar) {
-btnAceptar.addEventListener('click', function() {
-    cerrarTerminos();
-    if (modalFormulario) modalFormulario.classList.add('activo');
-});
-}
+        return;
+    }
 
-if (modalTerminos) {
-modalTerminos.addEventListener('click', function(e) {
-    if (e.target === modalTerminos) cerrarTerminos();
-});
-}
+    if (!modalTerminos) return;
 
+    modalTerminos.classList.add("activo");
 
-window.cerrarFormulario = function() {
-if (modalFormulario) modalFormulario.classList.remove('activo');
-};
+    if (checkTerminos) checkTerminos.checked = false;
+    if (btnAceptar) btnAceptar.disabled = true;
+    };
 
-if (modalFormulario) {
-modalFormulario.addEventListener('click', function(e) {
-    if (e.target === modalFormulario) cerrarFormulario();
-});
-}
+  window.cerrarTerminos = function() {
+    if (modalTerminos) modalTerminos.classList.remove('activo');
+  };
 
-const origenFormulario = sessionStorage.getItem("origen_formulario");
-const tipoDonacion = sessionStorage.getItem("tipo_donacion");
-const carritoGuardado = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
+  // activar boton cuando aceptan
+  if (checkTerminos) {
+    checkTerminos.addEventListener('change', function() {
+      btnAceptar.disabled = !checkTerminos.checked;
+    });
+  }
 
-const resumenTipo = document.getElementById("resumen-tipo-donacion");
-const resumenCarrito = document.getElementById("resumen-carrito");
+  // abrir el form despues de aceptar
+  if (btnAceptar) {
+    btnAceptar.addEventListener('click', function() {
+      cerrarTerminos();
+      if (modalFormulario) modalFormulario.classList.add('activo');
+    });
+  }
 
-const grupoTipoDonacion = document.getElementById("grupo-tipo-donacion");
-const tipoDonacionSelect = document.getElementById("tipoDonacionSelect");
+  // cerrar form si pican afuera
+  window.cerrarFormulario = function() {
+    if (modalFormulario) modalFormulario.classList.remove('activo');
+  };
 
+  if (modalFormulario) {
+    modalFormulario.addEventListener('click', function(e) {
+      if (e.target === modalFormulario) cerrarFormulario();
+    });
+  }
 
-function generarResumenCarritoHTML(items) {
-if (!items.length) {
-    return `
-    <div class="resumen-vacio">
-        <p>No hay materiales seleccionados todavía.</p>
-    </div>
-    `;
-}
+  // info guardada
+  const origenFormulario = sessionStorage.getItem("origen_formulario");
+  const tipoDonacion = sessionStorage.getItem("tipo_donacion");
+  const carritoGuardado = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
 
-return `
-    <h3 class="resumen-titulo">Materiales seleccionados</h3>
-    <div class="resumen-lista">
-    ${items.map(item => `
-        <div class="resumen-item">
-        <p class="resumen-escuela">${item.escuela}</p>
-        <p class="resumen-material">${item.propuesta}</p>
-        <p class="resumen-cantidad"><strong>Cantidad:</strong> ${item.cantidad} ${item.unidad || ""}</p>
+  const resumenCarrito = document.getElementById("resumen-carrito");
+  const grupoTipoDonacion = document.getElementById("grupo-tipo-donacion");
+  const tipoDonacionSelect = document.getElementById("tipoDonacionSelect");
+
+  // armar carrito bonito
+  function generarResumenCarritoHTML(items) {
+    if (!items.length) {
+      return `
+        <div class="resumen-vacio">
+          <p>No hay materiales seleccionados todavía.</p>
         </div>
-    `).join("")}
-    </div>
-`;
-}
+      `;
+    }
 
-if (origenFormulario === "catalogo") {
+    return `
+      <h3 class="resumen-titulo">Materiales seleccionados</h3>
+      <div class="resumen-lista">
+        ${items.map(item => `
+          <div class="resumen-item">
+            <p class="resumen-escuela">${item.escuela}</p>
+            <p class="resumen-material">${item.propuesta}</p>
+            <p class="resumen-cantidad"><strong>Cantidad:</strong> ${item.cantidad} ${item.unidad || ""}</p>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  // mostrar carrito o tipo donacion segun de donde viene
+  if (origenFormulario === "catalogo") {
     if (resumenCarrito) {
-        resumenCarrito.style.display = "block";
-        resumenCarrito.innerHTML = generarResumenCarritoHTML(carritoGuardado);
+      resumenCarrito.style.display = "block";
+      resumenCarrito.innerHTML = generarResumenCarritoHTML(carritoGuardado);
     }
 
     if (grupoTipoDonacion) {
-        grupoTipoDonacion.style.display = "none";
-        tipoDonacionSelect.required = false;
+      grupoTipoDonacion.style.display = "none";
+      tipoDonacionSelect.required = false;
     }
-} else if (tipoDonacion) {
+  } else if (tipoDonacion) {
     if (resumenCarrito) {
-        resumenCarrito.style.display = "none";
+      resumenCarrito.style.display = "none";
     }
 
     if (grupoTipoDonacion && tipoDonacionSelect) {
-        grupoTipoDonacion.style.display = "block";
-        tipoDonacionSelect.required = true;
-        tipoDonacionSelect.value = tipoDonacion;
+      grupoTipoDonacion.style.display = "block";
+      tipoDonacionSelect.required = true;
+      tipoDonacionSelect.value = tipoDonacion;
     }
-}
-
-window.enviarFormulario = async function() {
-  // Verificar sesión
-  const token = localStorage.getItem('token');
-  const rol   = localStorage.getItem('rol');
-  if (!token || rol !== 'donador') {
-    alert('Debes iniciar sesión para enviar una donación.');
-    localStorage.setItem('loginOrigen', window.location.href);
-    window.location.href = 'login-donador.html';
-    return;
   }
 
-  const form = document.getElementById("contacto-donor");
+  // enviar form
+  window.enviarFormulario = async function() {
 
-    if (!form.checkValidity()) {
-    form.classList.add("was-validated");
-    return;
+    // checar login
+    const token = localStorage.getItem('token');
+    const rol   = localStorage.getItem('rol');
+
+    if (!token || rol !== 'donador') {
+      mostrarToast("Debes iniciar sesión para enviar una donación.");
+        localStorage.setItem("loginOrigen", window.location.href);
+
+        setTimeout(() => {
+        window.location.href = "login-donador.html";
+        }, 1800);
+
+        return;
     }
 
-  const payload = {
-    tipo_instancia: document.getElementById("instancia").value,
-    nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
-    correo: document.getElementById("correo").value.trim(),
-    telefono: document.getElementById("telefono").value.trim(),
-    mensaje: document.getElementById("mensaje").value.trim(),
-    aviso_privacidad_aceptado: document.getElementById("check-terminos").checked,
-    origen_formulario: sessionStorage.getItem("origen_formulario"),
-    tipo_donacion: document.getElementById("tipoDonacionSelect")?.value || sessionStorage.getItem("tipo_donacion")
-  };
+    const form = document.getElementById("contacto-donor");
 
-
-  try {
-    const res = await fetch("http://localhost:3000/api/contacto", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.error || "No se pudo enviar el formulario.");
+    // validacion base bootstrap
+    if (!form.checkValidity()) {
+      form.classList.add("was-validated");
       return;
     }
 
-    alert("¡Gracias! Tu información fue enviada correctamente.");
-    document.getElementById("contacto-donor").reset();
-    cerrarFormulario();
-  } catch (error) {
-    console.error(error);
-    alert("Error de conexión con el servidor.");
+    // validacion extra (por si se quieren hacer los listos)
+    const correo = document.getElementById("correo").value.trim();
+    const telefono = document.getElementById("telefono").value.trim();
+
+    const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo);
+    const telefonoValido = /^[0-9]{10}$/.test(telefono);
+
+    if (!correoValido || !telefonoValido) {
+      form.classList.add("was-validated");
+
+      if (!correoValido) {
+        document.getElementById("correo").classList.add("is-invalid");
+      }
+
+      if (!telefonoValido) {
+        document.getElementById("telefono").classList.add("is-invalid");
+      }
+
+      return;
+    }
+
+    const payload = {
+      tipo_instancia: document.getElementById("instancia").value,
+      nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
+      correo,
+      telefono,
+      mensaje: document.getElementById("mensaje").value.trim(),
+      aviso_privacidad_aceptado: document.getElementById("check-terminos").checked,
+      origen_formulario: origenFormulario,
+      tipo_donacion: tipoDonacionSelect?.value || tipoDonacion
+    };
+
+    try {
+      const res = await fetch("http://localhost:3000/api/contacto", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        mostrarToast(data.error || "No se pudo enviar el formulario.");
+        return;
+      }
+
+      mostrarToast("¡Gracias! Tu información fue enviada correctamente.", "success");
+      form.reset();
+      cerrarFormulario();
+
+    } catch (error) {
+      console.error(error);
+      mostrarToast("Error de conexión con el servidor.");
+    }
+  };
+
+  // bloquear letras en telefono
+  const telefonoInput = document.getElementById("telefono");
+
+  if (telefonoInput) {
+    telefonoInput.addEventListener("input", function () {
+      this.value = this.value.replace(/\D/g, "").slice(0, 10);
+    });
   }
-};
+
+  // quitar rojo cuando corrigen
+  ["correo", "telefono"].forEach(id => {
+    const input = document.getElementById(id);
+
+    if (input) {
+      input.addEventListener("input", () => {
+        input.classList.remove("is-invalid");
+      });
+    }
+  });
+
+  // toast bonito pa no usar alert 
+    function mostrarToast(mensaje, tipo = "danger") {
+    const toastEl = document.getElementById("liveToast");
+    const toastMsg = document.getElementById("toast-msg");
+
+    toastMsg.textContent = mensaje;
+
+    toastEl.className = `toast text-bg-${tipo} border-0`;
+
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+    }
 </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", mostrarNombreCuenta);
+    document.addEventListener("DOMContentLoaded", mostrarNombreCuenta);
 
-function mostrarNombreCuenta() {
-  const token = localStorage.getItem("token");
-  const rol = localStorage.getItem("rol");
+    function mostrarNombreCuenta() {
+    const token = localStorage.getItem("token");
+    const rol = localStorage.getItem("rol");
 
-  if (!token || rol !== "donador") return;
+    if (!token || rol !== "donador") return;
 
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    const nombreCuenta = document.getElementById("nombreCuenta");
-    const correoField = document.getElementById("correo");
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const nombreCuenta = document.getElementById("nombreCuenta");
+        const correoField = document.getElementById("correo");
 
-    if (nombreCuenta && payload.nombre) {
-      nombreCuenta.querySelector(".perfil-texto").textContent = payload.nombre;
+        if (nombreCuenta && payload.nombre) {
+        nombreCuenta.querySelector(".perfil-texto").textContent = payload.nombre;
+        }
+
+        if (correoField && payload.correo && !correoField.value) {
+        correoField.value = payload.correo;
+        }
+    } catch (err) {
+        console.error("No se pudo leer el perfil del donador:", err);
     }
-
-    if (correoField && payload.correo && !correoField.value) {
-      correoField.value = payload.correo;
     }
-  } catch (err) {
-    console.error("No se pudo leer el perfil del donador:", err);
-  }
-}
 </script>
+
+<!-- toast notif -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="liveToast" class="toast text-bg-danger border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="toast-msg">
+        mensaje aqui
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
