@@ -45,10 +45,6 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
-/* ============================================================
-   HEADER
-   ============================================================ */
-
 .admin-header {
   position: fixed;
   top: 0;
@@ -222,18 +218,10 @@ body {
   color: var(--naranja);
 }
 
-/* ============================================================
-   LAYOUT GENERAL
-   ============================================================ */
-
 .admin-layout {
   display: flex;
   min-height: calc(100vh - 64px);
 }
-
-/* ============================================================
-   SIDEBAR
-   ============================================================ */
 
 .admin-sidebar {
   width: 280px;
@@ -411,10 +399,6 @@ body {
   color: white;
 }
 
-/* ============================================================
-   CONTENIDO PRINCIPAL
-   ============================================================ */
-
 .admin-content {
   flex: 1;
   margin-left: 280px;
@@ -423,9 +407,6 @@ body {
   min-height: calc(100vh - 64px);
 }
 
-/* ============================================================
-   SECCIÓN: GESTIÓN DE NECESIDADES
-   ============================================================ */
 
 .seccion-necesidades {
   font-family: 'Montserrat', sans-serif;
@@ -554,10 +535,6 @@ body {
   line-height: 1.4;
 }
 
-/* ============================================================
-   INPUTS Y SELECTS (compartidos)
-   ============================================================ */
-
 .panel-input,
 .panel-select {
   width: 100%;
@@ -594,12 +571,6 @@ body {
   background-size: 12px;
   padding-right: 2.5rem;
 }
-
-/* ============================================================
-   PANEL 1: CONSULTA — buscador, filtros, resultados
-   ============================================================ */
-
-/* ── BUSCADOR CON AUTOCOMPLETADO ── */
 
 .panel-buscador-wrapper {
   position: relative;
@@ -798,10 +769,6 @@ body {
   color: var(--texto-suave);
 }
 
-/* ============================================================
-   BOTONES (compartidos)
-   ============================================================ */
-
 .panel-btn {
   display: inline-flex;
   align-items: center;
@@ -867,12 +834,6 @@ body {
   color: white;
   box-shadow: 0 6px 14px rgba(236, 103, 27, 0.25);
 }
-
-/* ============================================================
-   PANEL 3: SINCRONIZACIÓN EXCEL
-   ============================================================ */
-
-/* ── FLUJO DE TRABAJO (3 pasos) ── */
 
 .panel-flujo {
   display: flex;
@@ -1164,10 +1125,6 @@ body {
   color: #dc2626;
 }
 
-/* ============================================================
-   MODALES (detalle, edición, confirmación)
-   ============================================================ */
-
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1342,9 +1299,6 @@ body {
   background:   rgba(249, 115, 22, 0.06) !important;
 }
 
-/* ============================================================
-   MEJORA VISUAL TARJETAS ADMIN (READ / CREATE / UPLOAD)
-   ============================================================ */
 
 /* Hover más elegante */
 .panel-card {
@@ -1427,4 +1381,68 @@ body {
 .panel-carga .panel-btn:hover {
   background: #f37021;
   color: white;
+}
+
+@media (max-width: 768px) {
+  .sidebar-link.active .sidebar-link-inner {
+    border-radius: 14px !important;
+    margin-right: 0 !important;
+    padding-right: 1rem !important;
+  }
+  .sidebar-link.active::before,
+  .sidebar-link.active::after {
+    display: none !important;
+  }
+  .subpagina-header { flex-direction: column; gap: .4rem; }
+
+  .panel-filtros {
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+  }
+  .panel-filtros select { width: 100%; }
+
+  .form-grupo-doble {
+    grid-template-columns: 1fr !important;
+  }
+
+  .panel-flujo {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: .4rem !important;
+  }
+  .flujo-flecha { transform: rotate(90deg); }
+
+  .dropzone { padding: 1.2rem 1rem; }
+  .dropzone-titulo { font-size: .88rem; }
+
+  .modal-overlay .modal-caja {
+    max-height: 92vh;
+    overflow-y: auto;
+    margin: auto;
+  }
+  .modal-campo-doble { grid-template-columns: 1fr !important; }
+
+  .admin-content {
+    margin-left: 0 !important;
+    padding: 1rem !important;
+  }
+
+  .admin-header {
+    left: 0 !important;
+  }
+
+  .admin-sidebar {
+    left: -280px !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transition: left .25s cubic-bezier(.4,0,.2,1), box-shadow .25s !important;
+  }
+  .admin-sidebar.open {
+    left: 0 !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,.18) !important;
+  }
+  body, .admin-content, .gs-wrap {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
 }

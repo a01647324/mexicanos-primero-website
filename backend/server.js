@@ -469,7 +469,7 @@ app.post("/api/admin/necesidades", verificarToken, soloAdmin, async (req, res) =
     res.status(201).json({ id: result.rows[0].id, message: "Necesidad creada exitosamente" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Error en servidor" });
+    res.status(500).json({ error: err.message || "Error en servidor" });
   }
 });
 
@@ -515,7 +515,7 @@ app.put("/api/admin/necesidades/:id", verificarToken, soloAdmin, async (req, res
     res.json({ message: "Necesidad actualizada exitosamente" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Error en servidor" });
+    res.status(500).json({ error: err.message || "Error en servidor" });
   }
 });
 
@@ -528,7 +528,7 @@ app.delete("/api/admin/necesidades/:id", verificarToken, soloAdmin, async (req, 
     res.json({ message: "Necesidad eliminada exitosamente" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Error en servidor" });
+    res.status(500).json({ error: err.message || "Error en servidor" });
   }
 });
 
@@ -650,21 +650,76 @@ app.post("/api/admin/excel/subir", verificarToken, soloAdmin, upload.single("arc
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const filas    = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 
-    if (filas.length === 0)  return res.status(400).json({ error: "El archivo no contiene datos" });
-    if (filas.length < 5)    return res.status(400).json({ error: "El archivo parece incompleto. Operación cancelada." });
+    if (filas.length === 0) return res.status(400).json({ error: "El archivo no contiene datos" });
+    if (filas.length < 2)   return res.status(400).json({ error: "El archivo parece incompleto. Operación cancelada." });
 
     const clean = v => v ? String(v).trim() : null;
+    const erroresValidacion = [];
+
+    // ═══ PASO 1: VALIDACIÓN PRE-INSERT ═══
+    for (let i = 0; i < filas.length; i++) {
+      const fila = filas[i];
+      const numeroFila = i + 2; // +2 porque empezamos en fila 2 del Excel
+
+      const municipio    = clean(fila["Municipio"]);
+      const categoria    = clean(fila["Categoría"]    || fila["Categoria"]);
+      const subcategoria = clean(fila["Subcategoría"] || fila["Subcategoria"]);
+      const escuela      = clean(fila["Escuela"]);
+      const propuesta    = clean(fila["Propuesta"]);
+      const cantidad     = parseInt(fila["Cantidad"]) || 0;
+      const unidad       = clean(fila["Unidad"]);
+      const estado       = clean(fila["Estado"]) || "Aun no cubierto";
+
+      // Validar con función de base de datos
+      try {
+        const result = await pool.query(
+          "SELECT fn_validar_fila_excel($1, $2, $3, $4, $5, $6, $7, $8) as error",
+          [municipio, categoria, subcategoria, escuela, propuesta, cantidad, unidad, estado]
+        );
+        
+        const errorMsg = result.rows[0].error;
+        if (errorMsg) {
+          erroresValidacion.push({
+            fila: numeroFila,
+            error: errorMsg,
+            datos: {
+              municipio: municipio || "[vacío]",
+              escuela: escuela || "[vacío]", 
+              propuesta: propuesta || "[vacío]"
+            }
+          });
+        }
+      } catch (err) {
+        erroresValidacion.push({
+          fila: numeroFila,
+          error: "Error de validación: " + err.message,
+          datos: { municipio, escuela, propuesta }
+        });
+      }
+    }
+
+    // ═══ SI HAY ERRORES, DEVOLVER TODOS SIN TOCAR BD ═══
+    if (erroresValidacion.length > 0) {
+      return res.status(400).json({
+        error: "Se encontraron errores en el archivo",
+        total_errores: erroresValidacion.length,
+        total_filas: filas.length,
+        errores: erroresValidacion.slice(0, 20), // Solo primeros 20 para no sobrecargar
+        mensaje: `Corrige ${erroresValidacion.length} error(es) y vuelve a intentar`
+      });
+    }
+
+    // ═══ PASO 2: INSERCIÓN (solo si no hay errores) ═══
     const normalizeEstado = v => {
       const s = String(v || "").toLowerCase().trim();
-      if (s === "cubierto")                                        return "Cubierto";
-      if (s === "cubierto parcialmente")                           return "Cubierto parcialmente";
-      if (s === "aun no cubierto" || s === "aún no cubierto")      return "Aun no cubierto";
+      if (s === "cubierto") return "Cubierto";
+      if (s === "cubierto parcialmente") return "Cubierto parcialmente";
+      if (s === "aun no cubierto" || s === "aún no cubierto") return "Aun no cubierto";
       return "Aun no cubierto";
     };
 
     const client = await pool.connect();
     let insertados = 0;
-    let omitidos   = 0;
 
     try {
       await client.query("BEGIN");
@@ -680,11 +735,6 @@ app.post("/api/admin/excel/subir", verificarToken, soloAdmin, upload.single("arc
         const unidad       = clean(fila["Unidad"]);
         const detalles     = clean(fila["Detalles"]);
         const estado       = normalizeEstado(fila["Estado"]);
-
-        if (!municipio || !categoria || !subcategoria || !escuela || !propuesta) {
-          omitidos++;
-          continue;
-        }
 
         const categoriaId = (await client.query("SELECT id FROM categorias WHERE nombre = $1", [categoria])).rows[0]?.id
           ?? (await client.query("INSERT INTO categorias (nombre) VALUES ($1) RETURNING id", [categoria])).rows[0].id;
@@ -703,15 +753,25 @@ app.post("/api/admin/excel/subir", verificarToken, soloAdmin, upload.single("arc
       }
 
       await client.query("COMMIT");
-      res.json({ message: `Importación completada: ${insertados} insertados, ${omitidos} omitidos.`, insertados, omitidos });
+      res.json({ 
+        message: `Importación completada exitosamente: ${insertados} registros insertados.`, 
+        insertados,
+        total_procesados: filas.length 
+      });
+
     } catch (err) {
       await client.query("ROLLBACK");
-      throw err;
+      console.error("Error en inserción:", err);
+      res.status(500).json({ 
+        error: "Error durante la inserción: " + err.message,
+        nota: "No se realizaron cambios en la base de datos"
+      });
     } finally {
       client.release();
     }
+
   } catch (err) {
-    console.error(err);
+    console.error("Error procesando archivo:", err);
     res.status(500).json({ error: "Error procesando el archivo: " + err.message });
   }
 });

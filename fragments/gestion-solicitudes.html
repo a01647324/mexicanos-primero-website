@@ -146,11 +146,9 @@
 </div>
 
 <style>
-/* ── GESTIÓN DE SOLICITUDES ── */
 .gs-wrap { font-family:'Montserrat',sans-serif; color:var(--texto); display:flex; flex-direction:column; gap:1.1rem; }
 .gs-top  { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:.5rem; }
 
-/* Chips */
 .gs-chips { display:flex; gap:.5rem; flex-wrap:wrap; }
 .gs-chip {
   display:flex; align-items:center; gap:.45rem;
@@ -166,7 +164,6 @@
 .gs-chip-skeleton { width:100px; height:38px; border-radius:var(--radio-xl); background:var(--gris-claro); animation:shimmer 1.4s infinite; }
 @keyframes shimmer { 0%,100%{opacity:1} 50%{opacity:.45} }
 
-/* Toolbar */
 .gs-toolbar { display:flex; gap:.65rem; flex-wrap:wrap; align-items:center; }
 .gs-search-wrap { position:relative; flex:1; min-width:210px; }
 .gs-search-icon { position:absolute; left:.85rem; top:50%; transform:translateY(-50%); color:var(--texto-label); font-size:.82rem; pointer-events:none; }
@@ -179,7 +176,6 @@
 .gs-search:focus { border-color:var(--verde); box-shadow:0 0 0 3px rgba(0,153,51,.09); }
 .gs-filter { width:auto; min-width:145px; border-radius:var(--radio-xl); font-size:.8rem; }
 
-/* Tabla */
 .gs-tabla-wrap {
   background:var(--blanco);
   border-radius:var(--radio-lg);
@@ -204,11 +200,9 @@
 .gs-loading { text-align:center; padding:2.5rem; color:var(--texto-suave); font-size:.88rem; }
 .gs-vacio   { text-align:center; padding:2.5rem; color:var(--texto-suave); font-size:.82rem; }
 
-/* Celda solicitante */
 .gs-solicitante-nombre { font-weight:700; font-size:.82rem; color:var(--texto); margin:0 0 .12rem; }
 .gs-solicitante-correo { font-size:.71rem; color:var(--texto-suave); margin:0; }
 
-/* Badge tipo */
 .gs-tipo-badge { display:inline-flex; align-items:center; padding:.18rem .62rem; border-radius:var(--radio-xl); font-size:.68rem; font-weight:700; white-space:nowrap; }
 .tipo-material     { background:var(--azul-suave);    color:var(--azul); }
 .tipo-economica    { background:rgba(244,152,28,.1);   color:#a86c0a; }
@@ -217,7 +211,6 @@
 .tipo-vinculacion  { background:rgba(100,50,150,.08);  color:#5a2a90; }
 .tipo-otro         { background:var(--gris-claro);     color:var(--texto-suave); }
 
-/* Badge estatus */
 .gs-estatus-badge { display:inline-flex; align-items:center; gap:.3rem; padding:.22rem .72rem; border-radius:var(--radio-xl); font-size:.69rem; font-weight:700; white-space:nowrap; }
 .est-nueva      { background:var(--naranja-suave);  color:#b84f10; }
 .est-en_proceso { background:var(--azul-suave);     color:var(--azul); }
@@ -237,7 +230,6 @@
 }
 .gs-btn-editar:hover { background:var(--azul); color:white; }
 
-/* Paginación */
 .gs-paginacion { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.65rem; }
 .gs-paginacion-info { font-size:.76rem; color:var(--texto-suave); font-weight:500; }
 .gs-paginacion-btns { display:flex; gap:.35rem; }
@@ -253,7 +245,6 @@
 .gs-pag-btn.activo { background:var(--azul); color:white; border-color:var(--azul); }
 .gs-pag-btn:disabled { opacity:.35; cursor:not-allowed; }
 
-/* Modal estatus */
 .gs-estatus-opciones { display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.3rem; }
 .gs-estatus-btn {
   display:inline-flex; align-items:center; gap:.38rem;
@@ -281,11 +272,47 @@
 .spin { display:inline-block; animation:girar 1s linear infinite; }
 @keyframes girar { to { transform:rotate(360deg); } }
 
-@media(max-width:900px) {
-  .gs-tabla thead th:nth-child(4), .gs-tabla tbody td:nth-child(4) { display:none; }
+@media (max-width: 768px) {
+  .gs-toolbar { flex-direction: column; align-items: stretch; }
+  .gs-search-wrap { min-width: unset; }
+  .gs-filter { width: 100%; }
+
+  .gs-chips {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+  .gs-chip {
+    flex: 1 1 calc(33% - .5rem);
+    min-width: 0;
+    justify-content: center;
+    font-size: .7rem;
+    padding: .38rem .5rem;
+  }
+  .gs-chip-num { font-size: .85rem; }
+
+  .gs-tabla thead th:nth-child(4),
+  .gs-tabla tbody td:nth-child(4),
+  .gs-tabla thead th:nth-child(5),
+  .gs-tabla tbody td:nth-child(5),
+  .gs-tabla thead th:nth-child(6),
+  .gs-tabla tbody td:nth-child(6) { display: none; }
+
+  .gs-paginacion { flex-direction: column; align-items: center; gap: .5rem; }
 }
-@media(max-width:700px) {
-  .gs-tabla thead th:nth-child(5), .gs-tabla tbody td:nth-child(5) { display:none; }
+
+@media (max-width: 520px) {
+  .gs-tabla thead th:nth-child(1),
+  .gs-tabla tbody td:nth-child(1),
+  .gs-tabla thead th:nth-child(3),
+  .gs-tabla tbody td:nth-child(3) { display: none; }
+
+  .gs-tabla-wrap { overflow: hidden; }
+  .gs-tabla { min-width: unset; width: 100%; }
+
+  .gs-btn-editar { font-size: .68rem; padding: .28rem .55rem; }
+
+  .gs-solicitante-nombre { font-size: .78rem; }
+  .gs-solicitante-correo { font-size: .65rem; }
 }
 </style>
 

@@ -135,11 +135,9 @@
 </div>
 
 <style>
-/* EQUIPO ADMINISTRATIVO */
 .eq-wrap { font-family:'Montserrat',sans-serif; color:var(--texto); display:flex; flex-direction:column; gap:1.1rem; }
 .eq-top  { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.65rem; }
 
-/* Toolbar */
 .eq-toolbar { display:flex; gap:.65rem; align-items:center; flex-wrap:wrap; }
 .eq-search-wrap { position:relative; flex:1; min-width:210px; }
 .eq-search-icon { position:absolute; left:.85rem; top:50%; transform:translateY(-50%); color:var(--texto-label); font-size:.82rem; pointer-events:none; }
@@ -156,7 +154,6 @@
   background:var(--gris-claro); padding:.32rem .8rem; border-radius:var(--radio-xl); white-space:nowrap;
 }
 
-/* Tabla */
 .eq-tabla-wrap {
   background:var(--blanco);
   border-radius:var(--radio-lg);
@@ -180,7 +177,6 @@
 .eq-tabla tbody td:first-child { text-align:center; }
 .eq-loading, .eq-vacio { text-align:center; padding:2.5rem; color:var(--texto-suave); font-size:.85rem; }
 
-/* Celda admin */
 .eq-admin-cell { display:flex; align-items:center; gap:.8rem; }
 .eq-avatar {
   width:38px; height:38px; border-radius:50%;
@@ -190,7 +186,6 @@
 .eq-admin-nombre { font-weight:700; font-size:.84rem; color:var(--texto); margin:0 0 .08rem; }
 .eq-admin-id { font-size:.68rem; color:var(--texto-suave); margin:0; }
 
-/* Rol badge */
 .eq-rol-badge {
   display:inline-flex; align-items:center; gap:.3rem;
   padding:.22rem .72rem; border-radius:var(--radio-xl);
@@ -200,10 +195,8 @@
 .rol-admin        { background:var(--verde-suave);   color:var(--verde-oscuro); }
 .rol-viewer       { background:var(--azul-suave);    color:var(--azul); }
 
-/* Pass */
 .eq-pass-dots { letter-spacing:3px; font-size:.88rem; color:var(--texto-suave); }
 
-/* Acciones */
 .eq-acciones { display:flex; gap:.35rem; }
 .eq-btn {
   display:inline-flex; align-items:center; gap:.28rem;
@@ -216,7 +209,6 @@
 .eq-btn-eliminar { background:var(--rojo-suave);   color:var(--rojo); }
 .eq-btn-eliminar:hover { background:var(--rojo);   color:white; }
 
-/* Bulk bar */
 .eq-bulk-bar {
   display:flex; align-items:center; justify-content:space-between;
   padding:.8rem 1.1rem;
@@ -224,7 +216,6 @@
   color:white; font-size:.82rem; font-weight:600; flex-wrap:wrap; gap:.65rem;
 }
 
-/* Modal avatar */
 .eq-avatar-preview-wrap { display:flex; align-items:center; gap:.9rem; margin-bottom:1rem; }
 .eq-avatar-preview {
   width:52px; height:52px; border-radius:50%;
@@ -243,8 +234,37 @@
 .spin { display:inline-block; animation:girar 1s linear infinite; }
 @keyframes girar { to { transform:rotate(360deg); } }
 
-@media(max-width:800px) {
-  .eq-tabla thead th:nth-child(5), .eq-tabla tbody td:nth-child(5) { display:none; }
+@media (max-width: 768px) {
+  .eq-top { flex-direction: column; align-items: flex-start; }
+  .eq-toolbar { flex-direction: column; align-items: stretch; }
+  .eq-search-wrap { min-width: unset; }
+  .eq-filter { width: 100%; }
+
+  .eq-tabla thead th:nth-child(5),
+  .eq-tabla tbody td:nth-child(5) { display: none; }
+}
+
+@media (max-width: 520px) {
+  .eq-tabla-wrap { overflow: visible; background: none; box-shadow: none; border: none; }
+  .eq-tabla thead { display: none; }
+  .eq-tabla tbody tr {
+    display: flex; flex-direction: column;
+    background: var(--blanco);
+    border-radius: var(--radio-lg);
+    border: 1px solid var(--gris-borde);
+    box-shadow: var(--sombra);
+    margin-bottom: .65rem;
+    padding: .9rem 1rem;
+    gap: .4rem;
+  }
+  .eq-tabla tbody td {
+    display: flex; align-items: center;
+    padding: .1rem 0; border: none;
+  }
+  .eq-tabla tbody td:first-child { display: none; }
+  .eq-acciones { width: 100%; }
+  .eq-btn { flex: 1; justify-content: center; }
+  .eq-bulk-bar { flex-direction: column; align-items: flex-start; }
 }
 </style>
 
