@@ -111,10 +111,15 @@
 
     <form id="contacto-donor" class="needs-validation" novalidate>
     <div class="form-grupo mb-3">
-        <label for="nombre" class="form-label">Nombre completo:</label>
-        <input id="nombre" name="nombre_completo" type="text" class="form-control" placeholder="Tu nombre completo" required>
-        <div class="invalid-feedback">
-            Ingresa tu nombre completo.
+        <label class="form-label">Nombre completo:</label>
+
+        <div id="nombreCuenta" class="perfil-cuenta-box">
+            <span class="perfil-icono">👤</span>
+            <span class="perfil-texto">Cargando...</span>
+        </div>
+
+        <div class="form-text text-muted mt-1">
+            Este dato se toma automáticamente de tu perfil y no se puede modificar aquí.
         </div>
     </div>
 
@@ -305,7 +310,6 @@ window.enviarFormulario = async function() {
     }
 
   const payload = {
-    nombre_completo: document.getElementById("nombre").value.trim(),
     tipo_instancia: document.getElementById("instancia").value,
     nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
     correo: document.getElementById("correo").value.trim(),
@@ -345,39 +349,28 @@ window.enviarFormulario = async function() {
 </script>
 
 <script>
-// Verificar login y auto-llenar al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-  verificarLoginYAutoLlenar();
-});
+document.addEventListener("DOMContentLoaded", mostrarNombreCuenta);
 
-function verificarLoginYAutoLlenar() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Debes iniciar sesión para enviar una solicitud');
-    window.location.href = '/login-donador.html';
-    return;
-  }
-  
-  // Auto-llenar datos del donador
+function mostrarNombreCuenta() {
+  const token = localStorage.getItem("token");
+  const rol = localStorage.getItem("rol");
+
+  if (!token || rol !== "donador") return;
+
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    
-    const nombreField = document.querySelector('input[name="nombre_completo"]');
-    const correoField = document.querySelector('input[name="correo"]');
-    
-    if (nombreField && payload.nombre) {
-      nombreField.value = payload.nombre;
-      nombreField.readOnly = true;
-      nombreField.style.backgroundColor = '#f8f9fa';
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const nombreCuenta = document.getElementById("nombreCuenta");
+    const correoField = document.getElementById("correo");
+
+    if (nombreCuenta && payload.nombre) {
+      nombreCuenta.querySelector(".perfil-texto").textContent = payload.nombre;
     }
-    
-    if (correoField && payload.correo) {
+
+    if (correoField && payload.correo && !correoField.value) {
       correoField.value = payload.correo;
-      correoField.readOnly = true;
-      correoField.style.backgroundColor = '#f8f9fa';
     }
   } catch (err) {
-    console.error('Error decodificando token:', err);
+    console.error("No se pudo leer el perfil del donador:", err);
   }
 }
 </script>

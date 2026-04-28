@@ -46,13 +46,17 @@ app.use(express.static(path.join(__dirname, "..")));
 // ─────────────────────────────────────────────────────────────
 
 function validarFormularioBase(body) {
-  const { nombre_completo, correo, telefono, aviso_privacidad_aceptado } = body;
-  if (!nombre_completo || !telefono)
-    return "Nombre completo y teléfono son obligatorios.";
+  const { correo, telefono, aviso_privacidad_aceptado } = body;
+
+  if (!telefono)
+    return "Teléfono es obligatorio.";
+
   if (!aviso_privacidad_aceptado)
     return "Debes aceptar el aviso de privacidad.";
+
   if (correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo))
     return "Correo electrónico inválido.";
+
   return null;
 }
 
@@ -197,12 +201,13 @@ app.post("/api/contacto", verificarToken, async (req, res) => {
     if (error) return res.status(400).json({ error });
 
     const {
-      nombre_completo, tipo_instancia, nombre_instancia,
+      tipo_instancia, nombre_instancia,
       correo, telefono, mensaje, aviso_privacidad_aceptado, tipo_donacion
     } = req.body;
 
-    // donadorId siempre existe y es válido
+    // Datos oficiales de la cuenta
     const donadorId = req.usuario.id;
+    const nombre_completo = req.usuario.nombre;
 
     const result = await pool.query(
       `INSERT INTO solicitudes_donacion (
@@ -235,10 +240,13 @@ app.post("/api/solicitud-material", verificarToken, async (req, res) => {
     if (error) return res.status(400).json({ error });
 
     const {
-      nombre_completo, tipo_instancia, nombre_instancia,
+      tipo_instancia, nombre_instancia,
       correo, telefono, mensaje,
       aviso_privacidad_aceptado, materiales
     } = req.body;
+
+    // Nombre oficial de la cuenta
+    const nombre_completo = req.usuario.nombre;
 
     if (!Array.isArray(materiales) || materiales.length === 0)
       return res.status(400).json({ error: "Debes enviar al menos un material." });

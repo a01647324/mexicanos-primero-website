@@ -3002,3 +3002,23 @@
   cursor: pointer;
 }
 .perfil-dropdown-item:hover { text-decoration: underline; }
+
+.perfil-cuenta-box{
+    display:flex;
+    align-items:center;
+    gap:.7rem;
+    padding:.85rem 1rem;
+    border:1px solid #198754;
+    background:#eef8f1;
+    border-radius:12px;
+    min-height:48px;
+}
+
+.perfil-icono{
+    font-size:1.1rem;
+}
+
+.perfil-texto{
+    font-weight:600;
+    color:#14532d;
+}

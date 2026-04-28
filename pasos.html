@@ -130,10 +130,15 @@
 
         <form id="contacto-donor" class="needs-validation" novalidate>
         <div class="form-grupo mb-3">
-            <label for="nombre" class="form-label">Nombre completo:</label>
-            <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Tu nombre completo" required>
-            <div class="invalid-feedback">
-                Ingresa tu nombre completo.
+            <label class="form-label">Nombre completo:</label>
+
+            <div id="nombreCuenta" class="perfil-cuenta-box">
+                <span class="perfil-icono">👤</span>
+                <span class="perfil-texto">Cargando...</span>
+            </div>
+
+            <div class="form-text text-muted mt-1">
+                Este dato se toma automáticamente de tu perfil y no se puede modificar aquí.
             </div>
         </div>
 
@@ -192,187 +197,180 @@
     <script src="components.js"></script>
    
     <script>
-// ── MODAL TÉRMINOS ─────────────────────────────
-function abrirTerminos() {
-  document.getElementById("modal-terminos").classList.add("activo");
-}
+      // ── MODAL TÉRMINOS ─────────────────────────────
+      function abrirTerminos() {
+        document.getElementById("modal-terminos").classList.add("activo");
+      }
 
-function cerrarTerminos() {
-  document.getElementById("modal-terminos").classList.remove("activo");
-}
+      function cerrarTerminos() {
+        document.getElementById("modal-terminos").classList.remove("activo");
+      }
 
-// ── ACTIVAR BOTÓN DE ACEPTAR ───────────────────
-const checkbox = document.getElementById("check-terminos");
-const btnAceptar = document.getElementById("btn-aceptar-terminos");
+      // ── ACTIVAR BOTÓN DE ACEPTAR ───────────────────
+      const checkbox = document.getElementById("check-terminos");
+      const btnAceptar = document.getElementById("btn-aceptar-terminos");
 
-if (checkbox && btnAceptar) {
-  checkbox.addEventListener("change", () => {
-    btnAceptar.disabled = !checkbox.checked;
-  });
-}
+      if (checkbox && btnAceptar) {
+        checkbox.addEventListener("change", () => {
+          btnAceptar.disabled = !checkbox.checked;
+        });
+      }
 
-// ── ABRIR FORMULARIO ───────────────────────────
-if (btnAceptar) {
-  btnAceptar.addEventListener("click", () => {
-    cerrarTerminos();
-    document.getElementById("modal-formulario").classList.add("activo");
-  });
-}
+      // ── ABRIR FORMULARIO ───────────────────────────
+      if (btnAceptar) {
+        btnAceptar.addEventListener("click", () => {
+          cerrarTerminos();
+          document.getElementById("modal-formulario").classList.add("activo");
+        });
+      }
 
-function cerrarFormulario() {
-  document.getElementById("modal-formulario").classList.remove("activo");
-}
+      function cerrarFormulario() {
+        document.getElementById("modal-formulario").classList.remove("activo");
+      }
 
-// ── RESUMEN DEL CARRITO ────────────────────────
-const carritoGuardado = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
-const resumen = document.getElementById("resumen-carrito");
+      // ── RESUMEN DEL CARRITO ────────────────────────
+      const carritoGuardado = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
+      const resumen = document.getElementById("resumen-carrito");
 
 
-function generarResumenHTML(items) {
-  if (!items.length) {
-    return `
-      <div class="resumen-vacio">
-        <p>No hay materiales seleccionados todavía.</p>
-      </div>
-    `;
-  }
+      function generarResumenHTML(items) {
+        if (!items.length) {
+          return `
+            <div class="resumen-vacio">
+              <p>No hay materiales seleccionados todavía.</p>
+            </div>
+          `;
+        }
 
-  return `
-    <h3 class="resumen-titulo">Materiales seleccionados</h3>
-    <div class="resumen-lista">
-      ${items.map(item => `
-        <div class="resumen-item">
-          <p class="resumen-escuela">${item.escuela}</p>
-          <p class="resumen-material">${item.propuesta}</p>
-          <p class="resumen-cantidad"><strong>Cantidad:</strong> ${item.cantidad} ${item.unidad || ""}</p>
-        </div>
-      `).join("")}
-    </div>
-  `;
-}
+        return `
+          <h3 class="resumen-titulo">Materiales seleccionados</h3>
+          <div class="resumen-lista">
+            ${items.map(item => `
+              <div class="resumen-item">
+                <p class="resumen-escuela">${item.escuela}</p>
+                <p class="resumen-material">${item.propuesta}</p>
+                <p class="resumen-cantidad"><strong>Cantidad:</strong> ${item.cantidad} ${item.unidad || ""}</p>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }
 
-if (resumen) {
-  resumen.innerHTML = generarResumenHTML(carritoGuardado);
-}
-function cancelarSolicitud() {
-  sessionStorage.removeItem("carrito_donacion");
-  window.location.href = "index.html";
-}
+      if (resumen) {
+        resumen.innerHTML = generarResumenHTML(carritoGuardado);
+      }
+      function cancelarSolicitud() {
+        sessionStorage.removeItem("carrito_donacion");
+        window.location.href = "index.html";
+      }
 
-function modificarCarrito() {
-  window.location.href = "filtrado.html";
-}
-// ── ENVÍO DEL FORMULARIO ───────────────────────
+      function modificarCarrito() {
+        window.location.href = "filtrado.html";
+      }
+      // ── ENVÍO DEL FORMULARIO ───────────────────────
 
-window.enviarFormulario = async function() {
-  // Verificar sesión
-  const token = localStorage.getItem('token');
-  const rol   = localStorage.getItem('rol');
-  if (!token || rol !== 'donador') {
-    alert('Debes iniciar sesión para enviar una donación.');
-    localStorage.setItem('loginOrigen', window.location.href);
-    window.location.href = 'login-donador.html';
-    return;
-  }
+      window.enviarFormulario = async function() {
+        // Verificar sesión
+        const token = localStorage.getItem('token');
+        const rol   = localStorage.getItem('rol');
+        if (!token || rol !== 'donador') {
+          alert('Debes iniciar sesión para enviar una donación.');
+          localStorage.setItem('loginOrigen', window.location.href);
+          window.location.href = 'login-donador.html';
+          return;
+        }
 
-  const materiales = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
+        const materiales = JSON.parse(sessionStorage.getItem("carrito_donacion") || "[]");
 
-  const payload = {
-    nombre_completo: document.getElementById("nombre").value.trim(),
-    tipo_instancia: document.getElementById("instancia").value,
-    nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
-    correo: document.getElementById("correo").value.trim(),
-    telefono: document.getElementById("telefono").value.trim(),
-    mensaje: document.getElementById("mensaje").value.trim(),
-    aviso_privacidad_aceptado: document.getElementById("check-terminos").checked,
-    materiales
-  };
+        const payload = {
 
-  const form = document.getElementById("contacto-donor");
+          tipo_instancia: document.getElementById("instancia").value,
+          nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
+          correo: document.getElementById("correo").value.trim(),
+          telefono: document.getElementById("telefono").value.trim(),
+          mensaje: document.getElementById("mensaje").value.trim(),
+          aviso_privacidad_aceptado: document.getElementById("check-terminos").checked,
+          materiales
+        };
 
-  if (!form.checkValidity()) {
-    form.classList.add("was-validated");
-    return;
-  }
+        const form = document.getElementById("contacto-donor");
 
-  if (!payload.aviso_privacidad_aceptado) {
-    alert("Debes aceptar el aviso de privacidad.");
-    return;
-  }
+        if (!form.checkValidity()) {
+          form.classList.add("was-validated");
+          return;
+        }
 
-  if (materiales.length === 0) {
-    alert("No hay materiales en el carrito.");
-    return;
-  }
+        if (!payload.aviso_privacidad_aceptado) {
+          alert("Debes aceptar el aviso de privacidad.");
+          return;
+        }
 
-  try {
-    const res = await fetch("http://localhost:3000/api/solicitud-material", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-    });
+        if (materiales.length === 0) {
+          alert("No hay materiales en el carrito.");
+          return;
+        }
 
-    const data = await res.json();
+        try {
+          const res = await fetch("http://localhost:3000/api/solicitud-material", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+          });
 
-    if (!res.ok) {
-      alert(data.error || "Error al crear la solicitud");
-      return;
-    }
+          const data = await res.json();
 
-    alert("¡Gracias! Tu solicitud fue enviada correctamente.");
-    sessionStorage.removeItem("carrito_donacion");
-    document.getElementById("contacto-donor").reset();
-    cerrarFormulario();
-    window.location.href = "index.html";
+          if (!res.ok) {
+            alert(data.error || "Error al crear la solicitud");
+            return;
+          }
 
-  } catch (error) {
-    console.error(error);
-    alert("Error de conexión con el servidor.");
-  }
-};
-</script>
-  <script src="main.js"></script>
+          alert("¡Gracias! Tu solicitud fue enviada correctamente.");
+          sessionStorage.removeItem("carrito_donacion");
+          document.getElementById("contacto-donor").reset();
+          cerrarFormulario();
+          window.location.href = "index.html";
 
-<script>
-// Verificar login y auto-llenar al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-  verificarLoginYAutoLlenar();
-});
+        } catch (error) {
+          console.error(error);
+          alert("Error de conexión con el servidor.");
+        }
+      };
+      </script>
+        <script src="main.js"></script>
 
-function verificarLoginYAutoLlenar() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Debes iniciar sesión para enviar una solicitud de materiales');
-    window.location.href = '/login-donador.html';
-    return;
-  }
-  
-  // Auto-llenar datos del donador
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    
-    const nombreField = document.getElementById('nombre');
-    const correoField = document.getElementById('correo');
-    
-    if (nombreField && payload.nombre) {
-      nombreField.value = payload.nombre;
-      nombreField.readOnly = true;
-      nombreField.style.backgroundColor = '#f8f9fa';
-    }
-    
-    if (correoField && payload.correo) {
-      correoField.value = payload.correo;
-      correoField.readOnly = true;
-      correoField.style.backgroundColor = '#f8f9fa';
-    }
-  } catch (err) {
-    console.error('Error decodificando token:', err);
-  }
-}
-</script>
+      <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("token");
+        const rol = localStorage.getItem("rol");
+
+        if (!token || rol !== "donador") {
+          alert("Debes iniciar sesión para enviar una solicitud de materiales");
+          window.location.href = "/login-donador.html";
+          return;
+        }
+
+        try {
+          const payload = JSON.parse(atob(token.split(".")[1]));
+
+          const nombreCuenta = document.getElementById("nombreCuenta");
+          const correoField = document.getElementById("correo");
+
+          if (nombreCuenta && payload.nombre) {
+            nombreCuenta.querySelector(".perfil-texto").textContent = payload.nombre;
+          }
+
+          if (correoField && payload.correo) {
+            correoField.value = payload.correo;
+          }
+
+        } catch (err) {
+          console.error("Error leyendo token:", err);
+        }
+      });
+      </script>
 
 </body>
 
