@@ -954,3 +954,39 @@
   cursor: pointer;
 }
 .perfil-dropdown-item:hover { text-decoration: underline; }
+
+/* Mantener Mis donaciones visible como Quiero ayudar en móvil *//* FIX header filtrado: Mis donaciones como botón fijo */
+@media (max-width: 1024px) {
+  .navbar {
+    display: flex;
+    align-items: center;
+  }
+
+  .btn-carrito {
+    position: static !important;
+    width: auto !important;
+    margin-left: auto;
+    margin-right: 0.8rem;
+    border-radius: 999px;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.92rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    z-index: 1300;
+  }
+
+  .menu-toggle {
+    margin-left: 0;
+    z-index: 1301;
+  }
+}
+
+@media (max-width: 600px) {
+  .btn-carrito {
+    padding: 0.72rem 0.95rem;
+    font-size: 0.84rem;
+    margin-right: 0.6rem;
+  }
+}
