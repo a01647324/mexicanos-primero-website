@@ -388,6 +388,7 @@
       <button class="btn-donar" onclick="irADonar()" style="width:100%;font-size:1rem;padding:14px;">♡ Finalizar donación</button>
     </div>
   </div>
+  <div id="footer-placeholder"></div>
 
 
   <!-- Bootstrap JS -->
@@ -395,16 +396,19 @@
   <script src="components.js"></script>
   <script>
     new MutationObserver(function(_, obs) {
-      const navbar = document.querySelector('.navbar');
-      if (!navbar) return;
+    const navbar = document.querySelector('.navbar');
+    const toggle = document.getElementById('menu-toggle');
+    const btn = document.querySelector('.btn-carrito');
 
-      const btn = document.querySelector('.btn-carrito');
-      if (btn) navbar.appendChild(btn);
+    if (!navbar || !toggle || !btn) return;
 
-      obs.disconnect();
-    }).observe(document.getElementById('header-placeholder'), {
-      childList: true, subtree: true
-    });
+    navbar.insertBefore(btn, toggle);
+
+    obs.disconnect();
+  }).observe(document.getElementById('header-placeholder'), {
+    childList: true,
+    subtree: true
+  });
   </script>
   <script>
   const API_URL = "http://localhost:3000/api";
