@@ -676,8 +676,12 @@
       body: JSON.stringify(body)
     })
     .then(function(res) {
-      if (!res.ok) throw new Error("Error al actualizar");
-      return res.json();
+      return res.json().then(function(data) {
+        if (!res.ok) {
+          throw new Error(data.error || "Error al actualizar el registro");
+        }
+        return data;
+      });
     })
     .then(function() {
       alert("Registro actualizado exitosamente");
@@ -687,7 +691,7 @@
     })
     .catch(function(err) {
       console.error("Error actualizando:", err);
-      alert("Error al actualizar el registro");
+      alert("Error: " + err.message);
     });
   }
 
@@ -702,8 +706,12 @@
       method: "DELETE"
     })
     .then(function(res) {
-      if (!res.ok) throw new Error("Error al eliminar");
-      return res.json();
+      return res.json().then(function(data) {
+        if (!res.ok) {
+          throw new Error(data.error || "Error al eliminar el registro");
+        }
+        return data;
+      });
     })
     .then(function() {
       alert("Registro eliminado exitosamente");
@@ -713,7 +721,7 @@
     })
     .catch(function(err) {
       console.error("Error eliminando:", err);
-      alert("Error al eliminar el registro");
+      alert("Error: " + err.message);
     });
   }
 
@@ -802,25 +810,29 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       })
-        .then(function (res) {
-          if (!res.ok) throw new Error("Error al crear");
-          return res.json();
-        })
-        .then(function () {
-          alert("✅ Registro creado exitosamente.");
-          form.reset();
-
-          // Resetear los selects también
-          cargarCategoriasReales();
-          document.getElementById("crear-subcategoria").innerHTML =
-            '<option value="">Selecciona primero una categoría</option>';
-
-          buscarRegistros();
-        })
-        .catch(function (err) {
-          console.error("Error creando:", err);
-          alert("Error al crear el registro");
+      .then(function (res) {
+        return res.json().then(function(data) {
+          if (!res.ok) {
+            throw new Error(data.error || "Error al crear el registro");
+          }
+          return data;
         });
+      })
+      .then(function () {
+        alert("✅ Registro creado exitosamente.");
+        form.reset();
+
+        // Resetear los selects también
+        cargarCategoriasReales();
+        document.getElementById("crear-subcategoria").innerHTML =
+          '<option value="">Selecciona primero una categoría</option>';
+
+        buscarRegistros();
+      })
+      .catch(function (err) {
+        console.error("Error creando:", err);
+        alert("Error: " + err.message);
+      });
     });
   }
 
@@ -1078,11 +1090,11 @@
       if (!confirm(
         "¿Confirmas que deseas procesar el siguiente archivo?\n\n" +
         archivo.name + "\n\n" +
-        "Los registros del archivo se agregarán a la base de datos."
+        "El archivo será validado completamente antes de realizar cambios."
       )) return;
 
       btnProcesar.disabled = true;
-      btnProcesar.innerHTML = '<i class="bi bi-hourglass-split"></i> Procesando...';
+      btnProcesar.innerHTML = '<i class="bi bi-hourglass-split"></i> Validando archivo...';
 
       var formData = new FormData();
       formData.append("archivo", archivo);
@@ -1093,24 +1105,96 @@
       })
       .then(function(res) {
         return res.json().then(function(data) {
-          if (!res.ok) throw new Error(data.error || "Error del servidor");
+          if (!res.ok) {
+            // Manejar errores de validación
+            if (data.errores && data.errores.length > 0) {
+              mostrarErroresValidacion(data);
+            } else {
+              throw new Error(data.error || "Error del servidor");
+            }
+            return null;
+          }
           return data;
         });
       })
       .then(function(data) {
-        alert("✅ " + data.message);
-        limpiarArchivo();
-        cargarInfoExcel();   // Actualizar el contador
-        buscarRegistros(); 
+        if (data) { // Solo si fue exitoso
+          alert("✅ " + data.message);
+          limpiarArchivo();
+          cargarInfoExcel();
+          buscarRegistros();
+        }
       })
       .catch(function(err) {
         console.error("Error procesando archivo:", err);
-        alert("❌ Error: " + err.message);
+        alert("Error: " + err.message);
       })
       .finally(function() {
         btnProcesar.disabled = false;
         btnProcesar.innerHTML = '<i class="bi bi-check2-circle"></i> Procesar Archivo';
       });
+    }
+
+    // Nueva función para mostrar errores detallados
+    function mostrarErroresValidacion(data) {
+      var modal = document.createElement("div");
+      modal.className = "modal-overlay";
+      modal.style.zIndex = "9999";
+      
+      var erroresLista = data.errores.map(function(error) {
+        return '<div class="alert alert-danger py-2 mb-2">' +
+                '<strong>Fila ' + error.fila + ':</strong> ' + error.error +
+                '<div class="text-muted small mt-1">' +
+                  '<i class="bi bi-geo-alt"></i> ' + error.datos.escuela + ' (' + error.datos.municipio + ')' +
+                '</div>' +
+              '</div>';
+      }).join('');
+      
+      var resumen = data.total_errores > 20 
+        ? '<p><strong>Mostrando los primeros 20 de ' + data.total_errores + ' errores encontrados.</strong></p>'
+        : '<p><strong>' + data.total_errores + ' error(es) encontrado(s).</strong></p>';
+
+      modal.innerHTML = 
+        '<div class="modal-caja" style="max-width: 800px; max-height: 80vh; overflow-y: auto;">' +
+          '<div class="modal-header">' +
+            '<h2 class="modal-titulo">Errores en el archivo</h2>' +
+            '<button class="modal-cerrar" onclick="this.closest(\'.modal-overlay\').remove()"><i class="bi bi-x-lg"></i></button>' +
+          '</div>' +
+          '<div class="modal-body">' +
+            resumen +
+            '<div class="card bg-light mb-3">' +
+              '<div class="card-body py-2">' +
+                '<div class="row text-center">' +
+                  '<div class="col-4">' +
+                    '<div class="h5 mb-1">' + data.total_filas + '</div>' +
+                    '<div class="text-muted small">Filas procesadas</div>' +
+                  '</div>' +
+                  '<div class="col-4">' +
+                    '<div class="h5 mb-1 text-danger">' + data.total_errores + '</div>' +
+                    '<div class="text-muted small">Con errores</div>' +
+                  '</div>' +
+                  '<div class="col-4">' +
+                    '<div class="h5 mb-1 text-success">' + (data.total_filas - data.total_errores) + '</div>' +
+                    '<div class="text-muted small">Válidas</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div style="max-height: 400px; overflow-y: auto;">' +
+              erroresLista +
+            '</div>' +
+            '<div class="alert alert-warning mt-3">' +
+              '<i class="bi bi-lightbulb"></i> ' +
+              '<strong>Qué hacer:</strong> Corrige los errores en tu archivo Excel y vuelve a subirlo. ' +
+              'No se realizaron cambios en la base de datos.' +
+            '</div>' +
+          '</div>' +
+          '<div class="modal-acciones">' +
+            '<button class="panel-btn panel-btn-azul" onclick="this.closest(\'.modal-overlay\').remove()">Entendido</button>' +
+          '</div>' +
+        '</div>';
+
+      document.body.appendChild(modal);
     }
   }
 
