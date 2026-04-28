@@ -277,8 +277,13 @@
 }
 
 .barra-fila { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
-.barra-etiqueta { font-size: 0.72rem; width: 75px; color: var(--texto-suave); flex-shrink: 0; font-weight: 500; }
-
+.barra-etiqueta {
+  font-size: 0.72rem;
+  width: 115px;
+  color: var(--texto-suave);
+  flex-shrink: 0;
+  font-weight: 500;
+}
 .barra-mini-pista {
   flex: 1;
   background: var(--gris-claro);

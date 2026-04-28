@@ -955,7 +955,6 @@
 }
 .perfil-dropdown-item:hover { text-decoration: underline; }
 
-/* Mantener Mis donaciones visible como Quiero ayudar en móvil *//* FIX header filtrado: Mis donaciones como botón fijo */
 @media (max-width: 1024px) {
   .navbar {
     display: flex;
