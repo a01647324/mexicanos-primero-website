@@ -1988,27 +1988,64 @@
 }
 
 @media (max-width: 768px) {
+    .pasos-titulo {
+        font-size: clamp(1.7rem, 7vw, 2.35rem);
+        line-height: 1.15;
+        margin-bottom: 1.5rem;
+        padding: 0 0.4rem;
+        text-align: center;
+    }
+
     .pasos-barra-wrap {
-        grid-template-columns: repeat(2, 1fr);
-        row-gap: 1.5rem;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        max-width: 100%;
+        margin: 0 auto 1.5rem;
+        padding: 0 0.2rem;
     }
 
     .pasos-linea,
     .pasos-linea-progreso {
-        display: none;
+        display: block;
+        top: 22px;
+        left: 12%;
+        right: 12%;
+        height: 5px;
+    }
+
+    .pasos-linea-progreso {
+        width: 51%;
+    }
+
+    .paso {
+        display: block;
+        text-align: center;
     }
 
     .paso-circulo {
         width: 44px;
         height: 44px;
+        margin: 0 auto 0.55rem;
+        font-size: 0.95rem;
+    }
+
+    .paso.actual .paso-circulo {
+        transform: scale(1.06);
     }
 
     .paso p {
-        font-size: 0.85rem;
+        font-size: 0.78rem;
+        line-height: 1.25;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .pasos-texto-ayuda {
+        padding: 0 0.5rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
     }
 }
-
-
 
 /* ============================================================
    22. CONTACTO — RESPONSIVE
