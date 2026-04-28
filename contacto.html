@@ -147,7 +147,7 @@
             <option value="Donación económica">Donación económica</option>
             <option value="Brindar talleres">Brindar talleres</option>
             <option value="Vinculaciones">Vinculaciones</option>
-            <option value="Otro">Otro</option>
+            <option value="Otros">Otros</option>
         </select>
         <div class="invalid-feedback">
             Selecciona el tipo de apoyo.
@@ -266,6 +266,15 @@
     modalFormulario.addEventListener('click', function(e) {
       if (e.target === modalFormulario) cerrarFormulario();
     });
+  }
+
+  // leer tipo desde la URL (ej: contacto.html?tipo=Otros)
+  const params = new URLSearchParams(window.location.search);
+  const tipoDesdeURL = params.get("tipo");
+
+  // si viene desde URL, guardarlo para que funcione como los otros flujos
+  if (tipoDesdeURL) {
+    sessionStorage.setItem("tipo_donacion", tipoDesdeURL);
   }
 
   // info guardada
