@@ -16,6 +16,9 @@
     body { font-family: 'Montserrat', sans-serif; background: #F0F7F1; padding-top: 96px; }
 
     /* ── Navbar ── */
+    .btn-ayudar-fixed {
+      display: none !important;
+    }
     .navbar-top {
       position: fixed; top: 0; left: 0; right: 0; z-index: 1100;
       height: 96px; background: #fff;
@@ -691,13 +694,28 @@ function agregarAlCarrito(cantidad) {
   
   function irADonar() {
     if (carrito.length === 0) {
-      alert('Agrega al menos una donación antes de continuar.');
+     mostrarAlerta('Agrega al menos una donación antes de continuar.');
       return;
     }
     sessionStorage.setItem('carrito_donacion', JSON.stringify(carrito));
     location.href = 'pasos.html';
   }
- 
+ function mostrarAlerta(mensaje) {
+    const prev = document.getElementById('alerta-carrito');
+    if (prev) prev.remove();
+
+    const alerta = document.createElement('div');
+    alerta.id = 'alerta-carrito';
+    alerta.className = 'alert alert-danger alert-dismissible fade show';
+    alerta.style.cssText = 'position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:9999; min-width:320px; text-align:center;';
+    alerta.innerHTML = `
+      ${mensaje}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alerta);
+
+    setTimeout(() => alerta.remove(), 4000);
+  }
   /* ══════════════════════════════════════════════════════════
      MODAL DONAR
 */

@@ -1177,3 +1177,21 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
     height: 125px;
   }
 }
+
+/* Centrar perfil en menú hamburguesa */
+@media (max-width: 1024px) {
+  .navbar-acciones {
+    align-items: center;  
+    justify-content: center;
+  }
+
+  .navbar-perfil {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .navbar-perfil-btn {
+    justify-content: center;
+  }
+}
