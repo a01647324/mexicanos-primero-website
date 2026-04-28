@@ -586,11 +586,11 @@ try {
     // Leer carrito existente o crear nuevo
     let carrito = [];
     try {
-      const guardado = sessionStorage.getItem('carrito_donacion');
-      if (guardado) carrito = JSON.parse(guardado);
-    } catch(e) {}
+        const guardado = sessionStorage.getItem('carrito_donacion');
+        if (guardado) carrito = JSON.parse(guardado) ;
+    } catch(e) { carrito = []; }
 
-    // Agregar o actualizar
+
     const existente = carrito.find(c => c.id === necesidad.id);
     if (existente) {
       existente.cantidad = Math.min(
@@ -723,7 +723,11 @@ function agregarAlCarrito(cantidad) {
   function confirmarModalDonar() {
     agregarAlCarrito(cantidadSeleccionada);
 }
-  iniciar();
+  // DESPUÉS:
+document.addEventListener('DOMContentLoaded', () => {
+    renderCarrito();   // pinta badge con carrito existente
+    iniciar();         // carga los datos de la necesidad
+});
   </script>
 </body>
 </html>

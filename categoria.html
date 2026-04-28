@@ -42,7 +42,6 @@
     <script>
     const API_URL = "http://localhost:3000/api";
 
-    /* ── Leer ID de la categoría (URL o localStorage) ── */
     const urlParams = new URLSearchParams(window.location.search);
     let categoriaId = urlParams.get('id');
 
@@ -55,7 +54,6 @@
         }
     }
 
-    /* ── Navbar: llenar categorías ── */
     async function cargarNavbarCategorias() {
         const navCats = document.getElementById('header-categorias');
         if (!navCats) return;
@@ -75,14 +73,12 @@
         } catch (e) { console.warn('Navbar cats:', e.message); }
     }
 
-    /* ── Ir a filtrado guardando ambos IDs ── */
     function irAFiltrado(subcategoriaId, catId) {
         localStorage.setItem('filtro_categoria_id',    catId);
         localStorage.setItem('filtro_subcategoria_id', subcategoriaId);
         location.href = 'filtrado.html';
     }
 
-    /* ── Cargar subcategorías de esta categoría ── */
     async function cargarSubcategorias() {
     const grid      = document.getElementById('catalog-grid');
     const loading   = document.getElementById('catalog-loading');
@@ -167,13 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarSubcategorias();
 });
 
-    /* ── Scroll shrink ── */
     window.addEventListener('scroll', () => {
         document.querySelector('.navbar')?.classList.toggle('scrolled', window.scrollY > 30);
     });
 
-    cargarNavbarCategorias();
-    cargarSubcategorias();
+  
     </script>
 </body>
 </html>

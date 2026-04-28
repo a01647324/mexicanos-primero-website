@@ -194,6 +194,8 @@ async function loadComponent(selector, filePath) {
     localStorage.removeItem('rol')
     localStorage.removeItem('nombreDonador')
     localStorage.removeItem('correoDonador')
+    sessionStorage.removeItem('carrito_donacion');
+    localStorage.removeItem('carrito_donacion');
     window.location.reload()
   }
 
