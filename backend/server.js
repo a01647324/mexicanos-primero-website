@@ -1069,6 +1069,289 @@ app.get("/api/donador/historial", verificarToken, async (req, res) => {
   }
 });
 
+// GET — Contadores para métricas
+app.get("/api/admin/escuelas/metricas", verificarToken, async (req, res) => {
+  try {
+    const incompletas = await pool.query(
+      "SELECT COUNT(*) FROM escuelas WHERE estado = 'incompleta'"
+    );
+    const completas = await pool.query(
+      "SELECT COUNT(*) FROM escuelas WHERE estado = 'completa'"
+    );
+    const total = await pool.query("SELECT COUNT(*) FROM escuelas");
+
+    res.json({
+      data: {
+        total: parseInt(total.rows[0].count),
+        completas: parseInt(completas.rows[0].count),
+        incompletas: parseInt(incompletas.rows[0].count)
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// GET — Lista de escuelas con filtros y paginación
+app.get("/api/admin/escuelas", verificarToken, async (req, res) => {
+  try {
+    const { busqueda, municipio_id, estado, pagina = 1, limite = 15 } = req.query;
+    const offset = (parseInt(pagina) - 1) * parseInt(limite);
+
+    const conditions = [];
+    const values = [];
+
+    if (busqueda) {
+      values.push(`%${busqueda}%`);
+      conditions.push(`(e.nombre ILIKE $${values.length} OR e.cct ILIKE $${values.length} OR e.direccion ILIKE $${values.length})`);
+    }
+    if (municipio_id) {
+      values.push(municipio_id);
+      conditions.push(`e.municipio_id = $${values.length}`);
+    }
+    if (estado) {
+      values.push(estado);
+      conditions.push(`e.estado = $${values.length}`);
+    }
+
+    const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    // Contar total
+    const totalRes = await pool.query(
+      `SELECT COUNT(*) FROM escuelas e ${where}`,
+      values
+    );
+
+    // Obtener datos
+    values.push(parseInt(limite), offset);
+    const dataRes = await pool.query(
+      `SELECT 
+         e.id, e.nombre, e.plantel, e.personal_escolar, e.estudiantes,
+         e.nivel_educativo, e.cct, e.modalidad, e.turno, e.sostenimiento,
+         e.direccion, e.estado, e.created_at, e.updated_at,
+         m.nombre AS municipio_nombre,
+         COUNT(n.id) AS total_necesidades
+       FROM escuelas e
+       LEFT JOIN municipios m ON e.municipio_id = m.id
+       LEFT JOIN necesidades n ON e.id = n.escuela_id
+       ${where}
+       GROUP BY e.id, m.nombre
+       ORDER BY 
+         CASE WHEN e.estado = 'incompleta' THEN 0 ELSE 1 END,
+         e.created_at DESC
+       LIMIT $${values.length-1} OFFSET $${values.length}`,
+      values
+    );
+
+    res.json({
+      data: dataRes.rows,
+      total: parseInt(totalRes.rows[0].count),
+      pagina: parseInt(pagina),
+      limite: parseInt(limite)
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// GET — Detalle de una escuela
+app.get("/api/admin/escuelas/:id", verificarToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT 
+         e.*, m.nombre AS municipio_nombre,
+         COUNT(n.id) AS total_necesidades
+       FROM escuelas e
+       LEFT JOIN municipios m ON e.municipio_id = m.id
+       LEFT JOIN necesidades n ON e.id = n.escuela_id
+       WHERE e.id = $1
+       GROUP BY e.id, m.nombre`,
+      [req.params.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Escuela no encontrada" });
+    }
+
+    res.json({ data: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// POST — Crear escuela completa (solo admin)
+app.post("/api/admin/escuelas", verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const {
+      nombre, municipio_id, plantel, personal_escolar, estudiantes,
+      nivel_educativo, cct, modalidad, turno, sostenimiento, direccion
+    } = req.body;
+
+    if (!nombre || !municipio_id) {
+      return res.status(400).json({ error: "Nombre y municipio son obligatorios" });
+    }
+
+    // Validar campos obligatorios para estado 'completa'
+    if (!nivel_educativo || !modalidad || !turno || !sostenimiento) {
+      return res.status(400).json({ 
+        error: "Nivel educativo, modalidad, turno y sostenimiento son obligatorios" 
+      });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO escuelas (
+         nombre, municipio_id, plantel, personal_escolar, estudiantes,
+         nivel_educativo, cct, modalidad, turno, sostenimiento, direccion,
+         estado
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'completa') 
+       RETURNING id`,
+      [nombre, municipio_id, plantel || null, personal_escolar || null, 
+       estudiantes || null, nivel_educativo, cct || null,
+       modalidad, turno, sostenimiento, direccion || null]
+    );
+
+    res.status(201).json({
+      id: result.rows[0].id,
+      message: "Escuela creada exitosamente"
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Error en servidor" });
+  }
+});
+
+// PUT — Actualizar escuela (solo admin)
+app.put("/api/admin/escuelas/:id", verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      nombre, municipio_id, plantel, personal_escolar, estudiantes,
+      nivel_educativo, cct, modalidad, turno, sostenimiento, direccion
+    } = req.body;
+
+    const existe = await pool.query("SELECT id FROM escuelas WHERE id = $1", [id]);
+    if (existe.rows.length === 0) {
+      return res.status(404).json({ error: "Escuela no encontrada" });
+    }
+
+    const sets = [];
+    const values = [];
+
+    if (nombre !== undefined) { values.push(nombre); sets.push(`nombre = $${values.length}`); }
+    if (municipio_id !== undefined) { values.push(municipio_id); sets.push(`municipio_id = $${values.length}`); }
+    if (plantel !== undefined) { values.push(plantel); sets.push(`plantel = $${values.length}`); }
+    if (personal_escolar !== undefined) { values.push(personal_escolar); sets.push(`personal_escolar = $${values.length}`); }
+    if (estudiantes !== undefined) { values.push(estudiantes); sets.push(`estudiantes = $${values.length}`); }
+    if (nivel_educativo !== undefined) { values.push(nivel_educativo); sets.push(`nivel_educativo = $${values.length}`); }
+    if (cct !== undefined) { values.push(cct); sets.push(`cct = $${values.length}`); }
+    if (modalidad !== undefined) { values.push(modalidad); sets.push(`modalidad = $${values.length}`); }
+    if (turno !== undefined) { values.push(turno); sets.push(`turno = $${values.length}`); }
+    if (sostenimiento !== undefined) { values.push(sostenimiento); sets.push(`sostenimiento = $${values.length}`); }
+    if (direccion !== undefined) { values.push(direccion); sets.push(`direccion = $${values.length}`); }
+
+    // Si se completan campos obligatorios, cambiar estado a 'completa'
+    if (nivel_educativo && modalidad && turno && sostenimiento) {
+      sets.push(`estado = 'completa'`);
+    }
+
+    if (sets.length === 0) {
+      return res.status(400).json({ error: "No se enviaron campos para actualizar" });
+    }
+
+    values.push(id);
+    await pool.query(
+      `UPDATE escuelas SET ${sets.join(", ")} WHERE id = $${values.length}`,
+      values
+    );
+
+    res.json({ message: "Escuela actualizada exitosamente" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Error en servidor" });
+  }
+});
+
+// PUT — Completar escuela específicamente
+app.put("/api/admin/escuelas/:id/completar", verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      plantel, personal_escolar, estudiantes, nivel_educativo, 
+      cct, modalidad, turno, sostenimiento, direccion
+    } = req.body;
+
+    if (!nivel_educativo || !modalidad || !turno || !sostenimiento) {
+      return res.status(400).json({ 
+        error: "Nivel educativo, modalidad, turno y sostenimiento son obligatorios para completar" 
+      });
+    }
+
+    await pool.query(
+      `UPDATE escuelas SET 
+         plantel = $2, personal_escolar = $3, estudiantes = $4, 
+         nivel_educativo = $5, cct = $6, modalidad = $7, 
+         turno = $8, sostenimiento = $9, direccion = $10,
+         estado = 'completa'
+       WHERE id = $1`,
+      [id, plantel, personal_escolar, estudiantes, nivel_educativo, 
+       cct, modalidad, turno, sostenimiento, direccion]
+    );
+
+    res.json({ message: "Escuela completada exitosamente" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Error en servidor" });
+  }
+});
+
+// DELETE — Eliminar escuela (solo admin)
+app.delete("/api/admin/escuelas/:id", verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const necesidades = await pool.query(
+      "SELECT COUNT(*) as total FROM necesidades WHERE escuela_id = $1",
+      [req.params.id]
+    );
+
+    if (parseInt(necesidades.rows[0].total) > 0) {
+      return res.status(400).json({
+        error: `No se puede eliminar la escuela porque tiene ${necesidades.rows[0].total} necesidad(es) asociada(s)`
+      });
+    }
+
+    const result = await pool.query(
+      "DELETE FROM escuelas WHERE id = $1 RETURNING nombre",
+      [req.params.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Escuela no encontrada" });
+    }
+
+    res.json({
+      message: `Escuela "${result.rows[0].nombre}" eliminada exitosamente`
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Error en servidor" });
+  }
+});
+
+// GET — Lista de municipios para select
+app.get("/api/admin/municipios", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT id, nombre FROM municipios ORDER BY nombre"
+    );
+    res.json({ data: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
 // INICIO
 
 const PORT = process.env.PORT || 3000;

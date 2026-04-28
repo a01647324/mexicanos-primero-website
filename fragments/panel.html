@@ -491,6 +491,34 @@ fetch('/api/admin/panel/metricas')
     var n = data.necesidades;
     var s = data.solicitudes;
 
+    // NUEVO: Cargar métricas de escuelas
+    fetch('/api/admin/escuelas/metricas', {
+      headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('token') || '') }
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(escuelasData) {
+        var e = escuelasData.data;
+        
+        // Si hay escuelas incompletas, agregar métrica
+        if (e && e.incompletas > 0) {
+          var escuelasCard = '<div class="panel-metric-card pm-naranja">' +
+            '<div class="panel-metric-icono"><i class="bi bi-building-exclamation"></i></div>' +
+            '<div class="panel-metric-valor" data-val="' + e.incompletas + '">0</div>' +
+            '<div class="panel-metric-label">Escuelas Incompletas</div>' +
+            '<div class="panel-metric-sub">' +
+              '<span class="panel-metric-pill pill-naranja">Requieren completar datos</span>' +
+            '</div>' +
+          '</div>';
+          
+          document.getElementById('panel-metricas').insertAdjacentHTML('beforeend', escuelasCard);
+          
+          // Animar el nuevo número
+          var valorEl = document.querySelector('[data-val="' + e.incompletas + '"]');
+          if (valorEl) animarNumero(valorEl, e.incompletas, 800);
+        }
+      })
+      .catch(function(err) { console.log('No hay métricas de escuelas:', err); });
+
     // Métricas
     var metricas = [
       {
