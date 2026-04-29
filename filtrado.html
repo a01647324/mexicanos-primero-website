@@ -278,8 +278,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (escuela)     params.set("escuela",          escuela);
     if (categoriaId) params.set("categoria_id",     categoriaId);   
     if (subcatId)    params.set("subcategoria_id",  subcatId);   
+    params.set("solo_pendientes", "true");
  
-    const url = `${API_URL}/data${params.toString() ? '?' + params.toString() : ''}`;
+    const url = `${API_URL}/data?${params.toString()}`;
  
     try {
       const res = await fetch(url);
