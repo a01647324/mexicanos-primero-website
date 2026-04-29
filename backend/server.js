@@ -246,15 +246,15 @@ app.post("/api/contacto", verificarToken, async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO solicitudes_donacion (
-         tipo_instancia, nombre_instancia,
-         correo, telefono, mensaje, origen_formulario,
-         aviso_privacidad_aceptado, tipo_donacion, donador_id
-       )
-       VALUES ($1, $2, $3, $4, $5, $6, 'contacto', $7, $8, $9)
-       RETURNING id`,
+        tipo_instancia, nombre_instancia,
+        correo, telefono, mensaje, origen_formulario,
+        aviso_privacidad_aceptado, tipo_donacion, donador_id
+      )
+      VALUES ($1, $2, $3, $4, $5, 'contacto', $6, $7, $8)
+      RETURNING id`,
       [tipo_instancia||null, nombre_instancia||null,
-       correo||null, telefono, mensaje||null, aviso_privacidad_aceptado, 
-       tipo_donacion||null, donadorId]
+      correo||null, telefono, mensaje||null,
+      aviso_privacidad_aceptado, tipo_donacion||null, donadorId]
     );
 
     res.status(201).json({ message: "Formulario guardado.", solicitud_id: result.rows[0].id });
@@ -288,7 +288,7 @@ app.post("/api/solicitud-material", verificarToken, async (req, res) => {
 
     // Una sola llamada reemplaza todo el BEGIN/FOR/COMMIT
     const result = await pool.query(
-      `CALL sp_registrar_solicitud_material($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb, NULL)`,
+      `CALL sp_registrar_solicitud_material($1,$2,$3,$4,$5,$6,$7,$8::jsonb, NULL)`,
       [
         tipo_instancia || null, nombre_instancia || null,
         correo || null, telefono, mensaje || null,
