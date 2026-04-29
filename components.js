@@ -89,7 +89,7 @@ async function loadComponent(selector, filePath) {
     if (!openBtn || !closeBtn || !overlay) return;
   
     function openModal() {
-      localStorage.setItem('loginOrigen', window.location.pathname.split('/').pop() || 'index.html') // ← agrega
+      localStorage.setItem('loginOrigen', window.location.pathname.split('/').pop() || 'index.html')
       overlay.classList.add("active");
       overlay.setAttribute("aria-hidden", "false");
       document.body.classList.add("menu-open");
@@ -238,6 +238,243 @@ async function loadComponent(selector, filePath) {
       });
     });
   }
+
+  function initFormularioPerfil() {
+    function mostrarErrorPerfil(campoId, mensaje) {
+      const input = document.getElementById(campoId);
+      input.classList.add('is-invalid');
+      const anterior = input.parentNode.querySelector('.invalid-feedback');
+      if (anterior) anterior.remove();
+      const div = document.createElement('div');
+      div.className = 'invalid-feedback';
+      div.textContent = mensaje;
+      input.parentNode.appendChild(div);
+    }
+
+    function limpiarErroresPerfil() {
+      document.querySelectorAll('#modal-perfil .is-invalid').forEach(el => el.classList.remove('is-invalid'));
+      document.querySelectorAll('#modal-perfil .invalid-feedback').forEach(el => el.remove());
+    }
+
+    const formPerfil = document.getElementById('form-perfil');
+    if (!formPerfil) return;
+
+    formPerfil.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      limpiarErroresPerfil();
+
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const nombre = document.getElementById('perfil-nombre').value.trim();
+      const correo = document.getElementById('perfil-correo').value.trim();
+      const fecha  = document.getElementById('perfil-fecha').value;
+      const estado = document.getElementById('perfil-estado').value;
+
+      let hayErrores = false;
+
+      const partes = nombre.split(' ').filter(p => p.length > 0);
+      if (!nombre) {
+        mostrarErrorPerfil('perfil-nombre', 'El nombre es requerido.');
+        hayErrores = true;
+      } else if (partes.length < 2) {
+        mostrarErrorPerfil('perfil-nombre', 'Ingresa tu nombre completo (nombre y apellido).');
+        hayErrores = true;
+      }
+
+      const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!correo) {
+        mostrarErrorPerfil('perfil-correo', 'El correo es requerido.');
+        hayErrores = true;
+      } else if (!regexCorreo.test(correo)) {
+        mostrarErrorPerfil('perfil-correo', 'Ingresa un correo electrónico válido.');
+        hayErrores = true;
+      }
+
+      if (!fecha) {
+        mostrarErrorPerfil('perfil-fecha', 'La fecha de nacimiento es requerida.');
+        hayErrores = true;
+      } else {
+        const fechaNac = new Date(fecha);
+        const hoy = new Date();
+        let edad = hoy.getFullYear() - fechaNac.getFullYear();
+        if (hoy.getMonth() < fechaNac.getMonth() ||
+          (hoy.getMonth() === fechaNac.getMonth() && hoy.getDate() < fechaNac.getDate())) edad--;
+        if (edad < 18) {
+          mostrarErrorPerfil('perfil-fecha', 'Debes ser mayor de 18 años.');
+          hayErrores = true;
+        }
+      }
+
+      if (!estado) {
+        mostrarErrorPerfil('perfil-estado', 'Debes seleccionar tu estado.');
+        hayErrores = true;
+      }
+
+      if (hayErrores) return;
+
+      try {
+        const response = await fetch('http://localhost:3000/api/donador/perfil', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ nombre_completo: nombre, correo, fecha_nacimiento: fecha || null, estado_geografico: estado })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Perfil actualizado correctamente');
+          cerrarModalPerfil();
+          localStorage.setItem('nombreDonador', nombre);
+          localStorage.setItem('correoDonador', correo);
+          actualizarHeaderSesion();
+        } else {
+          const msg = data.error || 'Error al actualizar perfil';
+          if (msg.includes('nombre')) mostrarErrorPerfil('perfil-nombre', msg);
+          else if (msg.includes('correo') || msg.includes('cuenta')) mostrarErrorPerfil('perfil-correo', msg);
+          else if (msg.includes('18')) mostrarErrorPerfil('perfil-fecha', msg);
+          else alert(msg);
+        }
+      } catch (error) {
+        alert('Error de conexión');
+      }
+    });
+  }
+
+// ═══════════════════════════════════════════════════════════════
+// MODALES DE PERFIL E HISTORIAL
+// ═══════════════════════════════════════════════════════════════
+
+window.abrirModalHistorial = async function() {
+  const modal = document.getElementById('modal-historial');
+  if (!modal) return;
+
+  modal.classList.add('activo');
+  
+  const loading = document.getElementById('historial-loading');
+  const content = document.getElementById('historial-content');
+  const vacio = document.getElementById('historial-vacio');
+  
+  // Mostrar loading
+  loading.style.display = 'block';
+  content.style.display = 'none';
+  vacio.style.display = 'none';
+
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch('http://localhost:3000/api/donador/historial', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const data = await response.json();
+    
+    loading.style.display = 'none';
+
+    if (data.data && data.data.length > 0) {
+      mostrarHistorial(data.data);
+      content.style.display = 'block';
+    } else {
+      vacio.style.display = 'block';
+    }
+
+  } catch (error) {
+    console.error('Error cargando historial:', error);
+    loading.style.display = 'none';
+    vacio.style.display = 'block';
+  }
+};
+
+window.cerrarModalHistorial = function() {
+  const modal = document.getElementById('modal-historial');
+  if (modal) modal.classList.remove('activo');
+};
+
+function mostrarHistorial(donaciones) {
+  const lista = document.getElementById('historial-lista');
+  if (!lista) return;
+
+  const html = donaciones.map(donacion => {
+    const fecha = new Date(donacion.created_at).toLocaleDateString('es-MX');
+    const estadoBadge = getEstadoBadge(donacion.estatus_gestion);
+    
+    const materialesHtml = donacion.materiales.length > 0 ? 
+      donacion.materiales.map(m => 
+        `<small class="d-block text-muted"><strong>${m.escuela}:</strong> ${m.propuesta} (${m.cantidad} ${m.unidad})</small>`
+      ).join('<hr style="border:none; border-top:1px solid #eee; margin: 0.4rem 0;">') : 
+      '<small class="text-muted">Donación sin materiales específicos</small>';
+
+    return `
+      <div class="historial-item mb-3 p-3 rounded">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h6 class="mb-1">${donacion.tipo_donacion || 'Donación General'}</h6>
+          ${estadoBadge}
+        </div>
+        <p class="mb-1 small text-muted">
+          <i class="bi bi-calendar3"></i> ${fecha}
+        </p>
+        <div class="mt-2">
+          ${materialesHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  lista.innerHTML = html;
+}
+
+function getEstadoBadge(estatus) {
+  switch(estatus) {
+    case 'completada': return '<span class="badge bg-success">Completada</span>';
+    case 'en_proceso': return '<span class="badge bg-warning">En Proceso</span>';
+    case 'nueva': return '<span class="badge bg-primary">Nueva</span>';
+    default: return '<span class="badge bg-secondary">Pendiente</span>';
+  }
+}
+
+window.abrirModalPerfil = async function() {
+  const modal = document.getElementById('modal-perfil');
+  if (!modal) return;
+
+  // Cargar datos actuales del usuario
+  const token = localStorage.getItem('token');
+  if (!token) return;
+
+  try {
+    // Obtener datos completos del perfil
+    const response = await fetch('http://localhost:3000/api/donador/perfil', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const perfil = data.data;
+      
+      document.getElementById('perfil-nombre').value = perfil.nombre_completo || '';
+      document.getElementById('perfil-correo').value = perfil.correo || '';
+      document.getElementById('perfil-fecha').value = perfil.fecha_nacimiento || '';
+      document.getElementById('perfil-estado').value = perfil.estado_geografico || '';
+    } else {
+      // Fallback: usar datos del token
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      document.getElementById('perfil-nombre').value = payload.nombre || '';
+      document.getElementById('perfil-correo').value = payload.correo || '';
+    }
+    
+  } catch (error) {
+    console.error('Error cargando perfil:', error);
+  }
+
+  modal.classList.add('activo');
+};
+
+window.cerrarModalPerfil = function() {
+  const modal = document.getElementById('modal-perfil');
+  if (modal) modal.classList.remove('activo');
+};
   
   document.addEventListener("DOMContentLoaded", async () => {
     await loadComponent("#header-placeholder", "components/header.html");
@@ -250,4 +487,5 @@ async function loadComponent(selector, filePath) {
     actualizarHeaderSesion();
     initPerfilDropdown();
     initNavDropdown();
+    initFormularioPerfil();
   });

@@ -33,6 +33,19 @@ function soloAdmin(req, res, next) {
   next();
 }
 
+async function recalcularEstadoEscuela(escuelaId) {
+  const niveles = await pool.query(
+    `SELECT COUNT(*) AS total,
+     COUNT(*) FILTER (WHERE cct IS NULL OR personal_escolar IS NULL OR estudiantes IS NULL) AS incompletos
+     FROM escuela_niveles WHERE escuela_id = $1`,
+    [escuelaId]
+  );
+  const { total, incompletos } = niveles.rows[0];
+  const estado = (parseInt(total) > 0 && parseInt(incompletos) === 0) ? 'completa' : 'incompleta';
+  await pool.query(`UPDATE escuelas SET estado = $1 WHERE id = $2`, [estado, escuelaId]);
+  return estado;
+}
+
 console.log("DB URL:", process.env.DATABASE_URL?.replace(/:[^:@]+@/, ":***@"));
 
 const app = express();
@@ -207,17 +220,16 @@ app.post("/api/contacto", verificarToken, async (req, res) => {
 
     // Datos oficiales de la cuenta
     const donadorId = req.usuario.id;
-    const nombre_completo = req.usuario.nombre;
 
     const result = await pool.query(
       `INSERT INTO solicitudes_donacion (
-         nombre_completo, tipo_instancia, nombre_instancia,
+         tipo_instancia, nombre_instancia,
          correo, telefono, mensaje, origen_formulario,
          aviso_privacidad_aceptado, tipo_donacion, donador_id
        )
        VALUES ($1, $2, $3, $4, $5, $6, 'contacto', $7, $8, $9)
        RETURNING id`,
-      [nombre_completo, tipo_instancia||null, nombre_instancia||null,
+      [tipo_instancia||null, nombre_instancia||null,
        correo||null, telefono, mensaje||null, aviso_privacidad_aceptado, 
        tipo_donacion||null, donadorId]
     );
@@ -245,9 +257,6 @@ app.post("/api/solicitud-material", verificarToken, async (req, res) => {
       aviso_privacidad_aceptado, materiales
     } = req.body;
 
-    // Nombre oficial de la cuenta
-    const nombre_completo = req.usuario.nombre;
-
     if (!Array.isArray(materiales) || materiales.length === 0)
       return res.status(400).json({ error: "Debes enviar al menos un material." });
 
@@ -258,7 +267,7 @@ app.post("/api/solicitud-material", verificarToken, async (req, res) => {
     const result = await pool.query(
       `CALL sp_registrar_solicitud_material($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb, NULL)`,
       [
-        nombre_completo, tipo_instancia || null, nombre_instancia || null,
+        tipo_instancia || null, nombre_instancia || null,
         correo || null, telefono, mensaje || null,
         aviso_privacidad_aceptado, donadorId,
         JSON.stringify(materiales)
@@ -282,8 +291,8 @@ app.post("/api/solicitud-material", verificarToken, async (req, res) => {
 app.post("/api/auth/register-donador", async (req, res) => {
   try {
     const { nombre_completo, correo, password, fecha_nacimiento, estado_geografico } = req.body;
-    if (!nombre_completo || !correo || !password)
-      return res.status(400).json({ error: "Nombre, correo y contraseña son requeridos." });
+    if (!nombre_completo || !correo || !password || !estado_geografico)
+      return res.status(400).json({ error: "Nombre, correo, contraseña y estado son requeridos." });
 
     const existe = await pool.query("SELECT id FROM donadores WHERE correo = $1", [correo]);
     if (existe.rows.length > 0)
@@ -785,11 +794,13 @@ app.post("/api/admin/excel/subir", verificarToken, soloAdmin, upload.single("arc
 app.get("/api/admin/solicitudes", async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT id, nombre_completo, tipo_instancia, nombre_instancia,
-              correo, telefono, mensaje, origen_formulario,
-              tipo_donacion, estado_lectura, created_at
-       FROM vista_solicitudes_completa
-       ORDER BY created_at DESC`
+      `SELECT sd.id, d.nombre_completo, sd.tipo_instancia, sd.nombre_instancia,
+              d.correo, sd.telefono, sd.mensaje, sd.origen_formulario,
+              sd.tipo_donacion, sd.estado_lectura, sd.created_at
+      FROM solicitudes_donacion sd
+      JOIN donadores d ON sd.donador_id = d.id
+      WHERE sd.estado_lectura != 'oculta' OR sd.estado_lectura IS NULL
+      ORDER BY sd.created_at DESC`
     );
     res.json({ data: result.rows });
   } catch (err) {
@@ -851,25 +862,26 @@ app.get("/api/admin/gestion-solicitudes", async (req, res) => {
     const totalRes = await pool.query(`SELECT COUNT(*) FROM solicitudes_donacion sd ${where}`, values);
     const dataRes  = await pool.query(
       `SELECT
-         sd.id, sd.nombre_completo, sd.tipo_instancia, sd.nombre_instancia,
-         sd.correo, sd.telefono, sd.mensaje, sd.tipo_donacion,
-         sd.origen_formulario, sd.estado_lectura, sd.created_at,
-         COALESCE(sd.estatus_gestion, 'nueva') AS estatus_gestion,
-         COALESCE(sd.notas_admin, '')          AS notas_admin,
-         COALESCE(
-           json_agg(json_build_object(
-             'escuela', e.nombre, 'propuesta', sm.propuesta,
-             'cantidad', sm.cantidad, 'unidad', sm.unidad
-           )) FILTER (WHERE sm.id IS NOT NULL),
-           '[]'
-         ) AS materiales
-       FROM solicitudes_donacion sd
-       LEFT JOIN solicitud_materiales sm ON sm.solicitud_id = sd.id
-       LEFT JOIN escuelas e ON sm.escuela_id = e.id
-       ${where}
-       GROUP BY sd.id
-       ORDER BY sd.created_at DESC
-       LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
+        sd.id, d.nombre_completo, sd.tipo_instancia, sd.nombre_instancia,
+        d.correo, sd.telefono, sd.mensaje, sd.tipo_donacion,
+        sd.origen_formulario, sd.estado_lectura, sd.created_at,
+        COALESCE(sd.estatus_gestion, 'nueva') AS estatus_gestion,
+        COALESCE(sd.notas_admin, '')          AS notas_admin,
+        COALESCE(
+          json_agg(json_build_object(
+            'escuela', e.nombre, 'propuesta', sm.propuesta,
+            'cantidad', sm.cantidad, 'unidad', sm.unidad
+          )) FILTER (WHERE sm.id IS NOT NULL),
+          '[]'
+        ) AS materiales
+      FROM solicitudes_donacion sd
+      JOIN donadores d ON sd.donador_id = d.id
+      LEFT JOIN solicitud_materiales sm ON sm.solicitud_id = sd.id
+      LEFT JOIN escuelas e ON sm.escuela_id = e.id
+      ${where}
+      GROUP BY sd.id, d.nombre_completo, d.correo
+      ORDER BY sd.created_at DESC
+      LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
       [...values, parseInt(limite), offset]
     );
 
@@ -883,27 +895,66 @@ app.get("/api/admin/gestion-solicitudes", async (req, res) => {
 // PATCH — Editar solicitud (solo admin)
 app.patch("/api/admin/gestion-solicitudes/:id", verificarToken, soloAdmin, async (req, res) => {
   try {
-    const { estatus_gestion, notas_admin, nombre_completo, correo, telefono, mensaje } = req.body;
-    const sets   = [];
-    const values = [];
+    const { estatus_gestion, notas_admin, telefono, mensaje, nombre_completo, correo } = req.body;
+    
+    // Actualizar solicitudes_donacion
+    const solicitudSets = [];
+    const solicitudValues = [];
 
     if (estatus_gestion !== undefined) {
-      values.push(estatus_gestion); sets.push(`estatus_gestion = $${values.length}`);
+      solicitudValues.push(estatus_gestion); 
+      solicitudSets.push(`estatus_gestion = $${solicitudValues.length}`);
     }
-    if (notas_admin     !== undefined) { values.push(notas_admin);     sets.push(`notas_admin = $${values.length}`); }
-    if (nombre_completo !== undefined) { values.push(nombre_completo); sets.push(`nombre_completo = $${values.length}`); }
-    if (correo          !== undefined) { values.push(correo);          sets.push(`correo = $${values.length}`); }
-    if (telefono        !== undefined) { values.push(telefono);        sets.push(`telefono = $${values.length}`); }
-    if (mensaje         !== undefined) { values.push(mensaje);         sets.push(`mensaje = $${values.length}`); }
+    if (notas_admin !== undefined) { 
+      solicitudValues.push(notas_admin); 
+      solicitudSets.push(`notas_admin = $${solicitudValues.length}`); 
+    }
+    if (telefono !== undefined) { 
+      solicitudValues.push(telefono); 
+      solicitudSets.push(`telefono = $${solicitudValues.length}`); 
+    }
+    if (mensaje !== undefined) { 
+      solicitudValues.push(mensaje); 
+      solicitudSets.push(`mensaje = $${solicitudValues.length}`); 
+    }
 
-    if (sets.length === 0) return res.status(400).json({ error: "Nada que actualizar" });
+    // Actualizar tabla solicitudes_donacion si hay cambios
+    if (solicitudSets.length > 0) {
+      solicitudValues.push(req.params.id);
+      await pool.query(
+        `UPDATE solicitudes_donacion SET ${solicitudSets.join(", ")} WHERE id = $${solicitudValues.length}`, 
+        solicitudValues
+      );
+    }
 
-    values.push(req.params.id);
-    await pool.query(`UPDATE solicitudes_donacion SET ${sets.join(", ")} WHERE id = $${values.length}`, values);
+    // Actualizar tabla donadores si hay cambios
+    if (nombre_completo !== undefined || correo !== undefined) {
+      const donadorSets = [];
+      const donadorValues = [];
+      
+      if (nombre_completo !== undefined) { 
+        donadorValues.push(nombre_completo); 
+        donadorSets.push(`nombre_completo = $${donadorValues.length}`); 
+      }
+      if (correo !== undefined) { 
+        donadorValues.push(correo); 
+        donadorSets.push(`correo = $${donadorValues.length}`); 
+      }
+      
+      if (donadorSets.length > 0) {
+        donadorValues.push(req.params.id);
+        await pool.query(
+          `UPDATE donadores SET ${donadorSets.join(", ")} 
+           WHERE id = (SELECT donador_id FROM solicitudes_donacion WHERE id = $${donadorValues.length})`, 
+          donadorValues
+        );
+      }
+    }
+
     res.json({ message: "Solicitud actualizada" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Error en servidor" });
+    res.status(500).json({ error: "Error en servidor: " + err.message });
   }
 });
 
@@ -1104,7 +1155,7 @@ app.get("/api/admin/escuelas", verificarToken, async (req, res) => {
 
     if (busqueda) {
       values.push(`%${busqueda}%`);
-      conditions.push(`(e.nombre ILIKE $${values.length} OR e.cct ILIKE $${values.length} OR e.direccion ILIKE $${values.length})`);
+      conditions.push(`(e.nombre ILIKE $${values.length} OR e.direccion ILIKE $${values.length})`);
     }
     if (municipio_id) {
       values.push(municipio_id);
@@ -1127,20 +1178,21 @@ app.get("/api/admin/escuelas", verificarToken, async (req, res) => {
     values.push(parseInt(limite), offset);
     const dataRes = await pool.query(
       `SELECT 
-         e.id, e.nombre, e.plantel, e.personal_escolar, e.estudiantes,
-         e.nivel_educativo, e.cct, e.modalidad, e.turno, e.sostenimiento,
-         e.direccion, e.estado, e.created_at, e.updated_at,
-         m.nombre AS municipio_nombre,
-         COUNT(n.id) AS total_necesidades
-       FROM escuelas e
-       LEFT JOIN municipios m ON e.municipio_id = m.id
-       LEFT JOIN necesidades n ON e.id = n.escuela_id
-       ${where}
-       GROUP BY e.id, m.nombre
-       ORDER BY 
-         CASE WHEN e.estado = 'incompleta' THEN 0 ELSE 1 END,
-         e.created_at DESC
-       LIMIT $${values.length-1} OFFSET $${values.length}`,
+        e.id, e.nombre, e.direccion, e.estado, e.created_at, e.updated_at,
+        e.municipio_id,
+        m.nombre AS municipio_nombre,
+        COUNT(DISTINCT n.id) AS total_necesidades,
+        COUNT(DISTINCT en.id) AS total_niveles
+      FROM escuelas e
+      LEFT JOIN municipios m ON e.municipio_id = m.id
+      LEFT JOIN necesidades n ON e.id = n.escuela_id
+      LEFT JOIN escuela_niveles en ON e.id = en.escuela_id
+      ${where}
+      GROUP BY e.id, m.nombre
+      ORDER BY 
+        CASE WHEN e.estado = 'incompleta' THEN 0 ELSE 1 END,
+        e.created_at DESC
+      LIMIT $${values.length-1} OFFSET $${values.length}`,
       values
     );
 
@@ -1161,13 +1213,14 @@ app.get("/api/admin/escuelas/:id", verificarToken, async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT 
-         e.*, m.nombre AS municipio_nombre,
-         COUNT(n.id) AS total_necesidades
-       FROM escuelas e
-       LEFT JOIN municipios m ON e.municipio_id = m.id
-       LEFT JOIN necesidades n ON e.id = n.escuela_id
-       WHERE e.id = $1
-       GROUP BY e.id, m.nombre`,
+        e.id, e.nombre, e.direccion, e.estado, e.created_at, e.updated_at,
+        e.municipio_id, m.nombre AS municipio_nombre,
+        COUNT(DISTINCT n.id) AS total_necesidades
+      FROM escuelas e
+      LEFT JOIN municipios m ON e.municipio_id = m.id
+      LEFT JOIN necesidades n ON e.id = n.escuela_id
+      WHERE e.id = $1
+      GROUP BY e.id, m.nombre`,
       [req.params.id]
     );
 
@@ -1185,38 +1238,18 @@ app.get("/api/admin/escuelas/:id", verificarToken, async (req, res) => {
 // POST — Crear escuela completa (solo admin)
 app.post("/api/admin/escuelas", verificarToken, soloAdmin, async (req, res) => {
   try {
-    const {
-      nombre, municipio_id, plantel, personal_escolar, estudiantes,
-      nivel_educativo, cct, modalidad, turno, sostenimiento, direccion
-    } = req.body;
+    const { nombre, municipio_id, direccion } = req.body;
 
-    if (!nombre || !municipio_id) {
+    if (!nombre || !municipio_id)
       return res.status(400).json({ error: "Nombre y municipio son obligatorios" });
-    }
-
-    // Validar campos obligatorios para estado 'completa'
-    if (!nivel_educativo || !modalidad || !turno || !sostenimiento) {
-      return res.status(400).json({ 
-        error: "Nivel educativo, modalidad, turno y sostenimiento son obligatorios" 
-      });
-    }
 
     const result = await pool.query(
-      `INSERT INTO escuelas (
-         nombre, municipio_id, plantel, personal_escolar, estudiantes,
-         nivel_educativo, cct, modalidad, turno, sostenimiento, direccion,
-         estado
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'completa') 
-       RETURNING id`,
-      [nombre, municipio_id, plantel || null, personal_escolar || null, 
-       estudiantes || null, nivel_educativo, cct || null,
-       modalidad, turno, sostenimiento, direccion || null]
+      `INSERT INTO escuelas (nombre, municipio_id, direccion, estado)
+       VALUES ($1, $2, $3, 'incompleta') RETURNING id`,
+      [nombre, municipio_id, direccion || null]
     );
 
-    res.status(201).json({
-      id: result.rows[0].id,
-      message: "Escuela creada exitosamente"
-    });
+    res.status(201).json({ id: result.rows[0].id, message: "Escuela creada exitosamente" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message || "Error en servidor" });
@@ -1227,80 +1260,25 @@ app.post("/api/admin/escuelas", verificarToken, soloAdmin, async (req, res) => {
 app.put("/api/admin/escuelas/:id", verificarToken, soloAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const {
-      nombre, municipio_id, plantel, personal_escolar, estudiantes,
-      nivel_educativo, cct, modalidad, turno, sostenimiento, direccion
-    } = req.body;
+    const { nombre, municipio_id, direccion } = req.body;
 
     const existe = await pool.query("SELECT id FROM escuelas WHERE id = $1", [id]);
-    if (existe.rows.length === 0) {
+    if (existe.rows.length === 0)
       return res.status(404).json({ error: "Escuela no encontrada" });
-    }
 
     const sets = [];
     const values = [];
-
-    if (nombre !== undefined) { values.push(nombre); sets.push(`nombre = $${values.length}`); }
+    if (nombre !== undefined)      { values.push(nombre);      sets.push(`nombre = $${values.length}`); }
     if (municipio_id !== undefined) { values.push(municipio_id); sets.push(`municipio_id = $${values.length}`); }
-    if (plantel !== undefined) { values.push(plantel); sets.push(`plantel = $${values.length}`); }
-    if (personal_escolar !== undefined) { values.push(personal_escolar); sets.push(`personal_escolar = $${values.length}`); }
-    if (estudiantes !== undefined) { values.push(estudiantes); sets.push(`estudiantes = $${values.length}`); }
-    if (nivel_educativo !== undefined) { values.push(nivel_educativo); sets.push(`nivel_educativo = $${values.length}`); }
-    if (cct !== undefined) { values.push(cct); sets.push(`cct = $${values.length}`); }
-    if (modalidad !== undefined) { values.push(modalidad); sets.push(`modalidad = $${values.length}`); }
-    if (turno !== undefined) { values.push(turno); sets.push(`turno = $${values.length}`); }
-    if (sostenimiento !== undefined) { values.push(sostenimiento); sets.push(`sostenimiento = $${values.length}`); }
-    if (direccion !== undefined) { values.push(direccion); sets.push(`direccion = $${values.length}`); }
+    if (direccion !== undefined)    { values.push(direccion);    sets.push(`direccion = $${values.length}`); }
 
-    // Si se completan campos obligatorios, cambiar estado a 'completa'
-    if (nivel_educativo && modalidad && turno && sostenimiento) {
-      sets.push(`estado = 'completa'`);
-    }
-
-    if (sets.length === 0) {
+    if (sets.length === 0)
       return res.status(400).json({ error: "No se enviaron campos para actualizar" });
-    }
 
     values.push(id);
-    await pool.query(
-      `UPDATE escuelas SET ${sets.join(", ")} WHERE id = $${values.length}`,
-      values
-    );
+    await pool.query(`UPDATE escuelas SET ${sets.join(", ")} WHERE id = $${values.length}`, values);
 
     res.json({ message: "Escuela actualizada exitosamente" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message || "Error en servidor" });
-  }
-});
-
-// PUT — Completar escuela específicamente
-app.put("/api/admin/escuelas/:id/completar", verificarToken, soloAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      plantel, personal_escolar, estudiantes, nivel_educativo, 
-      cct, modalidad, turno, sostenimiento, direccion
-    } = req.body;
-
-    if (!nivel_educativo || !modalidad || !turno || !sostenimiento) {
-      return res.status(400).json({ 
-        error: "Nivel educativo, modalidad, turno y sostenimiento son obligatorios para completar" 
-      });
-    }
-
-    await pool.query(
-      `UPDATE escuelas SET 
-         plantel = $2, personal_escolar = $3, estudiantes = $4, 
-         nivel_educativo = $5, cct = $6, modalidad = $7, 
-         turno = $8, sostenimiento = $9, direccion = $10,
-         estado = 'completa'
-       WHERE id = $1`,
-      [id, plantel, personal_escolar, estudiantes, nivel_educativo, 
-       cct, modalidad, turno, sostenimiento, direccion]
-    );
-
-    res.json({ message: "Escuela completada exitosamente" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message || "Error en servidor" });
@@ -1349,6 +1327,171 @@ app.get("/api/admin/municipios", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// GET — Obtener perfil del donador
+app.get("/api/donador/perfil", verificarToken, async (req, res) => {
+  try {
+    if (req.usuario.rol !== 'donador') {
+      return res.status(403).json({ error: 'No autorizado' });
+    }
+
+    const result = await pool.query(
+      `SELECT nombre_completo, correo, fecha_nacimiento, estado_geografico, created_at
+       FROM donadores WHERE id = $1`,
+      [req.usuario.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Donador no encontrado' });
+    }
+
+    res.json({ data: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al obtener perfil" });
+  }
+});
+
+// PUT — Actualizar perfil del donador
+app.put("/api/donador/perfil", verificarToken, async (req, res) => {
+  try {
+    if (req.usuario.rol !== 'donador') {
+      return res.status(403).json({ error: 'No autorizado' });
+    }
+
+    const { nombre_completo, correo, fecha_nacimiento, estado_geografico } = req.body;
+
+    // Validaciones
+    if (nombre_completo !== undefined) {
+      const partes = nombre_completo.trim().split(' ').filter(p => p.length > 0);
+      if (partes.length < 2)
+        return res.status(400).json({ error: "Ingresa tu nombre completo (nombre y apellido)." });
+    }
+
+    if (correo !== undefined) {
+      const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!regexCorreo.test(correo))
+        return res.status(400).json({ error: "Ingresa un correo electrónico válido." });
+
+      const existe = await pool.query(
+        "SELECT id FROM donadores WHERE correo = $1 AND id != $2",
+        [correo, req.usuario.id]
+      );
+      if (existe.rows.length > 0)
+        return res.status(400).json({ error: "Ya existe una cuenta con ese correo." });
+    }
+
+    if (fecha_nacimiento) {
+      const fechaNac = new Date(fecha_nacimiento);
+      const hoy = new Date();
+      let edad = hoy.getFullYear() - fechaNac.getFullYear();
+      if (hoy.getMonth() < fechaNac.getMonth() ||
+         (hoy.getMonth() === fechaNac.getMonth() && hoy.getDate() < fechaNac.getDate())) {
+        edad--;
+      }
+      if (edad < 18)
+        return res.status(400).json({ error: "Debes ser mayor de 18 años." });
+    }
+
+    const sets = [];
+    const values = [];
+    if (nombre_completo) { values.push(nombre_completo.trim()); sets.push(`nombre_completo = $${values.length}`); }
+    if (correo)          { values.push(correo);                  sets.push(`correo = $${values.length}`); }
+    if (fecha_nacimiento !== undefined) { values.push(fecha_nacimiento); sets.push(`fecha_nacimiento = $${values.length}`); }
+    if (estado_geografico) { values.push(estado_geografico);     sets.push(`estado_geografico = $${values.length}`); }
+
+    if (sets.length === 0)
+      return res.status(400).json({ error: "No hay campos para actualizar" });
+
+    values.push(req.usuario.id);
+    await pool.query(`UPDATE donadores SET ${sets.join(", ")} WHERE id = $${values.length}`, values);
+
+    res.json({ message: "Perfil actualizado correctamente" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al actualizar perfil" });
+  }
+});
+
+// GET niveles de una escuela
+app.get("/api/admin/escuelas/:id/niveles", verificarToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, nombre, nivel_educativo, modalidad, turno, sostenimiento, cct, personal_escolar, estudiantes
+       FROM escuela_niveles WHERE escuela_id = $1 ORDER BY id`,
+      [req.params.id]
+    );
+    res.json({ data: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
+// POST crear nivel
+app.post("/api/admin/escuelas/:id/niveles", verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const { nombre, nivel_educativo, modalidad, turno, sostenimiento, cct, personal_escolar, estudiantes } = req.body;
+
+    if (!nombre || !nivel_educativo || !modalidad || !turno || !sostenimiento)
+      return res.status(400).json({ error: "Nombre, nivel, modalidad, turno y sostenimiento son obligatorios." });
+
+    await pool.query(
+      `INSERT INTO escuela_niveles (escuela_id, nombre, nivel_educativo, modalidad, turno, sostenimiento, cct, personal_escolar, estudiantes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      [req.params.id, nombre, nivel_educativo, modalidad, turno, sostenimiento, cct || null, personal_escolar || null, estudiantes || null]
+    );
+
+    await recalcularEstadoEscuela(req.params.id);
+    res.status(201).json({ message: "Nivel agregado." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Error en servidor" });
+  }
+});
+
+// PUT editar nivel
+app.put("/api/admin/escuelas/:id/niveles/:nivel_id", verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const { nombre, nivel_educativo, modalidad, turno, sostenimiento, cct, personal_escolar, estudiantes } = req.body;
+
+    if (!nombre || !nivel_educativo || !modalidad || !turno || !sostenimiento)
+      return res.status(400).json({ error: "Nombre, nivel, modalidad, turno y sostenimiento son obligatorios." });
+
+    await pool.query(
+      `UPDATE escuela_niveles SET
+         nombre = $1, nivel_educativo = $2, modalidad = $3, turno = $4,
+         sostenimiento = $5, cct = $6, personal_escolar = $7, estudiantes = $8
+       WHERE id = $9 AND escuela_id = $10`,
+      [nombre, nivel_educativo, modalidad, turno, sostenimiento, cct || null, personal_escolar || null, estudiantes || null, req.params.nivel_id, req.params.id]
+    );
+
+    await recalcularEstadoEscuela(req.params.id);
+    res.status(200).json({ message: "Nivel actualizado." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Error en servidor" });
+  }
+});
+
+// DELETE eliminar nivel
+app.delete("/api/admin/escuelas/:id/niveles/:nivel_id", verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `DELETE FROM escuela_niveles WHERE id = $1 AND escuela_id = $2 RETURNING id`,
+      [req.params.nivel_id, req.params.id]
+    );
+
+    if (result.rows.length === 0)
+      return res.status(404).json({ error: "Nivel no encontrado." });
+
+    await recalcularEstadoEscuela(req.params.id);
+    res.json({ message: "Nivel eliminado." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Error en servidor" });
   }
 });
 

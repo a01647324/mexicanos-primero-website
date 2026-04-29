@@ -3,7 +3,7 @@
   <!-- ENCABEZADO -->
   <div class="esc-top">
     <div>
-      <h1 class="subpagina-titulo">Gestión de Escuelas</h1>
+      <h1 class="subpagina-titulo">Gestión de Planteles</h1>
       <p class="subpagina-subtitulo">Administra el catálogo completo de escuelas del sistema.</p>
     </div>
     <button class="panel-btn panel-btn-verde" onclick="escAbrirModalNuevo()">
@@ -15,7 +15,7 @@
   <div class="esc-toolbar">
     <div class="esc-search-wrap">
       <i class="bi bi-search esc-search-icon"></i>
-      <input type="text" id="esc-busqueda" class="esc-search" placeholder="Buscar por nombre, CCT o dirección..." oninput="escDebounce()">
+      <input type="text" id="esc-busqueda" class="esc-search" placeholder="Buscar por nombre o dirección..." oninput="escDebounce()">
     </div>
     <select class="panel-select esc-filter" id="esc-filtro-municipio" onchange="escCargar(1)">
       <option value="">Todos los municipios</option>
@@ -51,9 +51,9 @@
 
 </div>
 
-<!-- MODAL AGREGAR / EDITAR -->
+<!-- MODAL AGREGAR / EDITAR ESCUELA -->
 <div id="esc-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;align-items:center;justify-content:center;padding:2rem;" onclick="if(event.target===this)escCerrarModal()">
-  <div class="modal-caja" style="max-width:720px;width:100%;">
+  <div class="modal-caja" style="max-width:720px;width:100%;max-height:90vh;display:flex;flex-direction:column;">
 
     <div class="modal-header">
       <h2 class="modal-titulo" id="esc-modal-titulo">Agregar escuela</h2>
@@ -68,10 +68,6 @@
           <span class="modal-label">Nombre de la escuela *</span>
           <input type="text" id="esc-modal-nombre" class="panel-input" placeholder="Ej: Primaria Benito Juárez">
         </div>
-        <div class="modal-campo">
-          <span class="modal-label">Plantel</span>
-          <input type="text" id="esc-modal-plantel" class="panel-input" placeholder="Plantel principal, anexo, etc.">
-        </div>
       </div>
 
       <div class="modal-campo-doble">
@@ -80,64 +76,6 @@
           <select id="esc-modal-municipio" class="panel-select">
             <option value="">Seleccionar municipio...</option>
           </select>
-        </div>
-        <div class="modal-campo">
-          <span class="modal-label">CCT (Clave de Centro de Trabajo)</span>
-          <input type="text" id="esc-modal-cct" class="panel-input" placeholder="Ej: 14DPR0001A">
-        </div>
-      </div>
-
-      <!-- DATOS EDUCATIVOS -->
-      <div class="modal-campo-doble">
-        <div class="modal-campo">
-          <span class="modal-label">Nivel Educativo</span>
-          <select id="esc-modal-nivel" class="panel-select">
-            <option value="">Seleccionar nivel...</option>
-            <option value="Preescolar">Preescolar</option>
-            <option value="Primaria">Primaria</option>
-            <option value="Secundaria">Secundaria</option>
-          </select>
-        </div>
-        <div class="modal-campo">
-          <span class="modal-label">Modalidad</span>
-          <select id="esc-modal-modalidad" class="panel-select">
-            <option value="">Seleccionar modalidad...</option>
-            <option value="SEP-General">SEP-General</option>
-            <option value="SEP-Multigrado">SEP-Multigrado</option>
-            <option value="CONAFE">CONAFE</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="modal-campo-doble">
-        <div class="modal-campo">
-          <span class="modal-label">Turno</span>
-          <select id="esc-modal-turno" class="panel-select">
-            <option value="">Seleccionar turno...</option>
-            <option value="Matutino">Matutino</option>
-            <option value="Vespertino">Vespertino</option>
-          </select>
-        </div>
-        <div class="modal-campo">
-          <span class="modal-label">Sostenimiento</span>
-          <select id="esc-modal-sostenimiento" class="panel-select">
-            <option value="">Seleccionar sostenimiento...</option>
-            <option value="Federal">Federal</option>
-            <option value="Estatal">Estatal</option>
-            <option value="Federalizado">Federalizado</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- DATOS CUANTITATIVOS -->
-      <div class="modal-campo-doble">
-        <div class="modal-campo">
-          <span class="modal-label">Personal Escolar</span>
-          <input type="number" id="esc-modal-personal" class="panel-input" min="0" placeholder="Número de empleados">
-        </div>
-        <div class="modal-campo">
-          <span class="modal-label">Estudiantes</span>
-          <input type="number" id="esc-modal-estudiantes" class="panel-input" min="0" placeholder="Número de estudiantes">
         </div>
       </div>
 
@@ -175,6 +113,91 @@
       <button class="panel-btn panel-btn-outline-gris" onclick="escCerrarConfirm()">Cancelar</button>
       <button class="panel-btn panel-btn-rojo" id="esc-confirm-btn"><i class="bi bi-trash-fill"></i> Eliminar</button>
     </div>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR / EDITAR NIVEL -->
+<div id="esc-modal-nivel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3200;align-items:center;justify-content:center;padding:2rem;" onclick="if(event.target===this)escCerrarModalNivel()">
+  <div class="modal-caja" style="max-width:600px;width:100%;max-height:90vh;display:flex;flex-direction:column;">
+
+    <div class="modal-header">
+      <h2 class="modal-titulo" id="esc-nivel-titulo">Agregar nivel</h2>
+      <button class="modal-cerrar" onclick="escCerrarModalNivel()"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <div class="modal-body">
+      <div class="modal-campo mb-3">
+        <span class="modal-label">Nombre de la escuela *</span>
+        <input type="text" id="esc-nivel-nombre" class="panel-input" placeholder="Ej: Carlos de Icaza">
+      </div>
+
+      <div class="modal-campo-doble">
+        <div class="modal-campo">
+          <span class="modal-label">Nivel Educativo *</span>
+          <select id="esc-nivel-nivel" class="panel-select">
+            <option value="">Seleccionar...</option>
+            <option value="Preescolar">Preescolar</option>
+            <option value="Primaria">Primaria</option>
+            <option value="Secundaria">Secundaria</option>
+          </select>
+        </div>
+        <div class="modal-campo">
+          <span class="modal-label">Modalidad *</span>
+          <select id="esc-nivel-modalidad" class="panel-select">
+            <option value="">Seleccionar...</option>
+            <option value="SEP-General">SEP-General</option>
+            <option value="SEP-Multigrado">SEP-Multigrado</option>
+            <option value="CONAFE">CONAFE</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-campo-doble">
+        <div class="modal-campo">
+          <span class="modal-label">Turno *</span>
+          <select id="esc-nivel-turno" class="panel-select">
+            <option value="">Seleccionar...</option>
+            <option value="Matutino">Matutino</option>
+            <option value="Vespertino">Vespertino</option>
+          </select>
+        </div>
+        <div class="modal-campo">
+          <span class="modal-label">Sostenimiento *</span>
+          <select id="esc-nivel-sostenimiento" class="panel-select">
+            <option value="">Seleccionar...</option>
+            <option value="Federal">Federal</option>
+            <option value="Estatal">Estatal</option>
+            <option value="Federalizado">Federalizado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-campo-doble">
+        <div class="modal-campo">
+          <span class="modal-label">CCT</span>
+          <input type="text" id="esc-nivel-cct" class="panel-input" placeholder="Ej: 14DPR0001A">
+        </div>
+        <div class="modal-campo">
+          <span class="modal-label">Personal Escolar</span>
+          <input type="number" id="esc-nivel-personal" class="panel-input" min="0">
+        </div>
+      </div>
+
+      <div class="modal-campo">
+        <span class="modal-label">Estudiantes</span>
+        <input type="number" id="esc-nivel-estudiantes" class="panel-input" min="0">
+      </div>
+
+      <div id="esc-nivel-error" class="esc-error" style="display:none;"></div>
+    </div>
+
+    <div class="modal-acciones">
+      <button class="panel-btn panel-btn-outline-gris" onclick="escCerrarModalNivel()">Cancelar</button>
+      <button class="panel-btn panel-btn-verde" id="esc-nivel-guardar" onclick="escGuardarNivel()">
+        <i class="bi bi-check2"></i> Guardar
+      </button>
+    </div>
+
   </div>
 </div>
 
@@ -381,147 +404,11 @@
   justify-content: center;
 }
 
-.esc-tabla-wrap {
-  background:var(--blanco);
-  border-radius:var(--radio-lg);
-  box-shadow:var(--sombra);
-  overflow:hidden;
-  border:1px solid var(--gris-borde);
-}
-
-.esc-tabla { 
-  width:100%; 
-  border-collapse:collapse; 
-  font-family:'Montserrat',sans-serif; 
-}
-
-.esc-tabla thead tr { 
-  background:var(--azul); 
-}
-
-.esc-tabla thead th {
-  padding:.8rem 1rem;
-  font-size:.68rem; 
-  font-weight:700;
-  color:rgba(255,255,255,.8);
-  text-transform:uppercase; 
-  letter-spacing:.5px; 
-  white-space:nowrap;
-}
-
-.esc-tabla thead th:first-child { 
-  width:46px; 
-  text-align:center; 
-}
-
-.esc-tabla tbody tr { 
-  border-bottom:1px solid var(--gris-claro); 
-  transition:background .14s ease; 
-}
-
-.esc-tabla tbody tr:last-child { 
-  border-bottom:none; 
-}
-
-.esc-tabla tbody tr:hover { 
-  background:var(--crema); 
-}
-
-.esc-tabla tbody td { 
-  padding:.85rem 1rem; 
-  font-size:.8rem; 
-  color:var(--texto); 
-  vertical-align:middle; 
-}
-
-.esc-tabla tbody td:first-child { 
-  text-align:center; 
-  font-weight:700; 
-  color:var(--texto-suave); 
-  font-size:.72rem; 
-}
-
 .esc-loading, .esc-vacio { 
   text-align:center; 
   padding:2.5rem; 
   color:var(--texto-suave); 
   font-size:.85rem; 
-}
-
-.esc-escuela-cell { 
-  display:flex; 
-  flex-direction:column; 
-  gap:.1rem; 
-}
-
-.esc-escuela-nombre { 
-  font-weight:700; 
-  font-size:.84rem; 
-  color:var(--texto); 
-  margin:0; 
-}
-
-.esc-escuela-plantel { 
-  font-size:.68rem; 
-  color:var(--texto-suave); 
-  margin:0; 
-  font-style:italic; 
-}
-
-.esc-cct-badge { 
-  display:inline-flex; 
-  background:var(--azul-suave); 
-  color:var(--azul);
-  padding:.18rem .55rem; 
-  border-radius:var(--radio-xl); 
-  font-size:.68rem; 
-  font-weight:700; 
-  font-family:monospace; 
-  letter-spacing:.3px;
-}
-
-.esc-cct-vacio { 
-  color:var(--texto-suave); 
-  font-style:italic; 
-  font-size:.75rem; 
-}
-
-.esc-personal-badge { 
-  display:inline-flex; 
-  align-items:center; 
-  gap:.3rem;
-  padding:.15rem .55rem; 
-  border-radius:var(--radio-xl); 
-  font-size:.68rem; 
-  font-weight:700;
-  margin-right: .3rem;
-}
-
-.esc-personal-personal { 
-  background:var(--verde-suave); 
-  color:var(--verde-oscuro); 
-}
-
-.esc-personal-estudiantes { 
-  background:var(--naranja-suave); 
-  color:var(--naranja); 
-}
-
-.esc-necesidades-badge { 
-  display:inline-flex; 
-  align-items:center; 
-  gap:.3rem;
-  padding:.18rem .6rem; 
-  border-radius:var(--radio-xl); 
-  font-size:.68rem; 
-  font-weight:700;
-  background:var(--rojo-suave); 
-  color:var(--rojo);
-}
-
-.esc-necesidades-badge.sin-necesidades { 
-  background:var(--gris-claro); 
-  color:var(--texto-suave); 
 }
 
 .esc-acciones { 
@@ -732,84 +619,6 @@
   to { transform:rotate(360deg); } 
 }
 
-/* Nuevos estilos para necesidades */
-.esc-necesidades-contador {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  background: #fee2e2;
-  border: 1.5px solid #fca5a5;
-  color: #dc2626;
-  border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 700;
-  font-family: 'Montserrat', sans-serif;
-}
-
-.esc-necesidades-cero {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  background: #f0fdf4;
-  border: 1.5px solid #86efac;
-  color: #16a34a;
-  border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 700;
-  font-family: 'Montserrat', sans-serif;
-}
-
-/* Badges genéricos */
-.esc-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.25rem 0.6rem;
-  border-radius: var(--radio-xl);
-  font-size: 0.7rem;
-  font-weight: 600;
-  font-family: 'Montserrat', sans-serif;
-}
-
-.esc-badge-verde {
-  background: var(--verde-suave);
-  color: var(--verde-oscuro);
-  border: 1px solid rgba(0,153,51,0.2);
-}
-
-.esc-badge-azul {
-  background: var(--azul-suave);
-  color: var(--azul);
-  border: 1px solid rgba(28,54,97,0.2);
-}
-
-/* Estados de escuela */
-.esc-estado-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.25rem 0.7rem;
-  border-radius: var(--radio-xl);
-  font-size: 0.7rem;
-  font-weight: 600;
-}
-
-.estado-incompleta {
-  background: var(--naranja-suave);
-  color: var(--naranja);
-  border: 1px solid rgba(236,103,27,0.2);
-}
-
-.estado-completa {
-  background: var(--verde-suave);
-  color: var(--verde-oscuro);
-  border: 1px solid rgba(0,153,51,0.2);
-}
-
 /* Grid de tarjetas */
 .esc-grid {
   display: grid;
@@ -888,48 +697,6 @@
   padding: 1rem 1.25rem;
 }
 
-.esc-card-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.7rem;
-  font-size: 0.82rem;
-}
-
-.esc-card-row:last-child {
-  margin-bottom: 0;
-}
-
-.esc-card-label {
-  font-weight: 600;
-  color: var(--texto-suave);
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-width: 100px;
-}
-
-.esc-card-value {
-  font-weight: 500;
-  color: var(--texto);
-  text-align: right;
-}
-
-.esc-card-direccion {
-  grid-column: 1 / -1;
-  background: var(--crema);
-  padding: 0.7rem 1rem;
-  margin: 0.5rem -1.25rem 0;
-  font-size: 0.78rem;
-  color: var(--texto-suave);
-  border-top: 1px solid var(--gris-claro);
-}
-
-.esc-card-direccion strong {
-  color: var(--texto);
-  font-weight: 600;
-}
-
 .esc-card-footer {
   padding: 0.8rem 1.25rem;
   background: var(--crema);
@@ -965,6 +732,66 @@
   font-size: 2.5rem;
   margin-bottom: 1rem;
   opacity: 0.3;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;  
+  flex: 1;         
+}
+
+/* Estados de escuela */
+.esc-estado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--radio-xl);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.estado-incompleta {
+  background: var(--naranja-suave);
+  color: var(--naranja);
+  border: 1px solid rgba(236,103,27,0.2);
+}
+
+.estado-completa {
+  background: var(--verde-suave);
+  color: var(--verde-oscuro);
+  border: 1px solid rgba(0,153,51,0.2);
+}
+
+/* Nuevos estilos para necesidades */
+.esc-necesidades-contador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  background: #fee2e2;
+  border: 1.5px solid #fca5a5;
+  color: #dc2626;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.esc-necesidades-cero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  color: #16a34a;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* Responsive */
@@ -1011,60 +838,6 @@
     grid-template-columns: 1fr;
     gap: 0.75rem;
   }
-
-  .esc-tabla thead th:nth-child(4),
-  .esc-tabla tbody td:nth-child(4),
-  .esc-tabla thead th:nth-child(5),
-  .esc-tabla tbody td:nth-child(5),
-  .esc-tabla thead th:nth-child(6),
-  .esc-tabla tbody td:nth-child(6) { 
-    display: none; 
-  }
-}
-
-@media (max-width: 520px) {
-  .esc-tabla-wrap { 
-    overflow: visible; 
-    background: none; 
-    box-shadow: none; 
-    border: none; 
-  }
-  
-  .esc-tabla thead { 
-    display: none; 
-  }
-  
-  .esc-tabla tbody tr {
-    display: flex; 
-    flex-direction: column;
-    background: var(--blanco);
-    border-radius: var(--radio-lg);
-    border: 1px solid var(--gris-borde);
-    box-shadow: var(--sombra);
-    margin-bottom: .65rem;
-    padding: .9rem 1rem;
-    gap: .4rem;
-  }
-  
-  .esc-tabla tbody td {
-    display: flex; 
-    align-items: center;
-    padding: .1rem 0; 
-    border: none;
-  }
-  
-  .esc-tabla tbody td:first-child { 
-    display: none; 
-  }
-  
-  .esc-acciones { 
-    width: 100%; 
-  }
-  
-  .esc-btn { 
-    flex: 1; 
-    justify-content: center; 
-  }
 }
 </style>
 
@@ -1076,6 +849,10 @@ var esc_idActual = null;
 var esc_modoEditar = false;
 var esc_municipios = [];
 var esc_tabActual = 'todas';
+
+// Variables globales para niveles
+var esc_nivelEscuelaId = null;
+var esc_nivelId = null;
 
 // Función para manejar pestañas
 function escTab(btn) {
@@ -1199,8 +976,7 @@ function escRenderTabla(rows, total) {
   var offset = (esc_paginaActual - 1) * 15;
   grid.innerHTML = rows.map(function(e, i) {
     var necesidades = parseInt(e.total_necesidades) || 0;
-    var personal = e.personal_escolar || 0;
-    var estudiantes = e.estudiantes || 0;
+    var totalNiveles = parseInt(e.total_niveles) || 0;
 
     return '<div class="esc-card" data-estado="' + (e.estado || 'incompleta') + '">' +
       '<div class="esc-card-numero">' + (offset + i + 1) + '</div>' +
@@ -1216,51 +992,23 @@ function escRenderTabla(rows, total) {
       '</div>' +
 
       '<div class="esc-card-body">' +
-        '<div class="esc-card-row">' +
-          '<span class="esc-card-label"><i class="bi bi-credit-card"></i> CCT:</span>' +
-          '<span class="esc-card-value">' + 
-            (e.cct ? '<span class="esc-cct-badge">' + escapeHtml(e.cct) + '</span>' : '<em>Sin CCT</em>') +
-          '</span>' +
-        '</div>' +
-        
-        '<div class="esc-card-row">' +
-          '<span class="esc-card-label"><i class="bi bi-mortarboard"></i> Nivel:</span>' +
-          '<span class="esc-card-value">' + (e.nivel_educativo || '—') + '</span>' +
-        '</div>' +
-        
-        '<div class="esc-card-row">' +
-          '<span class="esc-card-label"><i class="bi bi-diagram-3"></i> Modalidad:</span>' +
-          '<span class="esc-card-value">' + (e.modalidad || '—') + '</span>' +
-        '</div>' +
-        
-        '<div class="esc-card-row">' +
-          '<span class="esc-card-label"><i class="bi bi-clock"></i> Turno:</span>' +
-          '<span class="esc-card-value">' + (e.turno || '—') + '</span>' +
-        '</div>' +
-        
-        '<div class="esc-card-row">' +
-          '<span class="esc-card-label"><i class="bi bi-bank"></i> Sostenimiento:</span>' +
-          '<span class="esc-card-value">' + (e.sostenimiento || '—') + '</span>' +
-        '</div>' +
-        
-        '<div class="esc-card-row">' +
-          '<span class="esc-card-label"><i class="bi bi-people"></i> Personal:</span>' +
-          '<span class="esc-card-value">' + 
-            (personal > 0 ? '<span class="esc-badge esc-badge-verde">' + personal + '</span>' : '—') +
-          '</span>' +
-        '</div>' +
-        
-        '<div class="esc-card-row">' +
-          '<span class="esc-card-label"><i class="bi bi-mortarboard-fill"></i> Estudiantes:</span>' +
-          '<span class="esc-card-value">' + 
-            (estudiantes > 0 ? '<span class="esc-badge esc-badge-azul">' + estudiantes + '</span>' : '—') +
-          '</span>' +
-        '</div>' +
-        
-        (e.direccion ? 
-          '<div class="esc-card-direccion">' +
-            '<strong>Dirección:</strong> ' + escapeHtml(e.direccion) +
+        // Solo mostrar ícono si hay dirección
+        (e.direccion ?
+          '<div style="margin-bottom:0.75rem;">' +
+            '<a href="' + escapeHtml(e.direccion) + '" target="_blank" title="Ver ubicación" style="color:var(--verde);font-size:0.8rem;text-decoration:none;">' +
+              '<i class="bi bi-geo-alt-fill"></i> Ver ubicación' +
+            '</a>' +
           '</div>' : ''
+        ) +
+        
+        '<div id="niveles-' + e.id + '" style="min-height:30px;">' +
+          '<span style="font-size:0.75rem;color:var(--texto-suave);"><i class="bi bi-arrow-repeat spin"></i> Cargando escuelas...</span>' +
+        '</div>' +
+        
+        (typeof adminPuedeEditar === 'function' && adminPuedeEditar() ?
+          '<button class="esc-btn esc-btn-editar" onclick="escAbrirModalNivel(' + e.id + ',null)" style="margin-top:0.75rem;width:100%;justify-content:center;background:var(--verde-suave);color:var(--verde-oscuro);">' +
+            '<i class="bi bi-plus-circle"></i> Agregar escuela' +
+          '</button>' : ''
         ) +
       '</div>' +
 
@@ -1279,24 +1027,24 @@ function escRenderTabla(rows, total) {
           '</span>' +
           
           '<div class="esc-acciones">' +
-            '<button class="esc-btn esc-btn-editar" onclick="escAbrirModalEditar(' + e.id + ')" title="Editar">' +
-              '<i class="bi bi-pencil-fill"></i>' +
-            '</button>' +
-            '<button class="esc-btn esc-btn-eliminar" onclick="escConfirmarEliminar(' + e.id + ',\'' + escapeHtml(e.nombre).replace(/'/g, "\\'") + '\')" title="Eliminar">' +
-              '<i class="bi bi-trash-fill"></i>' +
-            '</button>' +
+            (typeof adminPuedeEditar === 'function' && adminPuedeEditar() ?
+              '<button class="esc-btn esc-btn-editar" onclick="escAbrirModalEditar(' + e.id + ')" title="Editar">' +
+                '<i class="bi bi-pencil-fill"></i>' +
+              '</button>' +
+              '<button class="esc-btn esc-btn-eliminar" onclick="escConfirmarEliminar(' + e.id + ',\'' + escapeHtml(e.nombre).replace(/'/g, "\\'") + '\')" title="Eliminar">' +
+                '<i class="bi bi-trash-fill"></i>' +
+              '</button>' : ''
+            ) +
           '</div>' +
         '</div>' +
       '</div>' +
     '</div>';
   }).join('');
 
-  // Aplicar restricciones si es necesario
-  if (typeof adminPuedeEditar === 'function' && !adminPuedeEditar()) {
-    document.querySelectorAll('.esc-btn-editar, .esc-btn-eliminar').forEach(function(el){
-      el.style.display = 'none';
-    });
-  }
+  // Cargar niveles para cada escuela
+  rows.forEach(function(e) {
+    escCargarNiveles(e.id);
+  });
 }
 
 // Función helper para escape HTML
@@ -1304,6 +1052,210 @@ function escapeHtml(text) {
   var div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+// Cargar niveles de una escuela
+function escCargarNiveles(escuelaId) {
+  adminFetch('/api/admin/escuelas/' + escuelaId + '/niveles')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      var wrap = document.getElementById('niveles-' + escuelaId);
+      if (!wrap) return;
+
+      if (!data.data || data.data.length === 0) {
+        wrap.innerHTML = '<div style="text-align:center;padding:1rem;background:var(--crema);border-radius:8px;">' +
+          '<i class="bi bi-building" style="font-size:1.5rem;color:var(--texto-suave);margin-bottom:0.5rem;display:block;"></i>' +
+          '<em style="font-size:0.8rem;color:var(--texto-suave);">Sin escuelas registradas</em>' +
+        '</div>';
+        return;
+      }
+
+      var puedeEditar = typeof adminPuedeEditar === 'function' && adminPuedeEditar();
+      var tabla = '<div style="background:var(--crema);border-radius:8px;overflow:hidden;">' +
+        '<table style="width:100%;border-collapse:collapse;font-size:0.78rem;">' +
+        '<thead><tr style="background:var(--azul);color:white;">' +
+          '<th style="padding:0.6rem 0.5rem;text-align:left;font-weight:600;font-size:0.7rem;">ESCUELA</th>' +
+          '<th style="padding:0.6rem 0.5rem;text-align:center;font-weight:600;font-size:0.7rem;">NIVEL</th>' +
+          '<th style="padding:0.6rem 0.5rem;text-align:center;font-weight:600;font-size:0.7rem;">CCT</th>' +
+          '<th style="padding:0.6rem 0.5rem;text-align:center;font-weight:600;font-size:0.7rem;"><i class="bi bi-people" title="Personal"></i></th>' +
+          '<th style="padding:0.6rem 0.5rem;text-align:center;font-weight:600;font-size:0.7rem;"><i class="bi bi-mortarboard" title="Alumnos"></i></th>' +
+          (puedeEditar ? '<th style="padding:0.6rem 0.5rem;text-align:center;font-weight:600;font-size:0.7rem;">ACCIONES</th>' : '') +
+        '</tr></thead><tbody>';
+
+      data.data.forEach(function(n, index) {
+        var faltaDato = !n.cct || !n.personal_escolar || !n.estudiantes;
+        var bgColor = faltaDato ? 'background:rgba(236,103,27,0.08);' : (index % 2 === 0 ? 'background:white;' : 'background:var(--gris-claro);');
+        
+        tabla += '<tr style="' + bgColor + 'border-bottom:1px solid var(--gris-borde);">' +
+          '<td style="padding:0.6rem 0.5rem;font-weight:500;">' + escapeHtml(n.nombre) + '</td>' +
+          
+          '<td style="padding:0.6rem 0.5rem;text-align:center;">' +
+            '<span style="background:var(--verde-suave);color:var(--verde-oscuro);padding:0.2rem 0.5rem;border-radius:12px;font-size:0.65rem;font-weight:600;">' +
+              (n.nivel_educativo === 'Preescolar' ? 'PRE' : n.nivel_educativo === 'Primaria' ? 'PRI' : 'SEC') +
+            '</span>' +
+          '</td>' +
+          
+          '<td style="padding:0.6rem 0.5rem;text-align:center;font-family:monospace;font-size:0.7rem;">' +
+            (n.cct ? 
+              '<span style="color:var(--azul);font-weight:600;">' + n.cct + '</span>' : 
+              '<span style="color:var(--naranja);font-weight:600;"><i class="bi bi-exclamation-circle"></i> Falta</span>'
+            ) +
+          '</td>' +
+          
+          '<td style="padding:0.6rem 0.5rem;text-align:center;">' +
+            (n.personal_escolar ? 
+              '<span style="background:var(--azul-suave);color:var(--azul);padding:0.2rem 0.4rem;border-radius:8px;font-weight:600;font-size:0.7rem;">' + n.personal_escolar + '</span>' : 
+              '<span style="color:var(--naranja);"><i class="bi bi-dash-circle"></i></span>'
+            ) +
+          '</td>' +
+          
+          '<td style="padding:0.6rem 0.5rem;text-align:center;">' +
+            (n.estudiantes ? 
+              '<span style="background:var(--verde-suave);color:var(--verde-oscuro);padding:0.2rem 0.4rem;border-radius:8px;font-weight:600;font-size:0.7rem;">' + n.estudiantes + '</span>' : 
+              '<span style="color:var(--naranja);"><i class="bi bi-dash-circle"></i></span>'
+            ) +
+          '</td>' +
+          
+          (puedeEditar ?
+            '<td style="padding:0.6rem 0.5rem;text-align:center;">' +
+              '<div style="display:flex;gap:0.25rem;justify-content:center;">' +
+                '<button class="esc-btn esc-btn-editar" style="padding:0.25rem 0.4rem;font-size:0.65rem;" onclick="escAbrirModalNivel(' + escuelaId + ',' + n.id + ')" title="Editar nivel">' +
+                  '<i class="bi bi-pencil-square"></i>' +
+                '</button>' +
+                '<button class="esc-btn esc-btn-eliminar" style="padding:0.25rem 0.4rem;font-size:0.65rem;" onclick="escEliminarNivel(' + escuelaId + ',' + n.id + ')" title="Eliminar nivel">' +
+                  '<i class="bi bi-trash3"></i>' +
+                '</button>' +
+              '</div>' +
+            '</td>' : ''
+          ) +
+        '</tr>';
+      });
+
+      tabla += '</tbody></table></div>';
+      wrap.innerHTML = tabla;
+    })
+    .catch(function() {
+      var wrap = document.getElementById('niveles-' + escuelaId);
+      if (wrap) wrap.innerHTML = '<div style="text-align:center;padding:1rem;background:var(--rojo-suave);border-radius:8px;color:var(--rojo);">' +
+        '<i class="bi bi-exclamation-triangle"></i> Error al cargar escuelas' +
+      '</div>';
+    });
+}
+
+// Funciones para modal de niveles
+function escAbrirModalNivel(escuelaId, nivelId) {
+  esc_nivelEscuelaId = escuelaId;
+  esc_nivelId = nivelId;
+
+  var campos = ['esc-nivel-nombre','esc-nivel-nivel','esc-nivel-modalidad','esc-nivel-turno','esc-nivel-sostenimiento','esc-nivel-cct','esc-nivel-personal','esc-nivel-estudiantes'];
+  campos.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  var errEl = document.getElementById('esc-nivel-error');
+  if (errEl) errEl.style.display = 'none';
+
+  var tituloEl = document.getElementById('esc-nivel-titulo');
+
+  if (nivelId) {
+    // Modo editar: cargar datos del nivel
+    if (tituloEl) tituloEl.textContent = 'Editar nivel';
+    adminFetch('/api/admin/escuelas/' + escuelaId + '/niveles')
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        var nivel = data.data.find(function(n){ return n.id === nivelId; });
+        if (!nivel) return;
+        document.getElementById('esc-nivel-nombre').value       = nivel.nombre || '';
+        document.getElementById('esc-nivel-nivel').value        = nivel.nivel_educativo || '';
+        document.getElementById('esc-nivel-modalidad').value    = nivel.modalidad || '';
+        document.getElementById('esc-nivel-turno').value        = nivel.turno || '';
+        document.getElementById('esc-nivel-sostenimiento').value = nivel.sostenimiento || '';
+        document.getElementById('esc-nivel-cct').value          = nivel.cct || '';
+        document.getElementById('esc-nivel-personal').value     = nivel.personal_escolar || '';
+        document.getElementById('esc-nivel-estudiantes').value  = nivel.estudiantes || '';
+      });
+  } else {
+    if (tituloEl) tituloEl.textContent = 'Agregar nivel';
+  }
+
+  document.getElementById('esc-modal-nivel').style.display = 'flex';
+}
+
+function escCerrarModalNivel() {
+  document.getElementById('esc-modal-nivel').style.display = 'none';
+}
+
+function escGuardarNivel() {
+  var errEl = document.getElementById('esc-nivel-error');
+  var nombre       = document.getElementById('esc-nivel-nombre').value.trim();
+  var nivel        = document.getElementById('esc-nivel-nivel').value;
+  var modalidad    = document.getElementById('esc-nivel-modalidad').value;
+  var turno        = document.getElementById('esc-nivel-turno').value;
+  var sostenimiento = document.getElementById('esc-nivel-sostenimiento').value;
+  var cct          = document.getElementById('esc-nivel-cct').value.trim();
+  var personal     = document.getElementById('esc-nivel-personal').value;
+  var estudiantes  = document.getElementById('esc-nivel-estudiantes').value;
+
+  if (!nombre || !nivel || !modalidad || !turno || !sostenimiento) {
+    if (errEl) { errEl.textContent = 'Nombre, nivel, modalidad, turno y sostenimiento son obligatorios.'; errEl.style.display = 'block'; }
+    return;
+  }
+  if (errEl) errEl.style.display = 'none';
+
+  var payload = {
+    nombre: nombre,
+    nivel_educativo: nivel,
+    modalidad: modalidad,
+    turno: turno,
+    sostenimiento: sostenimiento,
+    cct: cct || null,
+    personal_escolar: personal ? parseInt(personal) : null,
+    estudiantes: estudiantes ? parseInt(estudiantes) : null
+  };
+
+  var btn = document.getElementById('esc-nivel-guardar');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Guardando...'; }
+
+  var url = esc_nivelId
+    ? '/api/admin/escuelas/' + esc_nivelEscuelaId + '/niveles/' + esc_nivelId
+    : '/api/admin/escuelas/' + esc_nivelEscuelaId + '/niveles';
+  var method = esc_nivelId ? 'PUT' : 'POST';
+
+  adminFetch(url, {
+    method: method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data) {
+    if (data.error) {
+      if (errEl) { errEl.textContent = data.error; errEl.style.display = 'block'; }
+      return;
+    }
+    escCerrarModalNivel();
+    escCargarNiveles(esc_nivelEscuelaId);
+    escCargar(esc_paginaActual); // recargar para actualizar badge completa/incompleta
+  })
+  .catch(function() {
+    if (errEl) { errEl.textContent = 'Error de conexión.'; errEl.style.display = 'block'; }
+  })
+  .finally(function() {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-check2"></i> Guardar'; }
+  });
+}
+
+function escEliminarNivel(escuelaId, nivelId) {
+  if (!confirm('¿Eliminar este nivel? Esta acción no se puede deshacer.')) return;
+
+  adminFetch('/api/admin/escuelas/' + escuelaId + '/niveles/' + nivelId, { method: 'DELETE' })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.error) { alert('Error: ' + data.error); return; }
+      escCargarNiveles(escuelaId);
+      escCargar(esc_paginaActual);
+    })
+    .catch(function() { alert('Error al eliminar.'); });
 }
 
 // Paginación
@@ -1338,8 +1290,8 @@ function escAbrirModalNuevo() {
   esc_modoEditar = false;
   esc_idActual = null;
   
-  // Limpiar formulario
-  var campos = ['esc-modal-nombre', 'esc-modal-plantel', 'esc-modal-municipio', 'esc-modal-cct', 'esc-modal-nivel', 'esc-modal-modalidad', 'esc-modal-turno', 'esc-modal-sostenimiento', 'esc-modal-personal', 'esc-modal-estudiantes', 'esc-modal-direccion'];
+  // Limpiar formulario - SOLO campos que quedan
+  var campos = ['esc-modal-nombre', 'esc-modal-municipio', 'esc-modal-direccion'];
   campos.forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.value = '';
@@ -1374,18 +1326,10 @@ function escAbrirModalEditar(id) {
       esc_modoEditar = true;
       esc_idActual = e.id;
       
-      // Llenar formulario
+      // Llenar formulario - SOLO campos que quedan
       var campos = {
         'esc-modal-nombre': e.nombre || '',
-        'esc-modal-plantel': e.plantel || '',
         'esc-modal-municipio': e.municipio_id || '',
-        'esc-modal-cct': e.cct || '',
-        'esc-modal-nivel': e.nivel_educativo || '',
-        'esc-modal-modalidad': e.modalidad || '',
-        'esc-modal-turno': e.turno || '',
-        'esc-modal-sostenimiento': e.sostenimiento || '',
-        'esc-modal-personal': e.personal_escolar || '',
-        'esc-modal-estudiantes': e.estudiantes || '',
         'esc-modal-direccion': e.direccion || ''
       };
       
@@ -1431,17 +1375,10 @@ function escGuardar() {
   
   if (errEl) errEl.style.display = 'none';
 
+  // Payload SOLO con campos que quedan
   var payload = {
     nombre: nombre,
     municipio_id: parseInt(municipio_id),
-    plantel: getValue('esc-modal-plantel') || null,
-    cct: getValue('esc-modal-cct') || null,
-    nivel_educativo: getValue('esc-modal-nivel') || null,
-    modalidad: getValue('esc-modal-modalidad') || null,
-    turno: getValue('esc-modal-turno') || null,
-    sostenimiento: getValue('esc-modal-sostenimiento') || null,
-    personal_escolar: getValue('esc-modal-personal') ? parseInt(getValue('esc-modal-personal')) : null,
-    estudiantes: getValue('esc-modal-estudiantes') ? parseInt(getValue('esc-modal-estudiantes')) : null,
     direccion: getValue('esc-modal-direccion') || null
   };
   
