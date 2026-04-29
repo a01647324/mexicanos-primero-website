@@ -199,6 +199,29 @@ if (subcategoriaRealId){ values.push(subcategoriaRealId);conditions.push(`subcat
 });
 
 
+//GOOGLE MAPS NECESIDADES
+
+app.get("/api/escuela-direccion", async (req, res) => {
+  try {
+    const { nombre } = req.query;
+    if (!nombre) return res.status(400).json({ error: "Falta el nombre" });
+
+    const result = await pool.query(
+      `SELECT direccion FROM escuelas WHERE nombre = $1 LIMIT 1`,
+      [nombre]
+    );
+
+    if (result.rows.length === 0 || !result.rows[0].direccion) {
+      return res.json({ direccion: null });
+    }
+
+    res.json({ direccion: result.rows[0].direccion });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error en servidor" });
+  }
+});
+
 // ─────────────────────────────────────────────────────────────
 // FORMULARIOS PÚBLICOS
 // ─────────────────────────────────────────────────────────────

@@ -419,6 +419,57 @@ try {
     'Salud':            'images/salud.jpg',
   };
 
+// link de dirreccion tabla escuelas a URL embebible
+function convertirAEmbed(url) {
+  if (!url) return null;
+  const limpio = url.replace(/\$0$/, '').trim();
+  if (limpio.includes('output=embed')) return limpio;
+  const qParam = limpio.match(/[?&]q=([^&]+)/);
+  if (qParam) {
+    return `https://www.google.com/maps?q=${qParam[1]}&output=embed`;
+  }
+  const atCoords = limpio.match(/@(-?\d+\.?\d*),(-?\d+\.?\d*)/);
+  if (atCoords) {
+    return `https://www.google.com/maps?q=${atCoords[1]},${atCoords[2]}&output=embed`;
+  }
+  const searchCoords = limpio.match(/\/maps\/search\/(-?\d+\.?\d*),\+?(-?\d+\.?\d*)/);
+  if (searchCoords) {
+    return `https://www.google.com/maps?q=${searchCoords[1]},${searchCoords[2]}&output=embed`;
+  }
+  const placeCoords = limpio.match(/!3d(-?\d+\.?\d*)!4d(-?\d+\.?\d*)/);
+  if (placeCoords) {
+    return `https://www.google.com/maps?q=${placeCoords[1]},${placeCoords[2]}&output=embed`;
+  }
+
+  return null; // si no se puede convertir usa fallback 
+}
+
+async function cargarMapaEscuela(nombreEscuela, municipio) {
+  const iframe = document.getElementById('mapa-iframe');
+
+//si no se puede convertir se busca en google maps con el nombre de la escuela
+  const fallback = `https://www.google.com/maps?q=${encodeURIComponent(
+    `${nombreEscuela}, ${municipio}, Jalisco, México`
+  )}&output=embed`;
+
+  try {
+    const res = await fetch(
+      `${API_URL}/escuela-direccion?nombre=${encodeURIComponent(nombreEscuela)}`
+    );
+
+    if (!res.ok) throw new Error('No se pudo obtener dirección');
+
+    const { direccion } = await res.json();
+    const embedUrl = convertirAEmbed(direccion);
+
+    iframe.src = embedUrl || fallback;
+
+  } catch (e) {
+    console.warn('Usando fallback de mapa:', e.message);
+    iframe.src = fallback;
+  }
+}
+
   async function iniciar() {
     // primero se inntenta leer de localStorage
     const guardado = localStorage.getItem('necesidad_actual');
@@ -470,15 +521,9 @@ try {
     const nivel = calcularNivel(necesidad.cantidad);
     document.getElementById('nivel-chip-wrap').innerHTML =
       `<span class="nivel-chip ${nivel.claseBase}">${nivel.label}</span>`;
-
-    // google mapa
-   const query = encodeURIComponent(
-  `${necesidad.escuela}, ${necesidad.municipio}, Jalisco, México`
-);
-    document.getElementById('mapa-iframe').src =
-  `https://www.google.com/maps?q=${query}&output=embed`;
-    
+   
     generarPresets(parseInt(necesidad.cantidad) || 0);
+    cargarMapaEscuela(necesidad.escuela, necesidad.municipio);    // google mapa
   }
 
   function calcularNivel(cantidad) {
