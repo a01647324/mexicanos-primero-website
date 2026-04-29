@@ -1550,6 +1550,30 @@ app.delete("/api/admin/escuelas/:id/niveles/:nivel_id", verificarToken, soloAdmi
   }
 });
 
+// POST — Crear municipio si no existe
+app.post("/api/admin/municipios", verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const { nombre } = req.body;
+    if (!nombre || nombre.trim().length < 2)
+      return res.status(400).json({ error: "Nombre del municipio inválido." });
+
+    const existe = await pool.query(
+      "SELECT id FROM municipios WHERE LOWER(nombre) = LOWER($1)", [nombre.trim()]
+    );
+    if (existe.rows.length > 0)
+      return res.json({ id: existe.rows[0].id, nombre: nombre.trim() });
+
+    const result = await pool.query(
+      "INSERT INTO municipios (nombre) VALUES ($1) RETURNING id, nombre",
+      [nombre.trim()]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Error en servidor" });
+  }
+});
+
 // INICIO
 
 const PORT = process.env.PORT || 3000;
