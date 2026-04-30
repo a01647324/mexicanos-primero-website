@@ -61,8 +61,14 @@ app.use(cors());
 app.use(express.json());
 const staticPath =
   process.env.NODE_ENV === "production"
-    ? __dirname
+    ? path.join(__dirname)
     : path.join(__dirname, "..");
+
+app.use(express.static(staticPath));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(staticPath, "index.html"));
+});
 
 app.use(express.static(staticPath));
 app.get("/", (req, res) => {
