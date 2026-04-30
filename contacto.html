@@ -226,7 +226,7 @@
 
         setTimeout(() => {
         window.location.href = "login-donador.html";
-        }, 2000);
+        }, 2500);
 
         return;
     }
@@ -337,88 +337,92 @@
   // enviar form
   window.enviarFormulario = async function() {
 
-    // checar login
-    const token = localStorage.getItem('token');
-    const rol   = localStorage.getItem('rol');
+  const token = localStorage.getItem('token');
+  const rol   = localStorage.getItem('rol');
 
-    if (!token || rol !== 'donador') {
-      mostrarToast("Debes iniciar sesión para enviar una donación.");
-        localStorage.setItem("loginOrigen", window.location.href);
+  if (!token || rol !== 'donador') {
+    mostrarToast("Debes iniciar sesión para enviar una donación.");
+    localStorage.setItem("loginOrigen", window.location.href);
 
-        setTimeout(() => {
-        window.location.href = "login-donador.html";
-        }, 1800);
+    setTimeout(() => {
+      window.location.href = "login-donador.html";
+    }, 3500);
 
-        return;
+    return;
+  }
+
+  const form = document.getElementById("contacto-donor");
+
+  if (!form.checkValidity()) {
+    form.classList.add("was-validated");
+    mostrarToast("Completa los campos requeridos.");
+    return;
+  }
+
+  const correo = document.getElementById("correo").value.trim();
+  const telefono = document.getElementById("telefono").value.trim();
+
+  const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo);
+  const telefonoValido = /^[0-9]{10}$/.test(telefono);
+
+  if (!correoValido || !telefonoValido) {
+    form.classList.add("was-validated");
+
+    if (!correoValido) {
+      document.getElementById("correo").classList.add("is-invalid");
     }
 
-    const form = document.getElementById("contacto-donor");
-
-    // validacion base bootstrap
-    if (!form.checkValidity()) {
-      form.classList.add("was-validated");
-      return;
+    if (!telefonoValido) {
+      document.getElementById("telefono").classList.add("is-invalid");
     }
 
-    // validacion extra (por si se quieren hacer los listos)
-    const correo = document.getElementById("correo").value.trim();
-    const telefono = document.getElementById("telefono").value.trim();
+    mostrarToast("Revisa correo y teléfono.");
+    return;
+  }
 
-    const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo);
-    const telefonoValido = /^[0-9]{10}$/.test(telefono);
-
-    if (!correoValido || !telefonoValido) {
-      form.classList.add("was-validated");
-
-      if (!correoValido) {
-        document.getElementById("correo").classList.add("is-invalid");
-      }
-
-      if (!telefonoValido) {
-        document.getElementById("telefono").classList.add("is-invalid");
-      }
-
-      return;
-    }
-
-    const payload = {
-      tipo_instancia: document.getElementById("instancia").value,
-      nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
-      correo,
-      telefono,
-      mensaje: document.getElementById("mensaje").value.trim(),
-      aviso_privacidad_aceptado: document.getElementById("check-terminos").checked,
-      origen_formulario: origenFormulario,
-      tipo_donacion: tipoDonacionSelect?.value || tipoDonacion
-    };
-
-    try {
-      const res = await fetch("http://localhost:3000/api/contacto", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        mostrarToast(data.error || "No se pudo enviar el formulario.");
-        return;
-      }
-
-      mostrarToast("¡Gracias! Tu información fue enviada correctamente.", "success");
-      form.reset();
-      cerrarFormulario();
-
-    } catch (error) {
-      console.error(error);
-      mostrarToast("Error de conexión con el servidor.");
-    }
+  const payload = {
+    tipo_instancia: document.getElementById("instancia").value,
+    nombre_instancia: document.getElementById("nombreInstancia").value.trim(),
+    correo,
+    telefono,
+    mensaje: document.getElementById("mensaje").value.trim(),
+    aviso_privacidad_aceptado: true,
+    origen_formulario: origenFormulario || "contacto"
   };
 
+  if (!payload.aviso_privacidad_aceptado) {
+    mostrarToast("Debes aceptar el aviso de privacidad.");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/api/contacto", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      mostrarToast(data.error || "No se pudo enviar el formulario.");
+      return;
+    }
+
+    mostrarToast("¡Gracias! Tu información fue enviada correctamente.", "success");
+
+    form.reset();
+    form.classList.remove("was-validated");
+    cerrarFormulario();
+
+  } catch (error) {
+    console.error(error);
+    mostrarToast("Error de conexión con el servidor.");
+  }
+};
   // bloquear letras en telefono
   const telefonoInput = document.getElementById("telefono");
 
@@ -481,8 +485,8 @@
 </script>
 
 <!-- toast notif -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-  <div id="liveToast" class="toast text-bg-danger border-0" role="alert">
+<div class="toast-container position-fixed bottom-0 end-0 p-4" style="z-index: 9999;">
+  <div id="liveToast" class="toast text-bg-danger border-0 text-center shadow-lg" style="width: 25vw; max-width: 400px; font-size: 1.1rem; padding: 2rem; border-radius: 16px;">
     <div class="d-flex">
       <div class="toast-body" id="toast-msg">
         mensaje aqui
