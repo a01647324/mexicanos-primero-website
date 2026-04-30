@@ -1,13 +1,10 @@
-name: Simple CI
+name: Azure Staging Deploy
 
 on:
-  push:
-    branches: [ "main", "feature/**" ]
-  pull_request:
-    branches: [main]  
+  workflow_dispatch:
 
 jobs:
-  quality:
+  deploy-staging:
     runs-on: ubuntu-latest
 
     defaults:
@@ -31,3 +28,10 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: mexicanos-primero-staging-Itzia
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_STAGING }}
+          package: ./backend
