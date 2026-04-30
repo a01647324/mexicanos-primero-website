@@ -2,10 +2,12 @@ name: Simple CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "feature/**" ]
+  pull_request:
+    branches: [main]  
 
 jobs:
-  buildAndTest:
+  quality:
     runs-on: ubuntu-latest
 
     defaults:
@@ -23,6 +25,9 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
 
       - name: Run tests
         run: npm test
