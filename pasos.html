@@ -219,6 +219,22 @@
     <script>
       // modal de terminos
       function abrirTerminos() {
+        // Verificar login antes de abrir el formulario
+        const token = localStorage.getItem("token");
+        const rol = localStorage.getItem("rol");
+
+        if (!token || rol !== "donador") {
+          mostrarToast("Debes iniciar sesión para llenar el formulario.");
+          localStorage.setItem("loginOrigen", window.location.href);
+
+          setTimeout(() => {
+            window.location.href = "login-donador.html";
+          }, 2500);
+
+          return;
+        }
+
+        mostrarDatosCuentaSiExiste();
         document.getElementById("modal-terminos").classList.add("activo");
       }
 
@@ -409,18 +425,16 @@
     <script src="main.js"></script>
 
     <script>
-      // datos de la cuenta
+      // datos de la cuenta - solo se ejecuta cuando hay sesión
       document.addEventListener("DOMContentLoaded", function () {
+        mostrarDatosCuentaSiExiste();
+      });
+
+      function mostrarDatosCuentaSiExiste() {
         const token = localStorage.getItem("token");
         const rol = localStorage.getItem("rol");
 
         if (!token || rol !== "donador") {
-          mostrarToast("Debes iniciar sesión para enviar una solicitud de materiales.");
-
-          setTimeout(() => {
-            window.location.href = "login-donador.html";
-          }, 3000);
-
           return;
         }
 
@@ -440,7 +454,8 @@
         } catch (err) {
           console.error("Error leyendo token:", err);
         }
-      });
+      }
+      
     </script>
 <div class="toast-container position-fixed bottom-0 end-0 p-3 p-md-4" style="z-index: 9999;">
   <div id="liveToast"
