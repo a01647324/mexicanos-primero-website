@@ -437,12 +437,10 @@ window.abrirModalPerfil = async function() {
   const modal = document.getElementById('modal-perfil');
   if (!modal) return;
 
-  // Cargar datos actuales del usuario
   const token = localStorage.getItem('token');
   if (!token) return;
 
   try {
-    // Obtener datos completos del perfil
     const response = await fetch('http://localhost:3000/api/donador/perfil', {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -453,12 +451,15 @@ window.abrirModalPerfil = async function() {
       const data = await response.json();
       const perfil = data.data;
       
+      const fechaFormateada = perfil.fecha_nacimiento 
+        ? perfil.fecha_nacimiento.split('T')[0] 
+        : '';
+
       document.getElementById('perfil-nombre').value = perfil.nombre_completo || '';
       document.getElementById('perfil-correo').value = perfil.correo || '';
-      document.getElementById('perfil-fecha').value = perfil.fecha_nacimiento || '';
+      document.getElementById('perfil-fecha').value  = fechaFormateada;
       document.getElementById('perfil-estado').value = perfil.estado_geografico || '';
     } else {
-      // Fallback: usar datos del token
       const payload = JSON.parse(atob(token.split('.')[1]));
       document.getElementById('perfil-nombre').value = payload.nombre || '';
       document.getElementById('perfil-correo').value = payload.correo || '';

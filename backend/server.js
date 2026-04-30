@@ -7,6 +7,14 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { pool } from "./db.js";
+import pg from "pg";
+const { Pool } = pg;
+
+const directPool = new Pool({
+  connectionString: process.env.DATABASE_URL_DIRECT || process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+  statement_timeout: 0
+});
 
 const upload   = multer({ storage: multer.memoryStorage() });
 const __filename = fileURLToPath(import.meta.url);
@@ -160,7 +168,7 @@ app.get("/api/filtros", async (req, res) => {
 
 app.get("/api/data", async (req, res) => {
   try {
-    const { municipio, escuela, categoria_id, subcategoria_id } = req.query;
+    const { municipio, escuela, categoria_id, subcategoria_id, solo_pendientes } = req.query;
 
     let categoriaRealId    = null;
     let subcategoriaRealId = null;
@@ -176,21 +184,23 @@ app.get("/api/data", async (req, res) => {
 
     const conditions = [];
     const values     = [];
-if (municipio)         { values.push(municipio);         conditions.push(`municipio = $${values.length}`); }
-if (escuela)           { values.push(escuela);           conditions.push(`escuela = $${values.length}`); }
-if (categoriaRealId)   { values.push(categoriaRealId);   conditions.push(`categoria_id = $${values.length}`); }
-if (subcategoriaRealId){ values.push(subcategoriaRealId);conditions.push(`subcategoria_id = $${values.length}`); }
-
+    if (municipio)          { values.push(municipio);          conditions.push(`municipio = $${values.length}`); }
+    if (escuela)            { values.push(escuela);            conditions.push(`escuela = $${values.length}`); }
+    if (categoriaRealId)    { values.push(categoriaRealId);    conditions.push(`categoria_id = $${values.length}`); }
+    if (subcategoriaRealId) { values.push(subcategoriaRealId); conditions.push(`subcategoria_id = $${values.length}`); }
+    if (solo_pendientes === 'true') {
+      conditions.push(`estado NOT IN ('Cubierto', 'Cubierto parcialmente')`);
+    }
 
     const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
 
     const result = await pool.query(
-  `SELECT *
-   FROM vista_necesidades_completa
-   ${where}
-   ORDER BY id`,
-  values
-);
+      `SELECT *
+       FROM vista_necesidades_completa
+       ${where}
+       ORDER BY id`,
+      values
+    );
     res.json({ data: result.rows });
   } catch (err) {
     console.error(err);
@@ -750,14 +760,22 @@ app.post("/api/admin/excel/subir", verificarToken, soloAdmin, upload.single("arc
       return "Aun no cubierto";
     };
 
-    const client = await pool.connect();
+    const client = await directPool.connect();
+    client.on('error', (err) => {
+      console.error('Client error durante subida de Excel:', err.message);
+    });
+
     let insertados = 0;
 
     try {
       await client.query("BEGIN");
       await client.query("TRUNCATE TABLE necesidades RESTART IDENTITY CASCADE");
 
+      // ── Pre-calcular todos los IDs fuera del INSERT ──
+      const filasProcesadas = [];
+
       for (const fila of filas) {
+        const clean = v => v ? String(v).trim() : null;
         const municipio    = clean(fila["Municipio"]);
         const categoria    = clean(fila["Categoría"]    || fila["Categoria"]);
         const subcategoria = clean(fila["Subcategoría"] || fila["Subcategoria"]);
@@ -765,44 +783,58 @@ app.post("/api/admin/excel/subir", verificarToken, soloAdmin, upload.single("arc
         const propuesta    = clean(fila["Propuesta"]);
         const cantidad     = parseInt(fila["Cantidad"]) || 1;
         const unidad       = clean(fila["Unidad"]);
-        const detalles     = clean(fila["Detalles"]);
+        const detalles     = clean(fila["Detalles"]) || null;
         const estado       = normalizeEstado(fila["Estado"]);
 
-        const categoriaId = (await client.query("SELECT id FROM categorias WHERE nombre = $1", [categoria])).rows[0]?.id
+        const categoriaId =
+          (await client.query("SELECT id FROM categorias WHERE nombre = $1", [categoria])).rows[0]?.id
           ?? (await client.query("INSERT INTO categorias (nombre) VALUES ($1) RETURNING id", [categoria])).rows[0].id;
 
-        const subcategoriaId = (await client.query("SELECT id FROM subcategorias WHERE nombre = $1 AND categoria_id = $2", [subcategoria, categoriaId])).rows[0]?.id
+        const subcategoriaId =
+          (await client.query("SELECT id FROM subcategorias WHERE nombre = $1 AND categoria_id = $2", [subcategoria, categoriaId])).rows[0]?.id
           ?? (await client.query("INSERT INTO subcategorias (nombre, categoria_id) VALUES ($1, $2) RETURNING id", [subcategoria, categoriaId])).rows[0].id;
 
-        const escuelaId = (await client.query("SELECT fn_upsert_escuela($1, $2) AS escuela_id", [municipio, escuela])).rows[0].escuela_id;
+        const escuelaId =
+          (await client.query("SELECT fn_upsert_escuela($1, $2) AS escuela_id", [municipio, escuela])).rows[0].escuela_id;
 
-        await client.query(
-          `INSERT INTO necesidades (escuela_id, subcategoria_id, propuesta, cantidad, unidad, estado, detalles)
-           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-          [escuelaId, subcategoriaId, propuesta, cantidad, unidad, estado, detalles]
-        );
-        insertados++;
+        filasProcesadas.push([escuelaId, subcategoriaId, propuesta, cantidad, unidad, estado, detalles]);
       }
 
+      // ── Un solo INSERT con todas las filas ──
+      const valores = filasProcesadas.map((_, i) => {
+        const base = i * 7;
+        return `($${base+1},$${base+2},$${base+3},$${base+4},$${base+5},$${base+6},$${base+7})`;
+      });
+
+      const params = filasProcesadas.flat();
+
+      await client.query(
+        `INSERT INTO necesidades (escuela_id, subcategoria_id, propuesta, cantidad, unidad, estado, detalles)
+        VALUES ${valores.join(', ')}`,
+        params
+      );
+
+      insertados = filasProcesadas.length;
+
       await client.query("COMMIT");
-      res.json({ 
-        message: `Importación completada exitosamente: ${insertados} registros insertados.`, 
+      res.json({
+        message: `Importación completada exitosamente: ${insertados} registros insertados.`,
         insertados,
-        total_procesados: filas.length 
+        total_procesados: filas.length
       });
 
     } catch (err) {
       await client.query("ROLLBACK");
       console.error("Error en inserción:", err);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Error durante la inserción: " + err.message,
         nota: "No se realizaron cambios en la base de datos"
       });
     } finally {
       client.release();
     }
-
-  } catch (err) {
+    
+    } catch (err) {
     console.error("Error procesando archivo:", err);
     res.status(500).json({ error: "Error procesando el archivo: " + err.message });
   }
@@ -1512,6 +1544,30 @@ app.delete("/api/admin/escuelas/:id/niveles/:nivel_id", verificarToken, soloAdmi
 
     await recalcularEstadoEscuela(req.params.id);
     res.json({ message: "Nivel eliminado." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Error en servidor" });
+  }
+});
+
+// POST — Crear municipio si no existe
+app.post("/api/admin/municipios", verificarToken, soloAdmin, async (req, res) => {
+  try {
+    const { nombre } = req.body;
+    if (!nombre || nombre.trim().length < 2)
+      return res.status(400).json({ error: "Nombre del municipio inválido." });
+
+    const existe = await pool.query(
+      "SELECT id FROM municipios WHERE LOWER(nombre) = LOWER($1)", [nombre.trim()]
+    );
+    if (existe.rows.length > 0)
+      return res.json({ id: existe.rows[0].id, nombre: nombre.trim() });
+
+    const result = await pool.query(
+      "INSERT INTO municipios (nombre) VALUES ($1) RETURNING id, nombre",
+      [nombre.trim()]
+    );
+    res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message || "Error en servidor" });

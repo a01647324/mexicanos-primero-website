@@ -329,16 +329,20 @@
         selEsc.appendChild(o);
       });
 
+      // Categorías y subcategorías REALES (no catálogo)
+      var resReales = await fetch(API_URL + "/admin/categorias-reales");
+      if (!resReales.ok) throw new Error("Error cargando categorías reales");
+      var reales = await resReales.json();
+
       var selCat = document.getElementById("filtro-categoria");
-      filtros.categorias.forEach(function(cat) {
+      reales.categorias.forEach(function(cat) {
         var o = document.createElement("option");
         o.value = cat.id;
         o.textContent = cat.nombre;
-        o.dataset.categoriaRealId = cat.categoria_real_id;
         selCat.appendChild(o);
       });
 
-      todasSubcatsAdmin = filtros.subcategorias;
+      todasSubcatsAdmin = reales.subcategorias;
       renderSubcatAdmin(todasSubcatsAdmin);
 
     } catch (err) {
@@ -355,8 +359,6 @@
       var o = document.createElement("option");
       o.value = sub.id;
       o.textContent = sub.nombre;
-      o.dataset.subcategoriaRealId = sub.subcategoria_real_id;
-      o.dataset.categoriaCatalogoId = sub.categoria_catalogo_id;
       sel.appendChild(o);
     });
   }
@@ -367,7 +369,7 @@
       renderSubcatAdmin(todasSubcatsAdmin);
     } else {
       var filtradas = todasSubcatsAdmin.filter(function(s) {
-        return String(s.categoria_catalogo_id) === String(categoriaId);
+        return String(s.categoria_id) === String(categoriaId);
       });
       renderSubcatAdmin(filtradas);
     }

@@ -119,11 +119,8 @@ src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.j
 document.addEventListener("DOMContentLoaded", () => {
     renderCarrito(); 
 });
-  /* ══════════════════════════════════════════════════════════
-     NIVEL DE NECESIDAD-este no es backend-!!!! esto se hace solo en el frontend
-     Calcula nivel basado en la cantidad (campo de la BD).
-     Umbral: >50 = Urgente, 10-50 = Moderado, <10 = Bajo
-     ══════════════════════════════════════════════════════════ */
+  // NIVEL DE NECESIDAD-este no es backend-!!!! esto se hace solo en el frontend
+  
   function calcularNivel(cantidad) {
     const n = parseInt(cantidad) || 0;
     if (n > 50) return { label: 'Urgente',  clase: 'nivel-urgente' };
@@ -182,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
       selEsc.appendChild(o);
     });
  
-    // Categorías catálogo 
+    // Categorias catalogo 
     const selCat = document.getElementById("categoriaSelect");
     filtros.categorias.forEach(cat => {
       const o = document.createElement("option");
@@ -192,12 +189,12 @@ document.addEventListener("DOMContentLoaded", () => {
       selCat.appendChild(o);
     });
  
-    //Subcategorías catálogo
+    //Subcategorias catálogo
     todasSubcats = filtros.subcategorias;
     renderSubcatOpciones(todasSubcats);
   }
  
-  /* Renderiza las opciones del select de subcategorías */
+  /*Renderiza las opciones del select de subcategorías */
   function renderSubcatOpciones(subcats) {
     const sel = document.getElementById("subcategoriaSelect");
     const v = sel.value;
@@ -214,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (v) sel.value = v;
   }
  
-  /* Cuando cambia la categoría ahora solo se muestran sussubcats*/
+  /*Cuando cambia la categoría ahora solo se muestran sussubcats*/
   function actualizarDropdownSubcategorias() {
     const categoriaId = document.getElementById("categoriaSelect").value;
     if (!categoriaId) {
@@ -278,8 +275,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (escuela)     params.set("escuela",          escuela);
     if (categoriaId) params.set("categoria_id",     categoriaId);   
     if (subcatId)    params.set("subcategoria_id",  subcatId);   
+    params.set("solo_pendientes", "true");
  
-    const url = `${API_URL}/data${params.toString() ? '?' + params.toString() : ''}`;
+    const url = `${API_URL}/data?${params.toString()}`;
  
     try {
       const res = await fetch(url);
