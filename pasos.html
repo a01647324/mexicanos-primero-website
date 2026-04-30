@@ -442,15 +442,16 @@
         }
       });
     </script>
-    <div class="toast-container position-fixed bottom-0 end-0 p-4" style="z-index: 9999;">
-
-      <div id="liveToast" class="toast text-bg-danger border-0 text-center shadow-lg" style="width: 30vw; max-width: 500px; font-size: 1.2rem; padding: 2rem; border-radius: 16px;">
-        <div class="d-flex">
-          <div class="toast-body" id="toast-msg"></div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-      </div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3 p-md-4" style="z-index: 9999;">
+  <div id="liveToast"
+     class="toast text-bg-danger border-0 shadow-lg custom-toast"
+     style="min-width: 420px; max-width: 500px; font-size: 1.2rem; padding: 1.2rem; border-radius: 12px;">
+    <div class="d-flex align-items-center">
+      <div class="toast-body" id="toast-msg"></div>
+      <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="toast"></button>
     </div>
+  </div>
+</div>
   </body>
 
 </html>

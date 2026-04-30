@@ -3226,3 +3226,18 @@
   white-space: nowrap !important;
   border: 0 !important;
 }
+@media (max-width: 576px) {
+  #liveToast {
+    min-width: unset !important;   /* 👈 mata el 420px */
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 1.05rem !important;
+    padding: 1rem !important;
+  }
+
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+  }
+}
