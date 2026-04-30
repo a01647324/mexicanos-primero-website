@@ -33,6 +33,7 @@ jobs:
           mkdir deploy
           cp -r backend/* deploy/
           cp -r components deploy/ || true
+          cp -r fragments deploy/ || true
           cp -r css deploy/ || true
           cp -r images deploy/ || true
           cp -r img deploy/ || true
