@@ -3226,3 +3226,29 @@
   white-space: nowrap !important;
   border: 0 !important;
 }
+.custom-toast {
+  width: 420px;
+  max-width: calc(100vw - 2rem);
+  font-size: 1.1rem;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.custom-toast .toast-body {
+  font-weight: 500;
+}
+
+@media (max-width: 576px) {
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+  .custom-toast {
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.95rem;
+    padding: 0.8rem;
+  }
+}
