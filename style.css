@@ -36,7 +36,6 @@
     --sombra-hover: 0 8px 28px rgba(0,0,0,0.09),  0 2px 8px  rgba(0,0,0,0.05);
     --sombra-xl:    0 4px 40px rgba(0,0,0,0.07),  0 1px 8px  rgba(0,0,0,0.04);
 
-    /* Radios */
     --radio:    16px;
     --radio-xl: 44px;
 }
@@ -128,9 +127,7 @@ img {
   max-width: 100%;
 }
 
-/* =========================
-   HEADER GLOBAL
-========================= */
+/* -- HEADER GLOBAL -- */
 .navbar {
   position: fixed;
   top: 0;
@@ -434,7 +431,7 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
   box-shadow: 0 14px 28px rgba(0, 153, 51, 0.40);
 }
 
-/* botón hamburguesa */
+/* -- BOTÓN HAMBURGUESA -- */
 .menu-toggle {
   display: none;
   width: 48px;
@@ -469,9 +466,7 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
   transform: translateY(-9px) rotate(-45deg);
 }
 
-/* =========================
-   FOOTER GLOBAL
-   ========================= */
+/* -- FOOTER GLOBAL -- */
 .footer {
   background: #243f6b;
   padding: 2.5rem 2rem;
@@ -573,18 +568,14 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
   text-decoration: none;
 }
 
-/* =========================
-   CONTENEDOR ÚTIL PARA PÁGINAS INTERNAS
-   ========================= */
+/* -- CONTENEDOR ÚTIL PARA PÁGINAS INTERNAS -- */
 .pagina-interna {
   max-width: 1200px;
   margin: 0 auto;
   padding: 3rem 1.5rem;
 }
 
-/* =========================
-   RESPONSIVE HEADER
-   ========================= */
+/* -- RESPONSIVE HEADER --  */
 @media (max-width: 1200px) {
   .navbar {
     padding: 0 1.5rem 0 10rem;
@@ -732,9 +723,7 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
     width: 24px;
   }
 }
-/* =========================
-   RESPONSIVE FOOTER
-   ========================= */
+/* -- RESPONSIVE FOOTER -- */
    @media (max-width: 768px) {
     .footer {
       padding: 2rem 1.2rem;
@@ -778,7 +767,7 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
   }
 }
 
-/* ── ANIMACIONES GLOBALES ── */
+/* -- ANIMACIONES  -- */
 @keyframes subirFadeIn {
     from { opacity: 0; transform: translateY(22px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -801,9 +790,7 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
 
 .animar { animation: subirFadeIn 0.55s ease both; }
 
-/* =========================
-   LOGIN MODAL
-   ========================= */
+/* -- LOGIN MODAL -- */
    .btn-login-modal {
     cursor: pointer;
   }
@@ -953,7 +940,7 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
     }
   }
 
-  /* ── NAVBAR PERFIL DONADOR ── */
+  /* -- NAVBAR PERFIL DONADOR -- */
 .navbar-perfil {
   align-items: center;
   position: relative;
@@ -1041,7 +1028,7 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
 }
 .perfil-dropdown-item:hover { text-decoration: underline; }
 
-/* FIX MENÚ HAMBURGUESA MÓVIL */
+/* MENÚ HAMBURGUESA MÓVIL */
 @media (max-width: 1024px) {
   .navbar-panel {
     position: fixed;
@@ -1195,9 +1182,7 @@ body[data-page="catalogo"] .btn-ayudar-fixed:hover {
     justify-content: center;
   }
 }
-/* ============================================================
-   MODALES DE PERFIL E HISTORIAL
-   ============================================================ */
+/* -- MODALES DE PERFIL E HISTORIAL -- */
 .modal-caja-grande {
   max-width: 700px;
   max-height: 80vh;
