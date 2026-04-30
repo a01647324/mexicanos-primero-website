@@ -8,6 +8,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { pool } from "./db.js";
 import pg from "pg";
+import fs from "fs";
 const { Pool } = pg;
 
 const directPool = new Pool({
@@ -59,10 +60,18 @@ console.log("DB URL:", process.env.DATABASE_URL?.replace(/:[^:@]+@/, ":***@"));
 const app = express();
 app.use(cors());
 app.use(express.json());
-const staticPath =
-  process.env.NODE_ENV === "production"
-    ? path.join(__dirname)
-    : path.join(__dirname, "..");
+const localFrontendPath = path.join(__dirname, "..");
+const azureFrontendPath = __dirname;
+
+const staticPath = fs.existsSync(path.join(azureFrontendPath, "index.html"))
+  ? azureFrontendPath
+  : localFrontendPath;
+
+app.use(express.static(staticPath));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(staticPath, "index.html"));
+});
 
 app.use(express.static(staticPath));
 
