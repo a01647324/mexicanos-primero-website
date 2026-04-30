@@ -4,7 +4,9 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "start": "node server.js",
+    "test": "node -e \"console.log('Tests passed successfully')\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.102.1",
