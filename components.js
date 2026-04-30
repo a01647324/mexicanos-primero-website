@@ -314,7 +314,7 @@ async function loadComponent(selector, filePath) {
       if (hayErrores) return;
 
       try {
-        const response = await fetch('http://localhost:3000/api/donador/perfil', {
+        const response = await fetch('/api/donador/perfil', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ nombre_completo: nombre, correo, fecha_nacimiento: fecha || null, estado_geografico: estado })
@@ -362,7 +362,7 @@ window.abrirModalHistorial = async function() {
 
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch('http://localhost:3000/api/donador/historial', {
+    const response = await fetch('/api/donador/historial', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -441,7 +441,7 @@ window.abrirModalPerfil = async function() {
   if (!token) return;
 
   try {
-    const response = await fetch('http://localhost:3000/api/donador/perfil', {
+    const response = await fetch('/api/donador/perfil', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
