@@ -59,7 +59,15 @@ console.log("DB URL:", process.env.DATABASE_URL?.replace(/:[^:@]+@/, ":***@"));
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "..")));
+const staticPath =
+  process.env.NODE_ENV === "production"
+    ? __dirname
+    : path.join(__dirname, "..");
+
+app.use(express.static(staticPath));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(staticPath, "index.html"));
+});
 
 
 // ─────────────────────────────────────────────────────────────
