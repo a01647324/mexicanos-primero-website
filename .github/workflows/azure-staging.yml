@@ -1,6 +1,9 @@
 name: Azure Staging Deploy
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
