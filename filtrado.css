@@ -1,9 +1,3 @@
-/* ============================================================
-   FILTRADO — filtrado.css
-   Estilos exclusivos de la página de búsqueda y filtrado.
-   Carga junto con style.css (base) + catalogo.css (header/hero).
-   ============================================================ */
-
 .navbar-acciones {
   position: relative;
 }
@@ -12,7 +6,7 @@
   margin-right: 0.25rem;
 }
 
-/* ── BUSCADOR ── */
+/* BUSCADOR */
 #school-finder-wrapper {
     background: var(--crema);
     border-radius: var(--radio-xl);
@@ -76,10 +70,10 @@
     box-shadow: var(--sombra-hover);
 }
 
-/* ── RESULTADOS ── */
+/*RESULTADOS*/
 #results { display: grid; gap: 24px; max-width: 1360px; margin: 0 auto; }
 
-/* ── TARJETA DE RESULTADO (.card) ── */
+/*TARJETA DE NECE */
 .resultado-card {
     background: var(--blanco);
     border-radius: var(--radio);
@@ -114,10 +108,10 @@
 .resultado-card h3 { margin: 0 0 10px; color: var(--verde-oscuro); font-size: 16px; font-weight: 800; line-height: 1.3; }
 .resultado-card p  { margin: 4px 0; color: var(--gris-medio); font-size: 13px; font-weight: 500; line-height: 1.6; }
 
-/* ── HEADER ACCIONES ── */
+/*HEADER ACCIONES*/
 .header-acciones { display: flex; align-items: center; gap: 12px; justify-self: end; }
 
-/* ── BOTÓN CARRITO (estilo "Quiero ayudar") ── */
+/*BOTÓN CARRITO */
 .btn-carrito {
   position: absolute;
   right: 80px;
@@ -175,7 +169,7 @@
   flex-shrink: 0;
 }
 
-/* ── CARD HEADER + BOTON AGREGAR ── */
+/* CARD HEADER Y BOTON AGREGAR */
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -184,7 +178,7 @@
 }
 .card-header h3 { margin: 0; }
 
-/* ── NIVELES DE NECESIDAD (reemplazo de estado) ── */
+/*NIVELES DE NECESIDAD */
 .nivel-badge {
   display: inline-flex;
   align-items: center;
@@ -231,8 +225,7 @@
   color: #27ae60;
   font-size: 0.6rem;
 }
- 
-/* ── CARD ACTUALIZADA (2 botones) ── */
+
 .resultado-card {
   background: white;
   border-radius: 16px;
@@ -243,28 +236,9 @@
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
  
-.resultado-card:hover {
-  box-shadow: 0 8px 28px rgba(0,0,0,0.10);
-  transform: translateY(-2px);
-}
+
  
-.resultado-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 14px;
-  gap: 12px;
-}
- 
-.resultado-card-header h3 {
-  font-size: 1rem;
-  font-weight: 800;
-  color: #1B6B35;
-  margin: 0;
-  line-height: 1.3;
-}
- 
-/* Contenedor de los 2 botones de la card */
+/* LOS BOTONES DE LA NECE*/
 .card-acciones {
   display: flex;
   gap: 8px;
@@ -314,7 +288,7 @@
   transform: scale(1.03);
 }
  
-/* ── CARRITO PANEL — cantidad editable ── */
+/*CARRITO PANEL CANTIDAD*/
 .carrito-item {
   display: flex;
   align-items: center;
@@ -406,22 +380,11 @@
   color: white;
 }
 
-/* ── ESTADO EN TARJETA ── */
-.estado {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 50px;
-    margin-top: 6px;
-}
-.estado-cubierto  { background: #e6f4ec; color: var(--verde-oscuro); }
-.estado-pendiente { background: #fef0e6; color: var(--naranja); }
 
-/* ── PANEL CARRITO ── */
+/* CARRITO DE SHOPPINF */
 #carrito-panel {
   position: fixed;
-  top: 96px; /* ← más abajo para que no se encime con el botón */
+  top: 96px;
   right: -420px;
   width: 380px;
   height: calc(100vh - 96px);
@@ -497,7 +460,7 @@
 }
 #carrito-footer .btn-ayudar { width: 100%; margin-bottom: 0; }
 
-/* ── LAYOUT FINDER ── */
+/* LAYOUT FINDER*/
 #finder-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
@@ -505,7 +468,7 @@
     align-items: start;
 }
 
-/* ── SIDEBAR ── */
+/*SIDEBAR */
 #sidebar {
     background: var(--blanco);
     border-radius: var(--radio);
@@ -533,7 +496,7 @@
     margin-bottom: 10px;
 }
 
-/* ── SELECT DROPDOWNS — appearance: base-select (Chrome 130+) ── */
+/* SELECT DROPDOWNS */
 #searchForm select,
 #searchForm select::picker(select) {
     appearance: base-select;
@@ -623,7 +586,7 @@
     box-shadow: 0 8px 20px rgba(236,103,27,0.32);
 }
 
-/* ── MODAL DONAR ── */
+/* MODAL DONAR */
 #modal-donar {
     display: none;
     position: fixed; inset: 0;
@@ -744,7 +707,7 @@
 }
 .btn-cancelar-modal:hover { color: var(--gris-texto); }
 
-/* ── RESPONSIVE ── */
+/*RESPONSIVE*/
 @media (max-width: 768px) {
     #school-finder-wrapper { margin: -55px 14px 0; border-radius: 30px 30px 0 0; padding: 36px 20px; }
     #searchForm { flex-direction: column; }
@@ -764,7 +727,7 @@
 
 
 
-/* ── NAVBAR PERFIL DONADOR ── */
+/*  NAVBAR PERFIL DONADOR*/
 .navbar-perfil {
   align-items: center;
   position: relative;
@@ -868,7 +831,7 @@
   }
 }
 
-/* ── NAVBAR PERFIL DONADOR ── */
+/* NAVBAR PERFIL DONADOR */
 .navbar-perfil {
   align-items: center;
   position: relative;
@@ -990,7 +953,7 @@
   }
 }
 
-/* ── MODALES DE PERFIL E HISTORIAL ── */
+/* MODALES DE PERFIL E HISTORIAL*/
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1078,7 +1041,7 @@
   margin-right: 0.5rem;
 }
 
-/* Estilos para formularios dentro de modales */
+/* STYLES PARA PERFILES DENTRO DE MODALES*/
 .modal-caja .form-grupo {
   margin-bottom: 1.5rem;
 }
@@ -1136,11 +1099,7 @@
   background: var(--verde-oscuro);
 }
 
-/* ============================================================
-   CLASES PARA MODAL HISTORIAL UNIFICADO
-   ============================================================ */
-
-/* Badges de estado */
+/* ESTADO BADGES */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -1172,7 +1131,7 @@
   color: white !important;
 }
 
-/* Utilidades de texto */
+/* TEXTO*/
 .text-muted {
   color: var(--texto-suave) !important;
 }
@@ -1197,7 +1156,6 @@
 .p-3 { padding: 1rem !important; }
 .py-4 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
 
-/* Historial específico */
 .historial-item {
   background: white;
   border: 1px solid rgba(0,153,51,0.15);
@@ -1256,7 +1214,7 @@
   color: #495057;
 }
 
-/* Spinner de carga */
+/* CARGA SPINNER*/
 .spinner-border {
   display: inline-block;
   width: 2rem;

@@ -1,10 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-/* ============================================================
-   CATÁLOGO + CATEGORÍAS  — catalogo.css (actualizado)
-   ============================================================ */
-
-/* ── VARIABLES GLOBALES ── */
+/* VARIABLES GLOBALES*/
 :root {
     --verde:        #009933;
     --verde-oscuro: #1B6B35;
@@ -27,7 +23,7 @@
     --radio-xl: 44px;
 }
 
-/* ── RESET ── */
+/* RESET*/
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -145,9 +141,7 @@ body {
   margin-bottom: 1.4rem;
   backdrop-filter: blur(8px);
 }
-/* ====================================================
-   CONTENEDOR CATÁLOGO + GRID
-   ==================================================== */
+/* EL GRID DEL CATALOGO*/
    #catalog-wrapper {
     background: var(--crema);
     border-radius: var(--radio-xl);
@@ -168,9 +162,7 @@ body {
     margin-top: -20px;
 }
 
-/* ====================================================
-   TARJETA DE CATEGORÍA — imagen 50% de la card
-   ==================================================== */
+/* CATEGORIASS*/
 .need-card {
     background: var(--blanco);
     border-radius: var(--radio);
@@ -186,7 +178,7 @@ body {
     will-change: transform;
     display: flex;
     flex-direction: column;
-    padding: 0; /* quitamos padding global, lo ponemos por sección */
+    padding: 0;
 }
 
 .need-card:nth-child(1)  { animation-delay: 0.05s; }
@@ -203,7 +195,6 @@ body {
 .need-card:nth-child(12) { animation-delay: 0.60s; }
 .need-card:nth-child(13) { animation-delay: 0.65s; }
 
-/* Línea verde superior en hover — ahora está por encima del marco de imagen */
 .need-card::before {
     content: '';
     position: absolute;
@@ -214,7 +205,7 @@ body {
     transform-origin: left;
     transition: transform 0.30s ease;
     border-radius: var(--radio) var(--radio) 0 0;
-    z-index: 10; /* siempre encima */
+    z-index: 10; 
 }
 
 .need-card:hover {
@@ -225,25 +216,22 @@ body {
 }
 .need-card:hover::before { transform: scaleX(1); }
 
-/* ── ZONA IMAGEN (50% de la card) ── */
+/* IMAGEN X CATEGORIA */
 .need-card-imagen {
     width: 100%;
-    /* La imagen ocupa exactamente el 50% de la altura de la card.
-       Usamos aspect-ratio para que sea consistente en todos los tamaños */
-    aspect-ratio: 4 / 3;   /* proporción del bloque imagen */
+    aspect-ratio: 4 / 3;   
     overflow: hidden;
     border-radius: var(--radio) var(--radio) 0 0;
     background: var(--gris-claro);
     position: relative;
     flex-shrink: 0;
-    /* Marco sutil debajo de la imagen */
     border-bottom: 2px solid var(--gris-claro);
 }
 
 .need-card-imagen img {
     width: 100%;
     height: 100%;
-    object-fit: cover;          /* llena el área sin distorsionar */
+    object-fit: cover;         
     object-position: center;
     transition: transform 0.35s ease, filter 0.30s ease;
     display: block;
@@ -254,7 +242,7 @@ body {
     filter: brightness(1.04);
 }
 
-/* ── ZONA CUERPO (50% de la card) ── */
+/* CUERPO X CATEGORIA ── */
 .need-card-cuerpo {
     flex: 1;
     display: flex;
@@ -299,9 +287,7 @@ body {
     box-shadow: 0 6px 18px rgba(236,103,27,0.26);
 }
 
-/* ====================================================
-   BOTÓN ATRÁS
-   ==================================================== */
+/* BOTON ATRAS*/
 .btn-atras-wrap {
     padding: 8px 40px 0;
 }
@@ -328,11 +314,7 @@ body {
     box-shadow: 0 6px 18px rgba(236,103,27,0.26);
 }
 
-
-/* ====================================================
-   FOOTER (limpio, sin el botón ayudar)
-   ==================================================== */
-/* --FOOTER-- */
+/* FOOTER*/
 .footer {
   background: #243f6b;
   padding: 2rem 2.5rem;
@@ -463,9 +445,7 @@ body {
   text-decoration: none;
 }
 
-/* ====================================================
-   ANIMACIONES
-   ==================================================== */
+/* ANIMACIONES*/
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-28px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -481,9 +461,7 @@ body {
     to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
-/* ====================================================
-   RESPONSIVE — 768px
-   ==================================================== */
+/* RESPONSIVE*/
 @media (max-width: 768px) {
     #header-top {
         grid-template-columns: auto 1fr;
@@ -505,9 +483,6 @@ body {
     .btn-ayudar-grande { font-size: 18px; padding: 16px 36px; }
 }
 
-/* ====================================================
-   RESPONSIVE — 600px
-   ==================================================== */
 @media (max-width: 600px) {
     #header-texto h1 { font-size: 24px; letter-spacing: -0.4px; }
     #header-categorias { display: none; }
@@ -516,7 +491,7 @@ body {
     #catalog-grid { grid-template-columns: 1fr; gap: 12px; padding: 28px 14px; }
 }
 
-/* ── MODALES DE PERFIL E HISTORIAL ── */
+/* MODALES DE PERFIL E HISTORIAL */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -604,7 +579,7 @@ body {
   margin-right: 0.5rem;
 }
 
-/* Estilos para formularios dentro de modales */
+/* STYLES PARA FORMULARIOS EN MODALES */
 .modal-caja .form-grupo {
   margin-bottom: 1.5rem;
 }
@@ -662,11 +637,7 @@ body {
   background: var(--verde-oscuro);
 }
 
-/* ============================================================
-   CLASES PARA MODAL HISTORIAL UNIFICADO
-   ============================================================ */
-
-/* Badges de estado */
+/* ESTADO BADGES */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -698,7 +669,7 @@ body {
   color: white !important;
 }
 
-/* Utilidades de texto */
+/*TEXTO */
 .text-muted {
   color: var(--texto-suave) !important;
 }
@@ -723,7 +694,6 @@ body {
 .p-3 { padding: 1rem !important; }
 .py-4 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
 
-/* Historial específico */
 .historial-item {
   background: white;
   border: 1px solid rgba(0,153,51,0.15);
@@ -782,7 +752,7 @@ body {
   color: #495057;
 }
 
-/* Spinner de carga */
+/* CARGA SPINNER*/
 .spinner-border {
   display: inline-block;
   width: 2rem;
